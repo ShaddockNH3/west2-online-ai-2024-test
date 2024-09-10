@@ -44,3 +44,4 @@ lecture没讲啥，主要是引起对python的兴趣，
 
 # 生成式AI认识：
 
+![[Pasted image 20240910221050.png]]
