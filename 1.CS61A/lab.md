@@ -1,6 +1,4 @@
-### lab00
-
-lab00链接：https://web.archive.org/web/20220811203413/https://cs61a.org/lab/sol-lab00/
+### lab00（24spring）
 
 先开个终端，cd到当前目录，每个lab都得先解锁之后，即`-q`之后才能做题目，直接输入`python ok --q python-basics -u --local`，来做解锁lab00的题目。
 
@@ -48,7 +46,7 @@ Test summary
 
 ~~以前有做过lab00的就是不一样~~
 
-### lab01
+### lab01（24spring）
 
 不多说了，直接上lab01
 
@@ -528,5 +526,409 @@ lab01结束，总体评价很简单，比以前的hog简单多了（）
 这里看到1.5就能写了，感觉就是一些很基础很基础的语法的应用和理解
 
 
-### lab02
 
+### lab02(23spring)
+
+#### Q1: WWPD: The True Will Prevail
+
+忘记放终端上的东西了，需要注意的是，这里考察的是对and，or和not的理解。
+
+a and b，如果a为假则返回False，如果a为真b为真则返回b，如果a，b均为假则返回False
+
+a or b，如果a为真则返回a，如果a为假b为真则返回b，如果均为假则返回False
+
+#### Q2: WWPD: Lambda the Free
+
+```
+=====================================================================
+Assignment: Lab 2
+OK, version v1.18.1
+=====================================================================
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Unlocking tests
+
+At each "? ", type what you would expect the output to be.
+Type exit() to quit
+
+---------------------------------------------------------------------
+Lambda the Free > Suite 1 > Case 1
+(cases remaining: 7)
+
+Q: Which of the following statements describes a difference between a def statement and a lambda expression?
+Choose the number of the correct choice:
+0) A def statement can only have one line in its body.
+1) A lambda expression cannot have more than two parameters.
+2) A lambda expression does not automatically bind the function object that it returns to an intrinsic name.
+3) A lambda expression cannot return another function.
+? 2
+-- OK! --
+
+---------------------------------------------------------------------
+Lambda the Free > Suite 1 > Case 2
+(cases remaining: 6)
+
+Q: How many parameters does the following lambda expression have?
+lambda a, b: c + d
+Choose the number of the correct choice:
+0) Not enough information
+1) two
+2) three
+3) one
+? 1
+-- OK! --
+
+---------------------------------------------------------------------
+Lambda the Free > Suite 1 > Case 3
+(cases remaining: 5)
+
+Q: When is the return expression of a lambda expression executed?
+Choose the number of the correct choice:
+0) When the lambda expression is evaluated.
+1) When you pass the lambda expression into another function.
+2) When the function returned by the lambda expression is called.
+3) When you assign the lambda expression to a name.
+? 2
+-- OK! --
+
+---------------------------------------------------------------------
+Lambda the Free > Suite 2 > Case 1
+(cases remaining: 4)
+
+What would Python display? If you get stuck, try it out in the Python
+interpreter!
+
+>>> # If Python displays <function...>, type Function, if it errors type Error, if it displays nothing type Nothing
+>>> lambda x: x  # A lambda expression with one parameter x
+? Function
+-- OK! --
+
+>>> a = lambda x: x  # Assigning a lambda function to the name a
+>>> a(5)
+? 5
+-- OK! --
+
+>>> (lambda: 3)()  # Using a lambda expression as an operator in a call exp.
+? Funcion
+-- Not quite. Try again! --
+
+? Function
+-- Not quite. Try again! --
+
+? 3
+-- OK! --
+
+>>> b = lambda x, y: lambda: x + y # Lambdas can return other lambdas!
+>>> c = b(88, 43)
+>>> c
+? Function
+-- OK! --
+
+>>> c()
+? 131
+-- OK! --
+
+>>> d = lambda f: f(4)  # They can have functions as arguments as well
+>>> def square(x):
+...     return x * x
+>>> d(square)
+? Function
+-- Not quite. Try again! --
+
+? 16
+-- OK! --
+
+---------------------------------------------------------------------
+Lambda the Free > Suite 2 > Case 2
+(cases remaining: 3)
+
+What would Python display? If you get stuck, try it out in the Python
+interpreter!
+
+>>> #
+>>> # Pay attention to the scope of variables
+>>> z = 3
+>>> e = lambda x: lambda y: lambda: x + y + z
+>>> e(0)(1)()
+? Function
+-- Not quite. Try again! --
+
+? 4
+-- OK! --
+
+>>> f = lambda z: x + z
+>>> f(3)
+? Function
+-- Not quite. Try again! --
+
+? Error
+-- OK! --
+
+---------------------------------------------------------------------
+Lambda the Free > Suite 2 > Case 3
+(cases remaining: 2)
+
+What would Python display? If you get stuck, try it out in the Python
+interpreter!
+
+>>> x = None # remember to review the rules of WWPD given above!
+>>> x
+? Nothing
+-- OK! --
+
+---------------------------------------------------------------------
+Lambda the Free > Suite 2 > Case 4
+(cases remaining: 1)
+
+What would Python display? If you get stuck, try it out in the Python
+interpreter!
+
+>>> # Try drawing an environment diagram if you get stuck!
+>>> higher_order_lambda = lambda f: lambda x: f(x)
+>>> g = lambda x: x * x
+>>> higher_order_lambda(2)(g) # Which argument belongs to which function call?
+? Error
+-- OK! --
+
+>>> higher_order_lambda(g)(2)
+? 4
+-- OK! --
+
+>>> call_thrice = lambda f: lambda x: f(f(f(x)))
+>>> call_thrice(lambda y: y + 1)(0)
+? 3
+-- OK! --
+
+>>> print_lambda = lambda z: print(z) # When is the return expression of a lambda expression executed?
+>>> print_lambda
+? Function
+-- OK! --
+
+>>> one_thousand = print_lambda(1000)
+? 1000
+-- OK! --
+
+>>> one_thousand # What did the call to print_lambda return?
+? Function
+-- Not quite. Try again! --
+
+? Nothing
+-- OK! --
+
+---------------------------------------------------------------------
+OK! All cases for Lambda the Free unlocked.
+
+Cannot backup when running ok with --local.
+```
+
+还是需要注意lambda语句的语法和其定义，尤其需要记住在python里，函数的地位和普通的变量是一样的，可以任意绑定
+
+#### Q3: WWPD: Higher Order Functions
+
+```
+=====================================================================
+Assignment: Lab 2
+OK, version v1.18.1
+=====================================================================
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Unlocking tests
+
+At each "? ", type what you would expect the output to be.
+Type exit() to quit
+
+---------------------------------------------------------------------
+Higher Order Functions > Suite 1 > Case 1
+(cases remaining: 1)
+
+What would Python display? If you get stuck, try it out in the Python
+interpreter!
+
+>>> # If Python displays <function...>, type Function, if it errors type Error, if it displays nothing type Nothing
+>>> def cake():
+...    print('beets')
+...    def pie():
+...        print('sweets')
+...        return 'cake'
+...    return pie
+>>> chocolate = cake()
+? beets
+-- OK! --
+
+>>> chocolate
+? Function
+-- OK! --
+
+>>> chocolate()
+(line 1)? sweets
+(line 2)? 'cake'
+-- OK! --
+
+>>> more_chocolate, more_cake = chocolate(), cake
+? sweets
+-- OK! --
+
+>>> more_chocolate
+? 'cake'
+-- OK! --
+
+>>> # Reminder: cake, more_cake, and chocolate were defined/assigned in the code above!
+>>> # It might be helpful to refer to their definitions on the assignment website so you don't have to scroll as much!
+>>> def snake(x, y):
+...    if cake == more_cake:
+...        return chocolate
+...    else:
+...        return x + y
+>>> snake(10, 20)
+? chocolate
+-- Not quite. Try again! --
+
+? Function
+-- OK! --
+
+>>> snake(10, 20)()
+(line 1)? sweets
+(line 2)? 'cake'
+-- OK! --
+
+>>> cake = 'cake'
+>>> snake(10, 20)
+? 30
+-- OK! --
+
+---------------------------------------------------------------------
+OK! All cases for Higher Order Functions unlocked.
+
+Cannot backup when running ok with --local.
+```
+
+需要对嵌套定义和柯里化很了解。
+
+#### Q4: Composite Identity Function
+
+上代码了：
+
+```
+def composite_identity(f, g):  
+    def h(x):  
+        h1=composer(f,g)  
+        h2=composer(g,f)  
+        if h1(x)-h2(x)==0:  
+            return True  
+        else:  
+            return False  
+    return h
+```
+
+这里我自己写出来感觉都有点懵，回头再来看看，还是感觉理解地不够深
+
+#### Q5: Count van Count
+
+```
+def count_cond(condition):  
+    def f(n):  
+        i,cnt=1,0  
+        while i<=n:  
+            if condition(n,i):  
+                cnt+=1  
+            i+=1  
+        return cnt  
+    return f
+```
+
+在写出来这个之后，我大概懂题目的意思了，其实就是写一个通用模板
+
+#### Q7: Multiple
+
+```
+def multiple(a, b):    
+    while b != 0:  
+        a, b = b, a % b  
+    return a1//a*b1
+```
+
+欧几里得法
+
+#### Q8: I Heard You Liked Functions...
+
+不，我不喜欢
+
+```
+def h(n):  
+    def f(x):  
+        result=x  
+        i=1  
+        while i<=n:  
+            if i%3==1:  
+                result=f1(result)  
+            elif i%3==2:  
+                result=f2(result)  
+            else:  
+                result=f3(result)  
+            i+=1  
+        return result  
+    return f  
+return h
+```
+
+得定义三层，这里我每次都会忘记一个东西，事实上最内层的有时候应该传的是值，而不是函数。如果传的是函数的话，那么最后应该还得h(n)(m)才对
+
+其实还是有点没搞懂这里是什么意思就是了，还得再看看
+
+### lab03
+
+#### q1
+
+```
+def ordered_digits(x):  
+    l=x%10  
+    x=x//10  
+    tip=True  
+    while x/10!=0:  
+        if(l<x%10):  
+            tip=False  
+            break        l=x%10  
+        x//=10  
+    return tip
+```
+
+
+#### q2
+
+```
+def get_k_run_starter(n, k):  
+    i = 0  
+    final = None  
+    while i<=k:  
+        while n>10 and (n%10>(n//10)%10):  
+            n//=10  
+        final = n%10  
+        i = i+1  
+        n = n//10  
+    return final
+```
+
+注意从后往前数就行了
+
+#### q3
+
+```
+def make_repeater(func, n):  
+    def h(first):  
+        if func==identity:  
+            return first  
+        elif func==increment:  
+            return add(n,first)  
+        elif func==triple:  
+            return mul(pow(3,n),first)  
+        else:  
+            i=1  
+            while i<=n:  
+                i,first=i+1,square(first)  
+            return first  
+    return h
+```
+
+抄一下hw2的代码
+
+#### q4先掠过，有点怪怪的感觉

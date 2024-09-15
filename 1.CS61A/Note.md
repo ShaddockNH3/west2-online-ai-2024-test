@@ -5,14 +5,20 @@
 CS61A这门课适合有一定基础的人听，不然很劝退，国外教材经典地和国内教材不一样，而且质量也差的比较多，比方说Java经典入门教程MIT 6.092，人家MIT设置的14个小时学完java，从基本语法到面向对象，课程+lab，国内可能得用一整年的时间（说的就是你，fzu！）。
 
 本人从8月末开始准备考核，先花了五天的时间速通了一下python的语法，做完了原来考核的题目（除了正则表达式），后面就去稍微看了点爬虫和numpy库，由于数模比赛耽搁了一周多的时间，现在重新上github上看，发现考核内容较先前改变了不少，比如我上学期稍微看了点的神课cs61a，只不过上学期因为摆大烂没坚持下来（蒟蒻的证明），希望写这个文档之后能坚持下去吧（）
-## 关于如何unlock作业
 
-windows端在终端运行时使用`python ok --q question_name -u --local`，而非伯努利提供的`python3 ok -q short-circuit -u`
+lab00，lab01，hw01，hw02，hog，用的是24spring，因为后面没有页面备份了，所以其他改用23spring
+
+如果看到什么作业链接下载的话就算了，有时间我会检查一下我的笔记然后删掉一些不正确的东西
+## 关于如何unlock或者检测作业
+
+windows端在终端运行时使用`python ok --q question_name -u --local`，而非伯努利提供的`python3 ok --q question_name -u`
+
+同理，在进行检测作业的时候也得改成`python ok --q question_name --local`
 
 注意：
 - python3改为python
 - 由于我们无法使用伯努利账号，所以增加--local是必要的
-- 由于是local测试，所以你写的代码不一定完全正确但是通过了
+- 由于是local测试，所以你写的代码不一定完全正确，但是通过了所有测试点
 
 ## 学习资料
 - https://www.bilibili.com/video/BV1GK411Q7qp/?vd_source=0272bb7dd0d8d9302c55fc082442b9e3 （2022Fall）
@@ -24,6 +30,37 @@ windows端在终端运行时使用`python ok --q question_name -u --local`，而
 直接听lecture就行了，其他的有兴趣可以听，有基础的也可以直接啃书，不过难度比较大就是了。只需要注意L1从35min开始听，前面的是国内外课程特有的成绩计算环节（对于初听国外网课的人来说......不敢跳过啊！）
 
 本人有点基础，上学期听了几个lc，开学第一周速通了一下python语法，所以就直接上课本和lab了。
+
+## 虚拟环境
+
+spring2023需要使用python3.9，所以打开终端到那个文件夹，然后输入以下指令（使用conda）
+
+```
+conda create -p ./myenv python=3.9
+```
+
+然后激活：
+
+```
+conda activate ./myenv
+```
+
+检验
+
+```
+python --version
+```
+
+然后就ok了
+
+
+
+
+
+
+
+
+
 
 ## 第一章：使用函数构建抽象
 
@@ -995,6 +1032,252 @@ True
 ```
 
 #### 1.7.3 递归打印
+
+没看懂在讲啥（）
+
+#### 1.7.4 树递归
+
+最具体的例子就是斐波那契，虽然简单但是浪费很多空间，一般这种都可以用 动态规划来解决
+
+#### 1.7.5 分割数
+
+典型采用分而治之的求解方法，如果我想求n个数的分割方法，分割出来的最大数为m，那么记在这个问题为C(n,m)，然后定义递归基
+
+每当，m需要从其本身到0，n也是，考虑遍历的情况，
+
+C(n-1,m)和C(n,m-1)，直到m和n分别到0为止。
+
+所以可以C(n,m)=C(n-1,m)和C(n,m-1)，定义递归基之后，便可求解。
+
+### 第一章总结一下
+
+函数的高级使用方法很不熟练，然后递归思想还得再多去理解以下
+## 第二章、使用数据构建抽象
+
+### 2.1 引言
+
+主要引入了一下python的数据类型，可以使用type来进行检查
+
+### 2.2 数据抽象
+
+第一大段话的意思感觉就是我们可以定义一些新的数据类型，但是不必知道他们的具体实现方式，和面向对象的思想差不多
+
+第一小节就有点面向对象的意思在里面了，和大一下cpp的蛮多作业差不多，定义一个分数类，然后计算分数类。
+
+由于原始的python中并没有”分数“这个概念，所以这里的”分数“是我们自己定义出来的，也可以说是自己抽象出来的，可以实现分数的加减乘除运算
+
+接下来就引入了“对”的概念，也就是列表，list，与c/cpp中的数组/向量类似。
+
+list可以进行拆包操作，也可以进行寻秩访问
+
+下面其实就是应用函数来表示list的方法？
+
+### 2.3 序列
+
+#### 2.3.1 列表
+
+```
+'''  
+list的基本使用  
+'''  
+  
+d=[1,2,3,4]  
+print(d)  
+print(len(d))  
+d=[-1,0]+d*2  
+print(d)  
+#二维列表  
+d=[[2,3],[1,4]]  
+print(d[0])
+```
+
+#### 2.3.2 遍历
+
+```
+for <name> in <expression>:
+    <suite>
+```
+
+expression可以是迭代器
+
+- 序列解包
+
+```
+>>> same_count = 0
+>>> for x, y in pairs:
+        if x == y:
+            same_count = same_count + 1
+>>> same_count
+2
+```
+
+copy一下
+
+range函数，range(start,end,step)，步长默认为1
+
+范围通常出现在 `for` 循环头部中的表达式，以指定 `<suite>` 应执行的次数。一个惯用的使用方式是：如果 `<name>` 没有在 `<suite>` 中被使用到，则用下划线字符 "_" 作为 `<name>`。
+
+
+#### 2.3.3 序列处理
+
+到了比较重点的地方，列表推导式了！
+
+这是一个比较高级的使用方法
+
+```
+[<map expression> for <name> in <sequence expression> if <filter expression>]
+```
+
+比如迅速填充从1，100中的所有偶数：
+
+```
+l=[x for x in range(1,101) if x%2==0]  
+print(l)  
+```
+
+迅速填充从1，100中所有偶数并且square一下
+```
+l=[x**2 for x in range(1,101) if x%2==0]  
+print(l)
+```
+
+- 聚合
+
+首先什么是完美数，完美数就是一个一个正整数，等于它所有 **真因数**（即除了它本身之外的所有正因数）之和
+
+可以写一个discover函数先来找出一个数的真因数，可以直接用列表推导式来写，然后利用这个列表推导式作为判断条件，计算sum后来输出真因数p
+
+```
+def discover(n):  
+    l=[x for x in range (2,n) if n%x==0]  
+    return [1]+l  
+  
+p=[n for n in range(1,1000) if n==sum(discover(n))]  
+  
+print(p)
+```
+
+下面这个例子讲的是如何利用类似discover的函数，来求解在给定面积的情况下具有整数边长的矩形的最小周长，可以通过列表推导式进行遍历
+
+```
+def discover(n):  
+    l=[x for x in range (2,n) if n%x==0]  
+    return [1]+l  
+  
+def width(a,h):  
+    assert a%h==0  
+    return a//h  
+  
+def per(w,h):  
+    return 2*(w+h)  
+  
+def min_per(a):  
+    hei=discover(a)#求解初所有能把a整除的数  
+    p=[per(width(a,h),h)for h in hei]#求解所有周长并取最小  
+    return min(p)
+```
+
+接下里是**高阶函数**
+
+首先就是一种函数，能对一个序列中的所有数都进行某种函数的处理之后，再返回某个序列，也可以对这个序列进行某种筛选后再返回筛选后的序列
+
+下面reduce函数的意思就是说，可以定义一个函数，先对序列中的所有数进行处理后，然后再总体处理，简单来说就是先处理，然后聚合
+
+然后下面的例子暂时都跳过，后面会将`map`和`filter`。看一眼内置的reduce长啥样：
+
+`reduce(fn, s, initial)`，initial，也就是初始参数，默认为1
+
+#### 2.3.4 序列抽象
+
+- 成员资格
+
+```
+who in list
+who not in list
+```
+
+- 切片
+
+超级高级的用法，切片
+
+l[first,end,step]
+
+step也可以是负数，表示反方向切片
+
+#### 2.3.5
+
+没啥好讲的（）或许吧，回头再看看
+
+#### 2.3.6 树
+
+？怎么就开始讲树了？
+
+所以还是比较适合稍微学了点数据结构的来啃cs61a（）
+
+然后树这里一下子没看懂，先看一遍课（L12）
+
+```
+>>> def tree(root_label, branches=[]):
+        for branch in branches:
+            assert is_tree(branch), '分支必须是树'
+        return [root_label] + list(branches)
+
+>>> def label(tree):
+        return tree[0]
+
+>>> def branches(tree):
+        return tree[1:]
+```
+
+上述代码是在构造树，这里没有构造树的实例，待会儿下面举个例子。桑树代码其实也算是一种在递归定义树，树的根节点，然后根节点下面有一个树存储的值，后续是这个结点的子树。
+
+举个例子先：
+
+```
+def tree(root_label,branches=[]):  
+    for branch in branches:  
+        assert is_tree(branch)  
+    return [root_label]+list(branches)  
+  
+def label(tree):  
+    return tree[0]  
+  
+def branches(tree):  
+    return tree[1:]  
+  
+def is_tree(tree):  
+    if type(tree)!=list or len(tree)<1:  
+        return False  
+    #如果树不为列表或者长度小于1，肯定就不是树  
+    for branch in branches(tree):  
+        if not is_tree(branch):  
+            return False  
+    #递归进入所有树，从而进行判断  
+    return True  
+  
+def is_leaf(tree):  
+    return not branches(tree)  
+  
+t=tree(1,[tree(2,[]),  
+  
+                            tree(3,[tree(7,[]),  
+                                                        tree(8,[])]),  
+  
+                            tree(4,[tree(5,[]),  
+                                                        tree(6,[])])])  
+  
+print(t)  
+print(label(t))  
+print(branches(t))  
+print(label(t[1]))  
+print(branches(t[1]))  
+print(is_leaf(t[1]))  
+print(len(t))
+```
+
+
+越看越天才，太牛了，这个构造
+
 
 
 

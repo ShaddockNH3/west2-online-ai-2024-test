@@ -2,6 +2,8 @@
 每个project都是一等一的逆天，不多说，直接hog开始
 ## hog
 
+采用的是2024spring的版本
+
 看完1.6
 
 ### 第一阶段
@@ -525,7 +527,7 @@ def roll_dice(num_rolls, dice=six_sided):
 
 这里遇到了点小问题，我用的fall2022的网页写的这个，所以规则不对，结果发现我现在做的版本spring2024官网得要伯努利账号，然后试了一下fall2022，spring2022，fall2020的备份，都不行，但是，简单搜索了一下，发现了2024spring的备份，爽了！
 
-贴一个2024spring的备份：https://cs61a.org/
+贴一个2024spring的备份：https://cs61a.org/proj/hog/
 
 不过我好像发现这个没更新完（）所以后面肯定又会遇到问题，唉
 
@@ -1797,7 +1799,7 @@ def play(strategy0, strategy1, update,
     return score0, score1
 ```
 
-芜湖！第一阶段hog结束！总耗时2h，感觉一般
+芜湖！第一阶段hog结束！
 
 总的第一阶段代码如下：
 
@@ -1815,9 +1817,7 @@ GOAL = 100  # The goal of Hog is to score 100 points.
   
   
 def roll_dice(num_rolls, dice=six_sided):  
-    """Simulate rolling the DICE exactly NUM_ROLLS > 0 times. Return the sum of  
-    the outcomes unless any of the outcomes is 1. In that case, return 1.  
-    num_rolls:  The number of dice rolls that will be made.    dice:       A function that simulates a single dice roll outcome.    """    # These assert statements ensure that num_rolls is a positive integer.    assert type(num_rolls) == int, 'num_rolls must be an integer.'  
+    # These assert statements ensure that num_rolls is a positive integer.    assert type(num_rolls) == int, 'num_rolls must be an integer.'  
     assert num_rolls > 0, 'Must roll at least once.'  
     # BEGIN PROBLEM 1  
     i,sum=1,0  
@@ -1835,19 +1835,15 @@ def roll_dice(num_rolls, dice=six_sided):
   
   
 def boar_brawl(player_score, opponent_score):  
-    """Return the points scored by rolling 0 dice according to Boar Brawl.  
-  
-    player_score:     The total score of the current player.    opponent_score:   The total score of the other player.  
-    """    # BEGIN PROBLEM 2    a=player_score  
+    # BEGIN PROBLEM 2    
+    a=player_score  
     b=opponent_score  
     return max(1,abs(a%10-b%100//10)*3)  
     # END PROBLEM 2  
   
   
 def take_turn(num_rolls, player_score, opponent_score, dice=six_sided):  
-    """Return the points scored on a turn rolling NUM_ROLLS dice when the  
-    player has PLAYER_SCORE points and the opponent has OPPONENT_SCORE points.  
-    num_rolls:       The number of dice rolls that will be made.    player_score:    The total score of the current player.    opponent_score:  The total score of the other player.    dice:            A function that simulates a single dice roll outcome.    """    # Leave these assert statements here; they help check for errors.    assert type(num_rolls) == int, 'num_rolls must be an integer.'  
+    # Leave these assert statements here; they help check for errors.    assert type(num_rolls) == int, 'num_rolls must be an integer.'  
     assert num_rolls >= 0, 'Cannot roll a negative number of dice in take_turn.'  
     assert num_rolls <= 10, 'Cannot roll more than 10 dice.'  
     # BEGIN PROBLEM 3  
@@ -1901,19 +1897,14 @@ def sus_update(num_rolls, player_score, opponent_score, dice=six_sided):
   
   
 def always_roll_5(score, opponent_score):  
-    """A strategy of always rolling 5 dice, regardless of the player's score or  
-    the opponent's score.    """    return 5  
+	return 5  
   
   
 def play(strategy0, strategy1, update,  
          score0=0, score1=0, dice=six_sided, goal=GOAL):  
-    """Simulate a game and return the final scores of both players, with  
-    Player 0's score first and Player 1's score second.  
-    E.g., play(always_roll_5, always_roll_5, sus_update) simulates a game in    which both players always choose to roll 5 dice on every turn and the Sus    Fuss rule is in effect.  
-    A strategy function, such as always_roll_5, takes the current player's    score and their opponent's score and returns the number of dice the current    player chooses to roll.  
-    An update function, such as sus_update or simple_update, takes the number    of dice to roll, the current player's score, the opponent's score, and the    dice function used to simulate rolling dice. It returns the updated score    of the current player after they take their turn.  
-    strategy0: The strategy for player0.    strategy1: The strategy for player1.    update:    The update function (used for both players).    score0:    Starting score for Player 0    score1:    Starting score for Player 1    dice:      A function of zero arguments that simulates a dice roll.    goal:      The game ends and someone wins when this score is reached.    """    who = 0  # Who is about to take a turn, 0 (first) or 1 (second)  
-    # BEGIN PROBLEM 5    while True:  
+	who = 0  # Who is about to take a turn, 0 (first) or 1 (second)  
+    # BEGIN PROBLEM 5    
+    while True:  
         if who==0:  
             strategy=strategy0(score0,score1)  
             score0=update(strategy,score0,score1,dice)  
@@ -1930,11 +1921,119 @@ def play(strategy0, strategy1, update,
 今天先到这里！
 
 爽了爽了，上号一会儿
+
+回来写一下感想，其实不难，需要注意的就是每道题目一环扣一环，联系地很紧密所以推荐找个时间一起写掉。
 ### 第二阶段：
 
+unlock6
 
+```
+=====================================================================
+Assignment: Project 1: Hog
+OK, version v1.18.1
+=====================================================================
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Unlocking tests
 
+At each "? ", type what you would expect the output to be.
+Type exit() to quit
 
+---------------------------------------------------------------------
+Question 6 > Suite 1 > Case 1
+(cases remaining: 2)
+
+>>> from hog import *
+>>> always_roll(3)(10, 20)
+? 3
+-- OK! --
+
+---------------------------------------------------------------------
+Question 6 > Suite 1 > Case 2
+(cases remaining: 1)
+
+>>> from hog import *
+>>> always_roll(0)(99, 99)
+? 0
+-- OK! --
+
+---------------------------------------------------------------------
+OK! All cases for Question 6 unlocked.
+```
+
+代码：
+
+```
+def always_roll(n):  
+    assert n >= 0 and n <= 10  
+    # BEGIN PROBLEM 6  
+    def strategy(x,y):  
+        return n  
+    return strategy  
+    # END PROBLEM 6
+```
+
+继续第七问：
+
+```
+=====================================================================
+Assignment: Project 1: Hog
+OK, version v1.18.1
+=====================================================================
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Unlocking tests
+
+At each "? ", type what you would expect the output to be.
+Type exit() to quit
+
+---------------------------------------------------------------------
+Question 7 > Suite 1 > Case 1
+(cases remaining: 9)
+
+>>> from hog import *
+>>> is_always_roll(always_roll_5)
+? True
+-- OK! --
+
+---------------------------------------------------------------------
+Question 7 > Suite 1 > Case 2
+(cases remaining: 8)
+
+>>> from hog import *
+>>> is_always_roll(always_roll(3))
+? True
+-- OK! --
+
+---------------------------------------------------------------------
+Question 7 > Suite 1 > Case 3
+(cases remaining: 7)
+
+>>> from hog import *
+>>> is_always_roll(catch_up)
+? False
+-- OK! --
+```
+
+代码：
+
+```
+def is_always_roll(strategy, goal=GOAL):  
+    # BEGIN PROBLEM 7    
+    i=0  
+    while i<=goal:  
+        j=0  
+        while j <goal:  
+            if strategy(i,j)!=strategy(i,j+1):  
+                return False  
+            j+=1  
+        i+=1  
+    return True  
+    # END PROBLEM 7
+```
+
+遍历二维数组
+
+继续
 
 

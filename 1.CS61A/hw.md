@@ -8,9 +8,7 @@
 from operator import add, sub  
   
 def a_plus_abs_b(a, b):  
-    """Return a+abs(b), but without calling abs.  
-  
-    >>> a_plus_abs_b(2, 3)    5    >>> a_plus_abs_b(2, -3)    5    >>> a_plus_abs_b(-1, 4)    3    >>> a_plus_abs_b(-1, -4)    3    """    if b < 0:  
+    if b < 0:  
         f = sub  
     else:  
         f = add  
@@ -18,14 +16,7 @@ def a_plus_abs_b(a, b):
     return f(a, b)  
   
 def a_plus_abs_b_syntax_check():  
-    """Check that you didn't change the return statement of a_plus_abs_b.  
-  
-    >>> # You aren't expected to understand the code of this test.    >>> import inspect, re    >>> re.findall(r'^\s*(return .*)', inspect.getsource(a_plus_abs_b), re.M)    ['return f(a, b)']    """    # You don't need to edit this function. It's just here to check your work.  
-  
-def two_of_three(i, j, k):  
-    """Return m*m + n*n, where m and n are the two smallest members of the  
-    positive numbers i, j, and k.  
-    >>> two_of_three(1, 2, 3)    5    >>> two_of_three(5, 3, 1)    10    >>> two_of_three(10, 2, 8)    68    >>> two_of_three(5, 5, 5)    50    """    return i*i+j*j+k*k-max(i,j,k)*max(i,j,k)  
+    return i*i+j*j+k*k-max(i,j,k)*max(i,j,k)  
   
 def two_of_three_syntax_check():  
     """Check that your two_of_three code consists of nothing but a return statement.  
@@ -33,9 +24,7 @@ def two_of_three_syntax_check():
     >>> # You aren't expected to understand the code of this test.    >>> import inspect, ast    >>> [type(x).__name__ for x in ast.parse(inspect.getsource(two_of_three)).body[0].body]    ['Expr', 'Return']    """    # You don't need to edit this function. It's just here to check your work.  
   
 def largest_factor(n):  
-    """Return the largest factor of n that is smaller than n.  
-  
-    >>> largest_factor(15) # factors are 1, 3, 5    5    >>> largest_factor(80) # factors are 1, 2, 4, 5, 8, 10, 16, 20, 40    40    >>> largest_factor(13) # factor is 1 since 13 is prime    1    """    i=1  
+    i=1  
     max=1  
     while i<n:  
         if n%i==0:  
@@ -45,9 +34,7 @@ def largest_factor(n):
     return max  
   
 def hailstone(n):  
-    """Print the hailstone sequence starting at n and return its  
-    length.  
-    >>> a = hailstone(10)    10    5    16    8    4    2    1    >>> a    7    >>> b = hailstone(1)    1    >>> b    1    """    cnt=0  
+    cnt=0  
     while n!=1:  
         print(n)  
         if n%2==0:  
@@ -84,41 +71,28 @@ HW_SOURCE_FILE=__file__
 '''  
   
 def product(n, term):  
-    """Return the product of the first n terms in a sequence.  
-  
-    n: a positive integer    term:  a function that takes one argument to produce the term  
-    >>> product(3, identity)  # 1 * 2 * 3    6    >>> product(5, identity)  # 1 * 2 * 3 * 4 * 5    120    >>> product(3, square)    # 1^2 * 2^2 * 3^2    36    >>> product(5, square)    # 1^2 * 2^2 * 3^2 * 4^2 * 5^2    14400    >>> product(3, increment) # (1+1) * (2+1) * (3+1)    24    >>> product(3, triple)    # 1*3 * 2*3 * 3*3    162    """    i,sum=1,1  
+    i,sum=1,1  
     while i<=n:  
         i,sum=i+1,sum*term(i)  
     return sum  
   
 def accumulate(fuse, start, n, term):  
-    """Return the result of fusing together the first n terms in a sequence   
-    and start.  The terms to be fused are term(1), term(2), ..., term(n).   
-    The function fuse is a two-argument commutative & associative function.  
-  
-    >>> accumulate(add, 0, 5, identity)  # 0 + 1 + 2 + 3 + 4 + 5    15    >>> accumulate(add, 11, 5, identity) # 11 + 1 + 2 + 3 + 4 + 5    26    >>> accumulate(add, 11, 0, identity) # 11 (fuse is never used)    11    >>> accumulate(add, 11, 3, square)   # 11 + 1^2 + 2^2 + 3^2    25    >>> accumulate(mul, 2, 3, square)    # 2 * 1^2 * 2^2 * 3^2    72    >>> # 2 + (1^2 + 1) + (2^2 + 1) + (3^2 + 1)    >>> accumulate(lambda x, y: x + y + 1, 2, 3, square)    19    """    i=1  
+    i=1  
     while i<=n:  
         start,i=fuse(start,term(i)),i+1  
     return start  
   
   
 def summation_using_accumulate(n, term):  
-    """Returns the sum: term(1) + ... + term(n), using accumulate.  
-  
-    >>> summation_using_accumulate(5, square)    55    >>> summation_using_accumulate(5, triple)    45    >>> # This test checks that the body of the function is just a return statement.    >>> import inspect, ast    >>> [type(x).__name__ for x in ast.parse(inspect.getsource(summation_using_accumulate)).body[0].body]    ['Expr', 'Return']    """    return accumulate(add,0,n,term)  
+    return accumulate(add,0,n,term)  
   
   
 def product_using_accumulate(n, term):  
-    """Returns the product: term(1) * ... * term(n), using accumulate.  
-  
-    >>> product_using_accumulate(4, square)    576    >>> product_using_accumulate(6, triple)    524880    >>> # This test checks that the body of the function is just a return statement.    >>> import inspect, ast    >>> [type(x).__name__ for x in ast.parse(inspect.getsource(product_using_accumulate)).body[0].body]    ['Expr', 'Return']    """    return accumulate(mul,1,n,term)  
+    return accumulate(mul,1,n,term)  
   
   
 def make_repeater(f, n):  
-    """Returns the function that computes the nth application of f.  
-  
-    >>> add_three = make_repeater(increment, 3)    >>> add_three(5)    8    >>> make_repeater(triple, 5)(1) # 3 * 3 * 3 * 3 * 3 * 1    243    >>> make_repeater(square, 2)(5) # square(square(5))    625    >>> make_repeater(square, 3)(5) # square(square(square(5)))    390625    """    def h(first):  
+    def h(first):  
         if f==identity:  
             return first  
         elif f==increment:  
@@ -136,3 +110,171 @@ def make_repeater(f, n):
 最后一题实现有点沙雕，有时间看看怎么解更好点
 
 ### hw03
+
+```
+def num_eights(n):  
+    if n==0:  
+        return 0  
+    if n%10==8:  
+        return 1+num_eights(n//10)  
+    return num_eights(n//10)
+```
+
+递归解8
+
+迭代版本如下：
+
+```
+def pingpong(n):  
+    i=1  
+    cnt=0  
+    tip=True  
+    while i<=n:  
+        if tip:  
+            cnt += 1  
+        else:  
+            cnt -= 1  
+        if (num_eights(i) >0 or i%8==0) and tip:  
+            tip=False  
+        elif (num_eights(i) >0 or i%8==0) and not tip:  
+            tip=True  
+        i+=1  
+    return cnt
+```
+
+那么如何将之转换为递归呢？
+
+由于是从后往前推导，所以无法第一时间知道到底是+1还是-1。不妨将问题和课本那样拆解：
+
+为了求PingPong(n)，我们得将问题拆解成PingPong(n-1) + or - 1，这里的+或者-的判断得是一个区间，区间前后即是num_eights(n) >0 or i%8的前一个和后一个。也就是说，我们可以先递归地把区间给求出来！
+
+但是题目里禁止赋值，所以使用列表的想法破灭
+
+不过可以注意到，情况分成两类，一个是+一个是-，所以感觉可以写成互递归，两个会是怎样的？
+
+然后发现上面都是在做无用功，因为我的迭代版本太复杂了，根据答案精简了一下我的迭代版本：
+
+```
+def pingpong(n):  
+    i=1  
+    cnt=1  
+    tip=1  
+    while i<n:  
+        if num_eights(i) >0 or i%8==0:  
+            tip=-tip  
+        cnt+=tip  
+        i+=1  
+    return cnt
+```
+
+通过提示，我们知道，迭代的信息有三个，索引，值和方向，所以需要写一个辅助函数，将这些信息传入递归中，从而确保索引，值，方向的正确性
+
+其实我到最后还是没有理解为什么要这样做，最后照着答案写了一下：
+
+```
+def pingpong(n):  
+    def help(i,cnt,tip):  
+        if i==n:  
+            return cnt  
+        if num_eights(i) >0 or i%8==0:  
+            return help(i + 1, cnt - tip, -tip)  
+        else:  
+            return help(i+1,cnt+tip,tip)  
+    return help(1,1,1)
+```
+
+然后，我突然意识到，这里的递归并不是我此前理解的递归。此前理解的递归是类似于斐波那契数列那样的递归，将问题分而治之，不必了解问题具体到底是怎么解决的，从上至下
+
+而在这个问题里，由于tip是不确定的，必须得从1开始向上构造，在不能使用赋值等操作的前提下，在递归这里引入了函数的再定义！
+
+也就是说，这次我们是从下往上构造，递归基是最上面的位子！
+
+而最开始的值传递则由“闭包”忠诚地完成，从而构造了一个自下而上的递归！
+
+查询了一下资料发现，递归有两种策略，一种策略是自顶向下的递归，将问题分而治之，递归向下；而另一种递归则是自底向上的递归，也叫做构造性递归，通过逐步构造，每一层都依赖于前一层的结果，允许我们在没有赋值语句的前提下，仍然一步步求解。
+
+换句话说，比如我们要求一个数列的前n项和，
+
+$a_n=n*n-n+1,a_1=1$
+
+自顶向下的递归可以这么写：
+
+```
+def f(x):  
+    return x*x-x+1  
+  
+def sum_f(n):  
+    if n==1:  
+        return 1  
+    return sum_f(n-1)+f(n)
+```
+
+因为我们可以得出如下分而治之的结果：
+
+$S_{n}=S_{n-1}+a_n$
+
+如果想正过来求$S_n$，很容易想到直接$a_1$开始加到$a_n$，先写出迭代版本：
+
+```
+def sum_f_die(n):  
+    i=1  
+    sum=0  
+    while i<=n:  
+        sum+=f(i)  
+        i+=1  
+    return sum
+```
+
+可以注意到，这里我们需要记录两个信息，一个是索引i，一个是sum，也就是和
+
+```
+def sum_f_(n):  
+    def help(i,sum):  
+        if i==n:  
+            return sum  
+        return help(i+1,sum+f(i+1))  
+    return help(i=1,sum=f(1))
+```
+
+最终输出：
+
+```
+def f(x):  
+    return x*x-x+1  
+  
+def sum_f(n):  
+    if n==1:  
+        return 1  
+    return sum_f(n-1)+f(n)  
+  
+def sum_f_die(n):  
+    i=1  
+    sum=0  
+    while i<=n:  
+        sum+=f(i)  
+        i+=1  
+    return sum  
+  
+def sum_f_(n):  
+    def help(i,sum):  
+        if i==n:  
+            return sum  
+        return help(i+1,sum+f(i+1))  
+    return help(i=1,sum=f(1))  
+  
+print(sum_f(100))  
+print(sum_f_die(100))  
+print(sum_f_(100))
+```
+
+输出：
+
+```
+333400
+333400
+333400
+```
+
+接下来也是一道递归，由于我在看课本的时候没去看分割数，现在在这里看一下
+
+
