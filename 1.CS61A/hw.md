@@ -109,7 +109,7 @@ def make_repeater(f, n):
 
 最后一题实现有点沙雕，有时间看看怎么解更好点
 
-### hw03
+### hw03（23spring）
 
 ```
 def num_eights(n):  
@@ -277,4 +277,21 @@ print(sum_f_(100))
 
 接下来也是一道递归，由于我在看课本的时候没去看分割数，现在在这里看一下
 
+
+```
+def count_coins(change):  
+    def cnt(n,m):  
+        if n==0:  
+            return 1  
+        elif n<0 or m is None:  
+            return 0  
+        else:  
+            return cnt(n-m,m)+cnt(n,next_smaller_coin(m))  
+    return cnt(change,25)
+```
+
+递归基的处理不是很熟练，其他都是对的，就是根据课本上的那个的变种
+
+
+### hw4(23spring)
 

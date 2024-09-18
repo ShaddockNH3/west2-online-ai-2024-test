@@ -1,11 +1,8 @@
 
 每个project都是一等一的逆天，不多说，直接hog开始
-## hog
-
-采用的是2024spring的版本
+## hog（24spring）
 
 看完1.6
-
 ### 第一阶段
 
 直接开题目，解锁q00
@@ -2037,3 +2034,847 @@ def is_always_roll(strategy, goal=GOAL):
 继续
 
 
+q8
+
+这里是先介绍了一个新的语法，就是*，`*arg`可以代指不止一个东西，使用`*arg`语法来写第八问
+
+首先来看看第八问到底是干啥的？
+
+```
+=====================================================================
+Assignment: Project 1: Hog
+OK, version v1.18.1
+=====================================================================
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Unlocking tests
+
+At each "? ", type what you would expect the output to be.
+Type exit() to quit
+
+---------------------------------------------------------------------
+Question 8 > Suite 1 > Case 1
+(cases remaining: 7)
+
+Q: What is one reason that make_averaged is a higher order function?
+Choose the number of the correct choice:
+0) It calls a function that is not itself
+1) It uses the *args keyword
+2) It contains a nested function
+3) It takes in a function as an argument
+? 2
+-- Not quite. Try again! --
+
+Choose the number of the correct choice:
+0) It calls a function that is not itself
+1) It uses the *args keyword
+2) It contains a nested function
+3) It takes in a function as an argument
+? 3
+-- OK! --
+
+---------------------------------------------------------------------
+Question 8 > Suite 1 > Case 2
+(cases remaining: 6)
+
+Choose the number of the correct choice:
+0) None
+1) An arbitrary amount, which is why we need to use *args to call it
+2) Two
+? 1
+-- OK! --
+
+---------------------------------------------------------------------
+Question 8 > Suite 2 > Case 1
+(cases remaining: 5)
+
+>>> from hog import *
+>>> dice = make_test_dice(3, 1, 5, 6)
+>>> averaged_dice = make_averaged(dice, 1000)
+>>> # Average of calling dice 1000 times
+>>> averaged_dice()
+? 3.75
+-- OK! --
+
+---------------------------------------------------------------------
+Question 8 > Suite 2 > Case 2
+(cases remaining: 4)
+
+>>> from hog import *
+>>> dice = make_test_dice(3, 1, 5, 6)
+>>> averaged_roll_dice = make_averaged(roll_dice, 1000)
+>>> # Average of calling roll_dice 1000 times
+>>> # Enter a float (e.g. 1.0) instead of an integer
+>>> averaged_roll_dice(2, dice)
+? 6.0
+-- OK! --
+
+---------------------------------------------------------------------
+OK! All cases for Question 8 unlocked.
+
+Cannot backup when running ok with --local.
+```
+
+最后一题的时候需要注意，别忘记前面的规则，只要色子有1，那么和就是1，别忘记了。
+
+```
+def make_averaged(original_function, samples_count=1000):  
+    # BEGIN PROBLEM 8    
+    def f(*args):  
+        i, sum = 1, 0  
+        while i<=samples_count:  
+            sum+=original_function(*args)  
+            i+=1  
+        return sum/samples_count  
+    return f  
+    # END PROBLEM 8
+```
+
+有点艰难，但是还是看出来题目是啥意思了
+
+q9
+
+```
+=====================================================================
+Assignment: Project 1: Hog
+OK, version v1.18.1
+=====================================================================
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Unlocking tests
+
+At each "? ", type what you would expect the output to be.
+Type exit() to quit
+
+---------------------------------------------------------------------
+Question 9 > Suite 1 > Case 1
+(cases remaining: 10)
+
+Q: If multiple num_rolls are tied for the highest scoring
+average, which should you return?
+Choose the number of the correct choice:
+0) A random num_rolls
+1) The highest num_rolls
+2) The lowest num_rolls
+? 2
+-- OK! --
+
+---------------------------------------------------------------------
+Question 9 > Suite 2 > Case 1
+(cases remaining: 9)
+
+>>> from hog import *
+>>> dice = make_test_dice(3)   # dice always returns 3
+>>> max_scoring_num_rolls(dice, samples_count=1000)
+? 1
+-- Not quite. Try again! --
+
+? 0
+-- Not quite. Try again! --
+
+? 2
+-- Not quite. Try again! --
+
+? 1.0
+-- Not quite. Try again! --
+
+?
+-- Not quite. Try again! --
+
+? 3
+-- Not quite. Try again! --
+
+? 4
+-- Not quite. Try again! --
+
+? 5
+-- Not quite. Try again! --
+
+? 6
+-- Not quite. Try again! --
+
+? 7
+-- Not quite. Try again! --
+
+? 8
+-- Not quite. Try again! --
+
+? 9
+-- Not quite. Try again! --
+
+? 10
+-- OK! --
+
+---------------------------------------------------------------------
+Question 9 > Suite 2 > Case 2
+(cases remaining: 8)
+
+-- Already unlocked --
+
+---------------------------------------------------------------------
+Question 9 > Suite 2 > Case 3
+(cases remaining: 7)
+
+-- Already unlocked --
+
+---------------------------------------------------------------------
+Question 9 > Suite 3 > Case 1
+(cases remaining: 6)
+
+>>> from hog import *
+>>> dice = make_test_dice(2)     # dice always rolls 2
+>>> max_scoring_num_rolls(dice, samples_count=1000)
+? 10
+-- OK! --
+
+---------------------------------------------------------------------
+Question 9 > Suite 3 > Case 2
+(cases remaining: 5)
+
+>>> from hog import *
+>>> dice = make_test_dice(1)     # dice always rolls 1
+>>> max_scoring_num_rolls(dice, samples_count=1000)
+? 1
+-- OK! --
+
+---------------------------------------------------------------------
+Question 9 > Suite 3 > Case 3
+(cases remaining: 4)
+
+>>> from hog import *
+>>> dice = make_test_dice(1, 2)  # dice alternates 1 and 2
+>>> max_scoring_num_rolls(dice, samples_count=1000)
+? 1
+-- OK! --
+
+---------------------------------------------------------------------
+Question 9 > Suite 3 > Case 4
+(cases remaining: 3)
+
+-- Already unlocked --
+
+---------------------------------------------------------------------
+Question 9 > Suite 3 > Case 5
+(cases remaining: 2)
+
+-- Already unlocked --
+
+---------------------------------------------------------------------
+Question 9 > Suite 3 > Case 6
+(cases remaining: 1)
+
+-- Already unlocked --
+
+---------------------------------------------------------------------
+OK! All cases for Question 9 unlocked.
+
+Cannot backup when running ok with --local.
+```
+
+中间有个东西没反应过来，色子是累计和的，其实是对上一个函数的不了解
+
+```
+def max_scoring_num_rolls(dice=six_sided, samples_count=1000):  
+	# BEGIN PROBLEM 9    
+	_average_dice=make_averaged(roll_dice,samples_count)  
+    i=2  
+    max_i= 1  
+    max_value=_average_dice(1,dice)  
+    while i<=10:  
+        temp=_average_dice(i,dice)  
+        if max_value<temp:  
+            max_value=temp  
+            max_i=i  
+        i+=1  
+    return max_i
+```
+
+q10
+
+```
+=====================================================================
+Assignment: Project 1: Hog
+OK, version v1.18.1
+=====================================================================
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Unlocking tests
+
+At each "? ", type what you would expect the output to be.
+Type exit() to quit
+
+---------------------------------------------------------------------
+Question 10 > Suite 1 > Case 1
+(cases remaining: 10)
+
+>>> from hog import *
+>>> boar_strategy(40, 51, threshold=7, num_rolls=2)
+? num_rolls
+-- Not quite. Try again! --
+
+? 2
+-- Not quite. Try again! --
+
+? 0
+-- OK! --
+
+---------------------------------------------------------------------
+Question 10 > Suite 1 > Case 2
+(cases remaining: 9)
+
+>>> from hog import *
+>>> boar_strategy(40, 51, threshold=15, num_rolls=7)
+? 0
+-- OK! --
+
+---------------------------------------------------------------------
+Question 10 > Suite 1 > Case 3
+(cases remaining: 8)
+
+>>> from hog import *
+>>> boar_strategy(40, 51, threshold=16, num_rolls=7)
+? num_rolls
+-- Not quite. Try again! --
+
+? 7
+-- OK! --
+
+---------------------------------------------------------------------
+Question 10 > Suite 1 > Case 4
+(cases remaining: 7)
+
+>>> from hog import *
+>>> boar_strategy(44, 53, threshold=3, num_rolls=2)
+? 0
+-- OK! --
+
+---------------------------------------------------------------------
+Question 10 > Suite 1 > Case 5
+(cases remaining: 6)
+
+>>> from hog import *
+>>> boar_strategy(44, 53, threshold=4, num_rolls=2)
+? 2
+-- OK! --
+
+---------------------------------------------------------------------
+Question 10 > Suite 1 > Case 6
+(cases remaining: 5)
+
+>>> from hog import *
+>>> boar_strategy(40, 31, threshold=9, num_rolls=5)
+? 0
+-- OK! --
+
+---------------------------------------------------------------------
+Question 10 > Suite 1 > Case 7
+(cases remaining: 4)
+
+>>> from hog import *
+>>> boar_strategy(40, 31, threshold=10, num_rolls=5)
+? 5
+-- OK! --
+
+---------------------------------------------------------------------
+Question 10 > Suite 1 > Case 8
+(cases remaining: 3)
+
+>>> from hog import *
+>>> boar_strategy(40, 52, threshold=15, num_rolls=2)
+? 0
+-- OK! --
+
+---------------------------------------------------------------------
+Question 10 > Suite 1 > Case 9
+(cases remaining: 2)
+
+>>> from hog import *
+>>> boar_strategy(40, 52, threshold=16, num_rolls=2)
+? 2
+-- OK! --
+
+---------------------------------------------------------------------
+Question 10 > Suite 1 > Case 10
+(cases remaining: 1)
+
+-- Already unlocked --
+
+---------------------------------------------------------------------
+OK! All cases for Question 10 unlocked.
+
+Cannot backup when running ok with --local.
+```
+
+代码：
+
+```
+def boar_strategy(score, opponent_score, threshold=11, num_rolls=6):  
+    # BEGIN PROBLEM 10    
+    if boar_brawl(score,opponent_score)>=threshold:  
+        return 0  
+    return num_rolls  
+    # END PROBLEM 10
+```
+
+q11
+
+```
+=====================================================================
+Assignment: Project 1: Hog
+OK, version v1.18.1
+=====================================================================
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Unlocking tests
+
+At each "? ", type what you would expect the output to be.
+Type exit() to quit
+
+---------------------------------------------------------------------
+Question 11 > Suite 1 > Case 1
+(cases remaining: 8)
+
+>>> from hog import *
+>>> sus_strategy(31, 21, threshold=10, num_rolls=2)
+? 2
+-- OK! --
+
+---------------------------------------------------------------------
+Question 11 > Suite 1 > Case 2
+(cases remaining: 7)
+
+>>> from hog import *
+>>> sus_strategy(30, 41, threshold=10, num_rolls=2)
+? 0
+-- OK! --
+
+---------------------------------------------------------------------
+Question 11 > Suite 1 > Case 3
+(cases remaining: 6)
+
+>>> from hog import *
+>>> sus_strategy(53, 60, threshold=14, num_rolls=2)
+? 2
+-- Not quite. Try again! --
+
+? 0
+-- OK! --
+
+---------------------------------------------------------------------
+Question 11 > Suite 1 > Case 4
+(cases remaining: 5)
+
+>>> from hog import *
+>>> sus_strategy(53, 60, threshold=15, num_rolls=2)
+? 0
+-- Not quite. Try again! --
+
+? 2
+-- OK! --
+
+---------------------------------------------------------------------
+Question 11 > Suite 1 > Case 5
+(cases remaining: 4)
+
+>>> from hog import *
+>>> sus_strategy(23, 54, threshold=4, num_rolls=2)
+? 0
+-- OK! --
+
+---------------------------------------------------------------------
+Question 11 > Suite 1 > Case 6
+(cases remaining: 3)
+
+>>> from hog import *
+>>> sus_strategy(14, 21, threshold=8, num_rolls=2)
+? 0
+-- Not quite. Try again! --
+
+? 2
+-- OK! --
+
+---------------------------------------------------------------------
+Question 11 > Suite 1 > Case 7
+(cases remaining: 2)
+
+>>> from hog import *
+>>> sus_strategy(14, 21, threshold=12, num_rolls=5)
+? 5
+-- OK! --
+
+---------------------------------------------------------------------
+Question 11 > Suite 1 > Case 8
+(cases remaining: 1)
+
+-- Already unlocked --
+
+---------------------------------------------------------------------
+OK! All cases for Question 11 unlocked.
+
+Cannot backup when running ok with --local.
+```
+
+代码：
+
+```
+def sus_strategy(score, opponent_score, threshold=11, num_rolls=6):    
+    # BEGIN PROBLEM 11    
+    if sus_points(score+boar_brawl(score,opponent_score))-score>=threshold:  
+        return 0  
+    return num_rolls  
+    # END PROBLEM 11
+```
+
+就这上面几行代码花了我感觉块40分钟的时间，网页提示跟我说的使用sus_update，我竟然没有及时反应过来。
+
+sus_update是基于simple_update实现的，这里我们不知道dice是啥，根本没办法得出有效结果。
+
+这也解释了为什么我在运行过程中的结果不确定，有时候通过有时候不通过，原因就在默认的dice就是普通的色子
+
+这很难受啊，思路是对的，但是网页提示给错了，有可能是我没get到网页提示的意思就是了
+
+q12
+
+可选的作业
+
+就不写了。
+
+所有代码如下：
+
+```
+"""The Game of Hog."""  
+from random import shuffle  
+  
+from dice import six_sided, make_test_dice  
+from ucb import main, trace, interact  
+  
+GOAL = 100  # The goal of Hog is to score 100 points.  
+  
+######################  
+# Phase 1: Simulator #  
+######################  
+  
+  
+def roll_dice(num_rolls, dice=six_sided):  
+    """Simulate rolling the DICE exactly NUM_ROLLS > 0 times. Return the sum of  
+    the outcomes unless any of the outcomes is 1. In that case, return 1.  
+    num_rolls:  The number of dice rolls that will be made.    dice:       A function that simulates a single dice roll outcome.    """    # These assert statements ensure that num_rolls is a positive integer.    assert type(num_rolls) == int, 'num_rolls must be an integer.'  
+    assert num_rolls > 0, 'Must roll at least once.'  
+    # BEGIN PROBLEM 1  
+    i,sum=1,0  
+    tip=True  
+    while i<=num_rolls:  
+        a=dice()  
+        if a==1:  
+            tip=False  
+        i,sum=i+1,sum+a  
+    if tip:  
+        return sum  
+    else:  
+        return 1  
+    # END PROBLEM 1  
+  
+  
+def boar_brawl(player_score, opponent_score):  
+    """Return the points scored by rolling 0 dice according to Boar Brawl.  
+  
+    player_score:     The total score of the current player.    opponent_score:   The total score of the other player.  
+    """    # BEGIN PROBLEM 2    a=player_score  
+    b=opponent_score  
+    return max(1,abs(a%10-b%100//10)*3)  
+    # END PROBLEM 2  
+  
+  
+def take_turn(num_rolls, player_score, opponent_score, dice=six_sided):  
+    """Return the points scored on a turn rolling NUM_ROLLS dice when the  
+    player has PLAYER_SCORE points and the opponent has OPPONENT_SCORE points.  
+    num_rolls:       The number of dice rolls that will be made.    player_score:    The total score of the current player.    opponent_score:  The total score of the other player.    dice:            A function that simulates a single dice roll outcome.    """    # Leave these assert statements here; they help check for errors.    assert type(num_rolls) == int, 'num_rolls must be an integer.'  
+    assert num_rolls >= 0, 'Cannot roll a negative number of dice in take_turn.'  
+    assert num_rolls <= 10, 'Cannot roll more than 10 dice.'  
+    # BEGIN PROBLEM 3  
+    if num_rolls==0:  
+        return boar_brawl(player_score,opponent_score)  
+    else:  
+        return roll_dice(num_rolls,dice)  
+    # END PROBLEM 3  
+  
+  
+def simple_update(num_rolls, player_score, opponent_score, dice=six_sided):  
+    """Return the total score of a player who starts their turn with  
+    PLAYER_SCORE and then rolls NUM_ROLLS DICE, ignoring Sus Fuss.    """    score = player_score + take_turn(num_rolls, player_score, opponent_score, dice)  
+    return score  
+  
+def is_prime(n):  
+    """Return whether N is prime."""  
+    if n == 1:  
+        return False  
+    k = 2  
+    while k < n:  
+        if n % k == 0:  
+            return False  
+        k += 1  
+    return True  
+  
+def num_factors(n):  
+    """Return the number of factors of N, including 1 and N itself."""  
+    # BEGIN PROBLEM 4    i,s=1,0  
+    while i<=n:  
+        if n%i==0:  
+            s+=1  
+        i+=1  
+    return s  
+    # END PROBLEM 4  
+  
+def sus_points(score):  
+    """Return the new score of a player taking into account the Sus Fuss rule."""  
+    # BEGIN PROBLEM 4    s=score  
+    if num_factors(s)==3 or num_factors(s)==4:  
+        while not is_prime(s):  
+            s+=1  
+    return s  
+    # END PROBLEM 4  
+  
+def sus_update(num_rolls, player_score, opponent_score, dice=six_sided):  
+    """Return the total score of a player who starts their turn with  
+    PLAYER_SCORE and then rolls NUM_ROLLS DICE, *including* Sus Fuss.    """    # BEGIN PROBLEM 4    s=simple_update(num_rolls,player_score,opponent_score,dice)  
+    return sus_points(s)  
+    # END PROBLEM 4  
+  
+  
+def always_roll_5(score, opponent_score):  
+    """A strategy of always rolling 5 dice, regardless of the player's score or  
+    the opponent's score.    """    return 5  
+  
+  
+def play(strategy0, strategy1, update,  
+         score0=0, score1=0, dice=six_sided, goal=GOAL):  
+    """Simulate a game and return the final scores of both players, with  
+    Player 0's score first and Player 1's score second.  
+    E.g., play(always_roll_5, always_roll_5, sus_update) simulates a game in    which both players always choose to roll 5 dice on every turn and the Sus    Fuss rule is in effect.  
+    A strategy function, such as always_roll_5, takes the current player's    score and their opponent's score and returns the number of dice the current    player chooses to roll.  
+    An update function, such as sus_update or simple_update, takes the number    of dice to roll, the current player's score, the opponent's score, and the    dice function used to simulate rolling dice. It returns the updated score    of the current player after they take their turn.  
+    strategy0: The strategy for player0.    strategy1: The strategy for player1.    update:    The update function (used for both players).    score0:    Starting score for Player 0    score1:    Starting score for Player 1    dice:      A function of zero arguments that simulates a dice roll.    goal:      The game ends and someone wins when this score is reached.    """    who = 0  # Who is about to take a turn, 0 (first) or 1 (second)  
+    # BEGIN PROBLEM 5    while True:  
+        if who==0:  
+            strategy=strategy0(score0,score1)  
+            score0=update(strategy,score0,score1,dice)  
+        else:  
+            strategy=strategy1(score1,score0)  
+            score1=update(strategy,score1,score0,dice)  
+        if score0>=goal or score1>=goal:  
+            break  
+        who=1-who  
+    # END PROBLEM 5  
+    return score0, score1  
+  
+  
+#######################  
+# Phase 2: Strategies #  
+#######################  
+  
+  
+def always_roll(n):  
+    """Return a player strategy that always rolls N dice.  
+  
+    A player strategy is a function that takes two total scores as arguments    (the current player's score, and the opponent's score), and returns a    number of dice that the current player will roll this turn.  
+    >>> strategy = always_roll(3)    >>> strategy(0, 0)    3    >>> strategy(99, 99)    3    """    assert n >= 0 and n <= 10  
+    # BEGIN PROBLEM 6  
+    def strategy(x,y):  
+        return n  
+    return strategy  
+    # END PROBLEM 6  
+  
+  
+def catch_up(score, opponent_score):  
+    """A player strategy that always rolls 5 dice unless the opponent  
+    has a higher score, in which case 6 dice are rolled.  
+    >>> catch_up(9, 4)    5    >>> strategy(17, 18)    6    """    if score < opponent_score:  
+        return 6  # Roll one more to catch up  
+    else:  
+        return 5  
+  
+  
+def is_always_roll(strategy, goal=GOAL):  
+    """Return whether STRATEGY always chooses the same number of dice to roll  
+    given a game that goes to GOAL points.  
+    >>> is_always_roll(always_roll_5)    True    >>> is_always_roll(always_roll(3))    True    >>> is_always_roll(catch_up)    False    """    # BEGIN PROBLEM 7    i=0  
+    while i<=goal:  
+        j=0  
+        while j <goal:  
+            if strategy(i,j)!=strategy(i,j+1):  
+                return False  
+            j+=1  
+        i+=1  
+    return True  
+    # END PROBLEM 7  
+  
+  
+def make_averaged(original_function, samples_count=1000):  
+    """Return a function that returns the average value of ORIGINAL_FUNCTION  
+    called SAMPLES_COUNT times.  
+    To implement this function, you will have to use *args syntax.  
+    >>> dice = make_test_dice(4, 2, 5, 1)    >>> averaged_dice = make_averaged(roll_dice, 40)    >>> averaged_dice(1, dice)  # The avg of 10 4's, 10 2's, 10 5's, and 10 1's    3.0    """    # BEGIN PROBLEM 8    def f(*args):  
+        i, sum = 1, 0  
+        while i<=samples_count:  
+            sum+=original_function(*args)  
+            i+=1  
+        return sum/samples_count  
+    return f  
+    # END PROBLEM 8  
+  
+  
+def max_scoring_num_rolls(dice=six_sided, samples_count=1000):  
+    """Return the number of dice (1 to 10) that gives the highest average turn score  
+    by calling roll_dice with the provided DICE a total of SAMPLES_COUNT times.    Assume that the dice always return positive outcomes.  
+    >>> dice = make_test_dice(1, 6)    >>> max_scoring_num_rolls(dice)    1    """    # BEGIN PROBLEM 9    _average_dice=make_averaged(roll_dice,samples_count)  
+    i=2  
+    max_i= 1  
+    max_value=_average_dice(1,dice)  
+    while i<=10:  
+        temp=_average_dice(i,dice)  
+        if max_value<temp:  
+            max_value=temp  
+            max_i=i  
+        i+=1  
+    return max_i  
+  
+  
+    # END PROBLEM 9  
+  
+  
+def winner(strategy0, strategy1):  
+    """Return 0 if strategy0 wins against strategy1, and 1 otherwise."""  
+    score0, score1 = play(strategy0, strategy1, sus_update)  
+    if score0 > score1:  
+        return 0  
+    else:  
+        return 1  
+  
+  
+def average_win_rate(strategy, baseline=always_roll(6)):  
+    """Return the average win rate of STRATEGY against BASELINE. Averages the  
+    winrate when starting the game as player 0 and as player 1.    """    win_rate_as_player_0 = 1 - make_averaged(winner)(strategy, baseline)  
+    win_rate_as_player_1 = make_averaged(winner)(baseline, strategy)  
+  
+    return (win_rate_as_player_0 + win_rate_as_player_1) / 2  
+  
+  
+def run_experiments():  
+    """Run a series of strategy experiments and report results."""  
+    six_sided_max = max_scoring_num_rolls(six_sided)  
+    print('Max scoring num rolls for six-sided dice:', six_sided_max)  
+  
+    print('always_roll(6) win rate:', average_win_rate(always_roll(6))) # near 0.5  
+    print('catch_up win rate:', average_win_rate(catch_up))  
+    print('always_roll(3) win rate:', average_win_rate(always_roll(3)))  
+    print('always_roll(8) win rate:', average_win_rate(always_roll(8)))  
+  
+    print('boar_strategy win rate:', average_win_rate(boar_strategy))  
+    print('sus_strategy win rate:', average_win_rate(sus_strategy))  
+    print('final_strategy win rate:', average_win_rate(final_strategy))  
+    "*** You may add additional experiments as you wish ***"  
+  
+  
+  
+  
+def boar_strategy(score, opponent_score, threshold=11, num_rolls=6):  
+    """This strategy returns 0 dice if Boar Brawl gives at least THRESHOLD  
+    points, and returns NUM_ROLLS otherwise. Ignore score and Sus Fuss.    """    # BEGIN PROBLEM 10    if boar_brawl(score,opponent_score)>=threshold:  
+        return 0  
+    return num_rolls  
+    # END PROBLEM 10  
+  
+  
+def sus_strategy(score, opponent_score, threshold=11, num_rolls=6):  
+    """This strategy returns 0 dice when your score would increase by at least threshold."""  
+    # BEGIN PROBLEM 11    if sus_points(score+boar_brawl(score,opponent_score))-score>=threshold:  
+        return 0  
+    return num_rolls  
+    # END PROBLEM 11  
+  
+  
+def final_strategy(score, opponent_score):  
+    """Write a brief description of your final strategy.  
+  
+    *** YOUR DESCRIPTION HERE ***    """    # BEGIN PROBLEM 12    return 6  # Remove this line once implemented.  
+    # END PROBLEM 12  
+  
+##########################  
+# Command Line Interface #  
+##########################  
+  
+# NOTE: The function in this section does not need to be changed. It uses  
+# features of Python not yet covered in the course.  
+  
+@main  
+def run(*args):  
+    """Read in the command-line argument and calls corresponding functions."""  
+    import argparse  
+    parser = argparse.ArgumentParser(description="Play Hog")  
+    parser.add_argument('--run_experiments', '-r', action='store_true',  
+                        help='Runs strategy experiments')  
+  
+    args = parser.parse_args()  
+  
+    if args.run_experiments:  
+        run_experiments()
+```
+
+hog正式结束？
+
+说实话写的很不爽，感觉有力气无处使的感觉
+
+
+
+## cats(23spring)
+
+#### q1
+
+```
+=====================================================================
+Assignment: Project 2: Cats
+OK, version v1.18.1
+=====================================================================
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Unlocking tests
+
+At each "? ", type what you would expect the output to be.
+Type exit() to quit
+
+---------------------------------------------------------------------
+Problem 1 > Suite 1 > Case 1
+(cases remaining: 102)
+
+>>> from cats import pick
+>>> ps = ['short', 'really long', 'tiny']
+>>> s = lambda p: len(p) <= 5
+>>> pick(ps, s, 0) # remember to put quotes ('') around strings!
+? 'short'
+-- OK! --
+
+>>> pick(ps, s, 1)
+? 'tiny'
+-- OK! --
+
+>>> pick(ps, s, 2)
+? ''
+-- OK! --
+
+---------------------------------------------------------------------
+```
+
+实现：
+
+```
+def pick(paragraphs, select, k):  
+    # BEGIN PROBLEM 1    
+    i,j=0,0  
+    for i in range(len(paragraphs)):  
+        if select(paragraphs[i]):  
+            if j==k:  
+                return paragraphs[i]  
+            j+=1  
+    return ''  
+    # END PROBLEM 1
+```

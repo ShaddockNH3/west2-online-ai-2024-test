@@ -475,15 +475,7 @@ Q8
 `python ok -q double_eights --local`
 
 ```
-def double_eights(n):  
-    """Return true if n has two eights in a row.  
-    >>> double_eights(8)  
-    False    >>> double_eights(88)  
-    True    >>> double_eights(2882)  
-    True    >>> double_eights(880088)  
-    True    >>> double_eights(12345)  
-    False    >>> double_eights(80808080)  
-    False    """  
+def double_eights(n):    
     num = n % 10  
     if num == 8:  
         a = True  
@@ -932,3 +924,333 @@ def make_repeater(func, n):
 抄一下hw2的代码
 
 #### q4先掠过，有点怪怪的感觉
+
+
+
+### lab4(23spring)
+
+#### q1
+
+```
+=====================================================================
+Assignment: Lab 4
+OK, version v1.18.1
+=====================================================================
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Unlocking tests
+
+At each "? ", type what you would expect the output to be.
+Type exit() to quit
+
+---------------------------------------------------------------------
+Squared Virahanka Fibonacci > Suite 1 > Case 1
+(cases remaining: 1)
+
+What would Python display? If you get stuck, try it out in the Python
+interpreter!
+
+>>> def virfib_sq(n):
+...     print(n)
+...     if n <= 1:
+...         return n
+...     return (virfib_sq(n - 1) + virfib_sq(n - 2)) ** 2
+>>> r0 = virfib_sq(0)
+? 0
+-- OK! --
+
+>>> r1 = virfib_sq(1)
+? 1
+-- OK! --
+
+>>> r2 = virfib_sq(2)
+(line 1)? 2
+(line 2)? 1
+(line 3)? 0
+-- OK! --
+
+>>> r3 = virfib_sq(3)
+(line 1)? 4
+-- Not quite. Try again! --
+
+(line 1)? 2
+-- Not quite. Try again! --
+
+(line 1)? 3
+(line 2)? 2
+(line 3)? 1
+(line 4)? 0
+(line 5)? 1
+-- OK! --
+
+>>> r3
+? 16
+-- Not quite. Try again! --
+
+? 9
+-- Not quite. Try again! --
+
+? 25
+-- Not quite. Try again! --
+
+? 2
+-- Not quite. Try again! --
+
+? 1
+-- Not quite. Try again! --
+
+? 4
+-- OK! --
+
+>>> (r1 + r2) ** 2
+? 1
+-- Not quite. Try again! --
+
+? 4
+-- OK! --
+
+>>> r4 = virfib_sq(4)
+(line 1)? 3
+-- Not quite. Try again! --
+
+(line 1)? 4
+(line 2)? 3
+(line 3)? 2
+(line 4)? 1
+(line 5)? 0
+(line 6)? 1
+(line 7)? 1
+-- Not quite. Try again! --
+
+(line 1)? 4
+(line 2)? 3
+(line 3)? 2
+(line 4)? 1
+(line 5)? 0
+(line 6)? 1
+(line 7)? 2
+(line 8)? 1
+(line 9)? 0
+-- OK! --
+
+>>> r4
+? 25
+-- OK! --
+
+---------------------------------------------------------------------
+OK! All cases for Squared Virahanka Fibonacci unlocked.
+
+Cannot backup when running ok with --local.
+```
+
+#### q2
+
+```
+def summation(n, term):  
+    assert n >= 1  
+    def helper(i,sum):  
+        if i==n+1:  
+            return sum  
+        return helper(i+1,sum+term(i))  
+    return helper(1,0)
+```
+
+
+不难，使用自下而上的递归
+
+q3
+
+```
+def paths(m, n):  
+    def sovle(i,j):  
+        if i==m and j==n:  
+            return 1  
+        elif i<m and j==n:  
+            return sovle(i+1,j)  
+        elif i==m and j<n:  
+            return sovle(i,j+1)  
+        else:  
+            return sovle(i+1,j)+sovle(i,j+1)  
+    return sovle(1,1)
+```
+
+q4
+
+```
+=====================================================================
+Assignment: Lab 4
+OK, version v1.18.1
+=====================================================================
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Unlocking tests
+
+At each "? ", type what you would expect the output to be.
+Type exit() to quit
+
+---------------------------------------------------------------------
+Lists > Suite 1 > Case 1
+(cases remaining: 1)
+
+What would Python display? If you get stuck, try it out in the Python
+interpreter!
+
+>>> s = [7//3, 5, [4, 0, 1], 2]
+>>> s[0]
+? 2
+-- OK! --
+
+>>> s[2]
+? [4,0,1]
+-- OK! --
+
+>>> s[-1]
+? 2
+-- OK! --
+
+>>> len(s)
+? 4
+-- OK! --
+
+>>> 4 in s
+? 2
+-- Not quite. Try again! --
+
+? None
+-- Not quite. Try again! --
+
+? Fasle
+-- Not quite. Try again! --
+
+? False
+-- OK! --
+
+>>> 4 in s[2]
+? True
+-- OK! --
+
+>>> s + [3 + 2, 9]
+? [2,5,[4,0,1],2,5,9]
+-- OK! --
+
+>>> s[2] * 2
+? [4,0,1,4,0,1]
+-- OK! --
+
+>>> x = [1, 2, 3, 4]
+>>> x[1:3]
+? [2,3,4]
+-- Not quite. Try again! --
+
+? [1,2,3]
+-- Not quite. Try again! --
+
+? [2,3]
+-- OK! --
+
+>>> x[:2]
+? [1,2]
+-- OK! --
+
+>>> x[1:]
+? [1,2,3,4]
+-- Not quite. Try again! --
+
+? [2,3,4]
+-- OK! --
+
+>>> x[-2:3]
+? False
+-- Not quite. Try again! --
+
+? [3]
+-- OK! --
+
+>>> x[-2:4]
+? [3,4]
+-- OK! --
+
+>>> x[0:4:2]
+? [1,3]
+-- OK! --
+
+>>> x[::-1]
+? [4,3,2,1]
+-- OK! --
+
+---------------------------------------------------------------------
+OK! All cases for Lists unlocked.
+
+Cannot backup when running ok with --local.
+```
+
+q5
+
+(用阶乘逃课了)
+
+
+```
+def pascal(row, column):  
+    def f(n):  
+        r = 1  
+        for i in range(1, n + 1):  
+            r *= i  
+        return r  
+  
+    if row<column:  
+        return 0  
+    return f(row)//(f(row-column)*f(column))
+```
+
+
+q6
+
+让我们写递归解法，我记得之前写过迭代解法
+
+```
+def double_eights(n):    
+    num = n % 10  
+    if num == 8:  
+        a = True  
+    else:  
+        a = False  
+    n //= 10  
+  
+    while n > 0:  
+        if n % 10 == 8 and a == True:  
+            return True  
+        elif n % 10 == 8:  
+            a = True  
+        else:  
+            a = False  
+        n //= 10  
+  
+    return False
+```
+
+上面是之前写过的迭代解法，接下来看看递归
+
+```
+def double_eights(n):  
+    def helper(n,num,dir):  
+        if n==0:  
+            return False  
+        elif n%10==8 and dir:  
+            return True  
+        elif n%10==8:  
+            return helper(n//10,n%10,True)  
+        else:  
+            return helper(n//10,n%10,False)  
+    num = n % 10  
+    if num == 8:  
+        a = True  
+    else:  
+        a = False  
+    n //= 10  
+    return helper(n,num,a)
+```
+
+其实是差不多的
+
+### lab5（23spring）
+
