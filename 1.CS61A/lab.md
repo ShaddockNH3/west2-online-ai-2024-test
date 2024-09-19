@@ -1254,3 +1254,88 @@ def double_eights(n):
 
 ### lab5（23spring）
 
+q1
+
+```
+def flatten(s):  
+    l=[]  
+    for num in s:  
+        if type(num)==list:  
+            l+=flatten(num)  
+        else:  
+            l+=[num]  
+    return l
+```
+
+这题参悟了答案，我刚开始也是尝试递归，但是可能自下而上的递归模式思考多了，反而忘记了这种最简单的递归方式，是我的问题
+
+q2
+
+下一个问题是考列表推导式的理解，x for x in list if 
+
+```
+def my_map(fn, seq):  
+    return [fn(x) for x in seq]
+```
+
+一行代码解决
+
+q3
+
+```
+def my_filter(pred, seq):  
+    return [x for x in seq if pred(x)]
+```
+
+一样一行解决
+
+q4
+
+```
+def my_reduce(combiner, seq):  
+    sum = seq[0]  
+    for i in range(1,len(seq)):  
+        sum=combiner(sum,seq[i])  
+    return sum
+```
+
+弄弄的c风格啊
+
+q5
+
+这里暂且没看懂，怎么解出来city里面的数据，应该就涉及到了面向对象的知识点？
+
+好吧，其实是make_city的函数实现被作业放在下面了，难绷
+
+```
+def distance(city_a, city_b):  
+    x1,y1=get_lat(city_a),get_lon(city_a)  
+    x2,y2=get_lat(city_b),get_lon(city_b)  
+    return sqrt((x1-x2)**2+(y1-y2)**2)
+```
+
+
+q6
+
+```
+def closer_city(lat, lon, city_a, city_b):  
+    my_city=make_city("ShaddockNH3",lat,lon)  
+    a=distance(my_city,city_a)  
+    b=distance(my_city,city_b)  
+    if a<b:  
+        return get_name(city_a)  
+    else:  
+        return get_name(city_b)
+```
+
+q7
+
+是检查你有没有用数据抽象的
+
+q8
+
+还没看filter之类具体的东西，先略过
+
+
+### lab6
+

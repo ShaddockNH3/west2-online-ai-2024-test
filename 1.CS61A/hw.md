@@ -295,3 +295,263 @@ def count_coins(change):
 
 ### hw4(23spring)
 
+q2
+
+```
+def planet(mass):  
+    """Construct a planet of some mass."""  
+    assert mass > 0  
+    return ['planet',mass]  
+  
+  
+def mass(w):  
+    """Select the mass of a planet."""  
+    assert is_planet(w), 'must call mass on a planet'  
+    return w[1]
+```
+
+就这两行
+
+q3
+
+```
+def balanced(m):  
+    if is_planet(m):  
+        return True  
+    if total_weight(left(m))*length(left(m))!=total_weight(right(m))*length(right(m)):  
+        return False  
+    return balanced(left(m)) and balanced(right(m))
+```
+
+本来以为做不出来的，没想到仔细分析了一下竟然做出来了！
+
+q4
+
+思路和这个差不多：
+
+```
+def tree(tree_label,branches=[]):  
+    return [tree_label]+list(branches)  
+  
+def label(tree):  
+    return tree[0]  
+  
+def branch(tree):  
+    return tree[1:]  
+  
+def is_leaf(tree):  
+    return not branch(tree)  
+  
+def print_tree(tree,i=0):  
+    if is_leaf(tree):  
+        print(' '*i+str(label(tree)))  
+    else:  
+        print(' '*i+str(label(tree)))  
+        for b in branch(tree):  
+            print_tree(b,i+2)  
+  
+  
+t=tree(1,[tree(4,[tree(5)]),tree(9)])  
+  
+print_tree(t)
+```
+
+所以现在其实是要想办法构造出来一棵树，然后return这棵树就行了
+
+研究了很久都没研究懂，看了答案也没看懂，今天先这样，回头再来研究一下
+
+答案对列表推导式的应用很熟练，而我这里却很生疏。现在知道一整个属于一个树的构造，那么现在应该如何把这棵树给构建出来，很麻烦。
+
+m相当于树结构的什么，想一下，m相当于树结构的root，而a相当于什么，a相当于树结构的branch，p相当于什么，p相当于树的叶子
+
+再整理一下，m里面有什么？m里面是一个‘mobile’，left和right。这里的left和right代表的是什么？代表的是两个arm
+
+然后是arm，arm里面有啥？‘arm’，长度，p/m。如果是p的话，那就是叶子节点，如果是m的话，那就再构造一棵树
+
+然后就是至关重要的end函数，我之前一直都没有注意过这个函数。end函数接受arm，返回arm上挂着的到底是p还是m
+
+所以我们现在应当构造branch，然后再构造root，最后相加。
+
+有一个很重要的点，其实就是这里的m之类的东西都不算是根什么的，但是m里面的left和right的数值其实分别就是这个位子出去的两个重量。
+
+gpt了一下，突然发现其实我还是没有理解这里递归的本质，只是在按照自己的想法瞎搞
+
+首先我搞错了一点，这里其实并不是什么m代表啥，a代表啥，p代表啥的意思。
+
+其次这是一个经典减而置之的问题，将原本的问题拆分为：
+
+求解根结点的重量+两个分支的重量
+
+递归基是碰到叶子节点，也就是planet的时候返回，其原本的重量，而其余的就是递归地求出这个根的所有重量，然后求和，就是这个节点的重量。
+
+所以我的思路一开始就有问题。
+
+然后没有很好地利用end函数和递归的思想，这里end函数返回的是判断arm上是p/m，应该很自然地想到，当返回p的时候，直接返回mass，其实就是递归基，当还是m的时候，递归求解即可
+
+所以还是理解错题目的意思了，一直想着怎么用total_weight的解法，反而忽略了上面的问题。随后代码也是照抄的答案，标记一下回来再看看。
+
+```
+def totals_tree(m):  
+    if is_planet(m):  
+        return tree(mass(m))  
+    else:  
+        branch=[totals_tree(end(f(m))) for f in [left,right]]  
+        return tree(sum([label(b) for b in branch]), branch)
+```
+
+然后我是感觉total_weight是能解的，感觉待会再去设计一下，思路应该和上面的差不多，利用end函数进行递归，只不过return的时候应该不一样。
+
+也和我想的一样，只需要改一点就行了，但是突然感觉，如果这样求解的话，是不是没必要用上面那个列表推导式？
+
+```
+def totals_tree(m):  
+    if is_planet(m):  
+        return tree(mass(m))  
+    else:  
+        branch=[totals_tree(end(f(m))) for f in [left,right]]  
+        return tree(total_weight(m), branch)
+```
+
+果然可以。
+
+这里的branch函数感觉也可以用上面的total_weight来进行化简，或者说让列表推导式没那么看不懂
+
+答案branch那行的意思是，f是left和right，f(m)其实就是递归下去，求解m的左分支和右分支
+
+这里真的回头再思考一下，至少以我目前的能力是没办法想出else下面那行的句子的，return感觉花点心思应该可以。
+
+==cy==
+
+q5
+
+```
+def replace_loki_at_leaf(t, lokis_replacement):  
+    if is_leaf(t) and label(t)=='loki':  
+        return tree(lokis_replacement)  
+    else:  
+        bs=[replace_loki_at_leaf(b,lokis_replacement) for b in branches(t)]  
+        return tree(label(t),bs)
+```
+
+这题也是半想半看答案的，经过了上面的洗礼，大概知道得结合列表推导式和递归来写这题。
+
+写到这里，突然想起来一个很重要的事情，把tree的实现再自己手搓一遍：
+
+```
+def tree(tree_label,branches=[]):  
+    return [tree_label]+list(branches)  
+  
+def label(tree):  
+    return tree[0]  
+  
+def branch(tree):  
+    return tree[1:]  
+  
+def is_tree(tree):  
+    if type(tree)!=list or len(tree)<1:  
+        return False  
+    else:  
+        for b in branch(tree):  
+            if not is_tree(b):  
+                return False  
+    return True  
+def is_leaf(tree):  
+    return not branch(tree)
+```
+
+在检查是不是树的时候，也用到了相似的方式，递归进去遍历所有的树
+
+然后这两题的列表推导式，其实都是在重复干两个事情：
+
+1. 创建树的branch
+2. 把树根和branch拼在一起形成一棵新树
+
+再整理一下。
+
+q6
+
+```
+def has_path(t, word):  
+	assert len(word) > 0, 'no path for empty word.'  
+    if t[0]!=word[0]:  
+        return False  
+    elif(len(word)==1):  
+        return True  
+    for b in branches(t):  
+        if has_path(b,word[1:]):  
+            return True  
+    return False
+```
+
+和答案写的一样，简单来说还是减而置之，一下没想明白的点在于for循环，其实这个是遍历这个节点所对应的所有的路线，只要一条路走通立刻返回True
+
+q7
+
+```
+=====================================================================
+Assignment: Homework 4
+OK, version v1.18.1
+=====================================================================
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Unlocking tests
+
+At each "? ", type what you would expect the output to be.
+Type exit() to quit
+
+---------------------------------------------------------------------
+interval > Suite 1 > Case 1
+(cases remaining: 2)
+
+>>> import hw04
+>>> from hw04 import *
+>>> str_interval(interval(-1, 2))
+? "-1 to 2"
+-- OK! --
+
+>>> str_interval(add_interval(interval(-1, 2), interval(4, 8)))
+? [3,10]
+-- Not quite. Try again! --
+
+? "[3,10]"
+-- Not quite. Try again! --
+
+? "3 to 10"
+-- OK! --
+
+---------------------------------------------------------------------
+interval > Suite 2 > Case 1
+(cases remaining: 1)
+
+-- Already unlocked --
+
+---------------------------------------------------------------------
+OK! All cases for interval unlocked.
+
+Cannot backup when running ok with --local.
+```
+
+代码：
+
+```
+def lower_bound(x):  
+    """Return the lower bound of interval x."""  
+    return x[0]  
+  
+  
+def upper_bound(x):  
+    """Return the upper bound of interval x."""  
+    return x[1]
+```
+
+没啥好说的
+
+下面的问题后面都写了，当时搞numpy库的版本搞了好久，这里就不放了。
+
+总的来说，作业的上半部分在教你搞树，下半部分在引入面向对象的东西，尽可能使用他接口提供的东西。
+
+还是感觉写的怪怪的，有种说不上来的感觉。q9再看看。
+
+### hw5
+
+

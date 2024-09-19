@@ -1278,6 +1278,334 @@ print(len(t))
 
 越看越天才，太牛了，这个构造
 
+树的递归定义
+
+来看看树递归。树递归和之前讲的那个分钱很像感觉，由于斐波那契数是由1个数拆分成两个数之后再进行下去的递归，所以可以很轻松地使用树形结构将之描述出来。复习一下树的定义然后递推地去生成一颗斐波那契树
+
+```
+def tree(root, branch=[]):  
+    return [root] + list(branch)  
+  
+def label(tree):  
+    return tree[0]  
+  
+def branches(tree):  
+    return tree[1:]  
+  
+def fib_tree(n):  
+    if n == 1 or n == 0:  
+        return tree(n)  
+    else:  
+        left, right = fib_tree(n - 2), fib_tree(n - 1)  
+        fib_n = label(left) + label(right)   #其实就是在计算的过程  
+        return tree(fib_n, [left, right])   
+  
+print(fib_tree(7))
+```
+
+输出：
+
+```
+[13, [5, [2, [1], [1, [0], [1]]], [3, [1, [0], [1]], [2, [1], [1, [0], [1]]]]], [8, [3, [1, [0], [1]], [2, [1], [1, [0], [1]]]], [5, [2, [1], [1, [0], [1]]], [3, [1, [0], [1]], [2, [1], [1, [0], [1]]]]]]]
+```
+
+数叶子：
+
+```
+def tree(root, branches=[]):  
+    return [root] + list(branches)  
+  
+def label(tree):  
+    return tree[0]  
+  
+def branches(tree):  
+    return tree[1:]  
+  
+def is_tree(tree):  
+    if type(tree)!=list or len(tree)<1:  
+        return False  
+    for branch in branches(tree):  
+        if not is_tree(branch):  
+            return False  
+    return True  
+def is_leaf(tree):  
+    return not branches(tree)  
+  
+def fib_tree(n):  
+    if n == 1 or n == 0:  
+        return tree(n)  
+    else:  
+        left, right = fib_tree(n - 2), fib_tree(n - 1)  
+        fib_n = label(left) + label(right)  # 其实就是在计算的过程  
+        return tree(fib_n, [left, right])  
+  
+  
+print(fib_tree(7))  
+  
+def count_leaves(tree):  
+    if is_leaf(tree):  
+        return 1  
+    else:  
+        branch_cnt=[count_leaves(b) for b in branches(tree)]   
+        #意思是说，递归地搜索每一个branch，如果有叶子结点的话，就返回1，然后计算  
+        return sum(branch_cnt)  
+  
+  
+print(count_leaves(fib_tree(7)))
+```
+
+其实还是有点没搞懂，不过可以结合递归地检查树是不是树去理解就是了，感觉这一块很重要，需要重新去掌握理解一下
+
+**分割树**
+
+这里感觉很没搞懂，仔细研究一下：
+
+比如说我现在要进行分割一个数，将2分割成不超过2的若干正整数之和，树的结构如下：
+
+```
+        2
+       / \
+    True  1
+          / \
+         1  False
+        / \
+     True  False
+
+```
+
+左侧分支意味着使用，右侧分支意味着不使用，从图中可以很轻松地读出来，2可以分成两种。
+
+和上一章的末尾一样，采用的是同样的思路，将原本的问题：使用不超过m的数分割为n，分成两个问题，前面一个问题是至少使用一次m来分割n，后者则是使用不超过m-1的数来分割n，对应着树的左分支和右分支
+
+可以通过这个来构建树：
+
+```
+def tree(tree_label,tree_branchs=[]):  
+    return [tree_label]+list(tree_branchs)  
+  
+def label(tree):  
+    return tree[0]  
+  
+def branches(tree):  
+    return tree[1:]  
+  
+def is_tree(tree):  
+    if type(tree)!=list or len(tree)<1:  
+        return False  
+    for branch in branches(tree):  
+        if not is_tree(branch):  
+            return False  
+    return True  
+def is_leaf(tree):  
+    return not branches(tree)  
+  
+def partition_tree(n,m):  
+    if n==0:  
+        return tree(True)  
+    elif n<0 or m==0:  
+        return tree(False)  
+    else:  
+        left=partition_tree(n-m,m)  
+        right=partition_tree(n,m-1)  
+        return tree(m,[left,right])  
+  
+print(partition_tree(6,4))
+```
+
+输出：
+
+```
+[4, [4, [False], [3, [False], [2, [True], [1, [1, [True], [False]], [False]]]]], [3, [3, [True], [2, [2, [False], [1, [True], [False]]], [1, [1, [1, [True], [False]], [False]], [False]]]], [2, [2, [2, [True], [1, [1, [True], [False]], [False]]], [1, [1, [1, [1, [True], [False]], [False]], [False]], [False]]], [1, [1, [1, [1, [1, [1, [True], [False]], [False]], [False]], [False]], [False]], [False]]]]]
+```
+
+代码解释：
+
+递归基那里，当n如果被分成0的时候，代表着这条路是可行的；如果被分成比0小的数字，或者在进行分割的时候，分割的那个数小于等于0，那么肯定分割时是失败的。
+
+通过这样递归，最后能生成一棵分割树
+
+**将普通列表转化成二叉树**
+
+其实就是根据树的定义，将第一个作为树根，将后面的作为branch
+
+代码暂时略过，这里的列表推导式很有意思，有时间可以回来研究一下
+
+#### 2.3.7 链表
+
+python里莫得链表，其实可以把这里的链表理解为每个根都只有一个孩子的树。这样就是链表了。
+
+他这里使用的构造就是这样子的，
+
+### 2.4 可变数据
+
+模块化，即将整个系统划分为独立维护开发，但又相互关联的模块。
+
+#### 2.4.1 对象隐喻
+
+对象将数据的值和行为结合到了一起
+
+对象的方法，也就是其属性
+
+python的所有值都是对象
+
+==这里也得回头再看一眼，这里的date应该是python内部自带的东西==
+
+
+#### 2.4.2 序列对象
+
+可变与不可变
+
+这个比较好理解，不可变的东西比如说数字，1就是1，2就是2，但是人的年龄是会改变的。课本里的意思是说，你不能把1拿去赋值，比如让1去指代2这种。
+
+很简单的例子，比如说
+
+```
+a=1
+b=a
+b=2
+```
+
+输出a和b的话，前者是1，后者是2。而对于可变数据列表来说：
+
+```
+l=[]
+l.append(1)
+l.append(2)
+t=l
+t.pop()
+```
+
+然后分别输出t和l，会发现事实上，t和l变得一样了，也就是说，在这个例子里，t的操作是能影响到l的，但是前面那个操作，b的操作是影响不到a的
+
+**数据共享和身份**
+
+其实上面的l和t的意思很简单，意思就是，不同的名称被绑定到了同一个变量，并没有说是产生一个新的列表。而在对数字进行赋值的时候，b是重新创建了一个变量并且绑定，和原来的a已经没有关系了。
+
+为了重新得到一个和之前那个没有关系的列表，可以使用内置的list构造函数，让二者完全没有关系：
+
+```
+l=[1,2,3,4,5,6]  
+t=list(l)  
+t.pop()  
+print(l)  
+print(t)
+```
+
+输出：
+
+```
+[1, 2, 3, 4, 5, 6]
+[1, 2, 3, 4, 5]
+```
+
+这样的话就不会相互影响了
+
+而课本里另一个创建嵌套列表的例子则是说，即便是嵌套了，他们依旧也被绑定在同一个地方：
+
+```
+n=[1,2,3,4,5]  
+l=[1,2,3,4,5,6]  
+n[0]=l  
+print(n)  
+l.pop()  
+print(n)
+```
+
+输出：
+
+```
+[[1, 2, 3, 4, 5, 6], 2, 3, 4, 5]
+[[1, 2, 3, 4, 5], 2, 3, 4, 5]
+```
+
+
+为了判断地址和本身内容的关系，这里引入了`is`和`is not`，代码例子：
+
+```
+l=[1,2,3,4]  
+n=[1,2,3,4]  
+p=l  
+print(l is p)  
+print(l==p)  
+print(l is n)  
+print(l==n)
+```
+
+输出：
+
+```
+True
+True
+False
+True
+```
+
+这里又引入了列表推导式，列表推导式总是返回一个新的列表，和原来列表的地址没有什么关系
+
+**元组（tuple）**
+
+元组属于静态数据，已经过创建就不可以改变了。需要注意的是，如果元组内只有一个元素的话，后面得加逗号，不然就会被识别为其他东西
+
+操作有.len，.count和.index，返回的分别是元组长度，有几个该元素和索引
+
+#### 2.4.3 字典
+
+键值对，关系映射
+
+一个key只能对应一个value
+
+要注意键值对唯一
+
+字典的遍历：
+
+`keys,values,items`
+
+```
+dic={  
+    'a':1,  
+    'b':2  
+}  
+  
+for key in dic.keys():  
+    print(key,end=" ")  
+  
+print()  
+  
+for value in dic.values():  
+    print(value,end=" ")  
+  
+print()  
+  
+for item in dic.items():  
+    print(item,end=' ')
+```
+
+输出：
+
+```
+a b 
+1 2 
+('a', 1) ('b', 2) 
+```
+
+复制一下下面这段：
+
+字典中一个很有用的方法是 `get`，它返回指定 key 在字典中对应的 value；如果该 key 在字典中不存在，则返回默认值。`get` 方法接收两个参数，一个 key，一个默认值。
+
+python
+
+```
+>>> numerals.get('A', 0)
+0
+>>> numerals.get('V', 0)
+5
+```
+
+字典推导式
+
+#### 2.4.4 局部状态
+
+~~去写了一两个hw和lab，感觉写的怪怪的，不知道为什么，可能是对于很多东西的理解依旧还是不够深刻，先这样，我感觉还是得先看书，或者找个时间先把cat给写完先~~
 
 
 
