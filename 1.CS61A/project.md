@@ -2878,3 +2878,722 @@ def pick(paragraphs, select, k):
     return ''  
     # END PROBLEM 1
 ```
+
+#### q2
+
+先看看utils.py里面的函数到底有哪些，分别是什么作用：
+
+```
+def remove_punctuation(s):  
+    punctuation_remover = str.maketrans('', '', string.punctuation)  
+    return s.strip().translate(punctuation_remover)
+```
+
+字面意思，去除一个句子里的标点符号，之类的东西
+
+```
+def lower(s):  
+    return s.lower()
+```
+
+将一个字符串的所有字母变成小写
+
+```
+def split(s):  
+    return s.split()
+```
+
+将一个字符串按照空格分割成列表
+
+题目要求：
+
+实现 `about` 函数，该函数接收一个主题词列表 `subject`，返回一个函数，该函数接受一个段落，并返回一个布尔值，表示该段落是否包含 `subject` 中的任何词。
+
+一旦我们实现了 `about`，我们将能够将返回的函数作为 `select` 参数传递给 `pick`，这在我们继续实现打字测试时会很有用。
+
+为了能够准确地进行比较，你需要忽略大小写（也就是说，不区分大写和小写字母）和段落中的标点符号。此外，只检查 `subject` 中单词在段落中的精确匹配，而不是子字符串。例如，“dogs” 不应被视为单词 “dog” 的匹配。
+
+q
+
+```
+=====================================================================
+Assignment: Project 2: Cats
+OK, version v1.18.1
+=====================================================================
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Unlocking tests
+
+At each "? ", type what you would expect the output to be.
+Type exit() to quit
+
+---------------------------------------------------------------------
+Problem 2 > Suite 1 > Case 1
+(cases remaining: 104)
+
+>>> from cats import about
+>>> from cats import pick
+>>> dogs = about(['dogs', 'hounds'])
+>>> dogs('A paragraph about cats.')
+? False
+-- OK! --
+
+>>> dogs('A paragraph about dogs.')
+? True
+-- OK! --
+
+>>> dogs('Release the Hounds!')
+? True
+-- OK! --
+
+>>> dogs('"DOGS" stands for Department Of Geophysical Science.')
+? True
+-- OK! --
+
+>>> dogs('Do gs and ho unds don\'t count')
+? False
+-- OK! --
+
+>>> dogs("AdogsParagraph")
+? False
+-- OK! --
+```
+
+代码：
+
+```
+def about(subject):  
+    assert all([lower(x) == x for x in subject]), 'subjects should be lowercase.'  
+    # BEGIN PROBLEM 2  
+    def help(l):  
+        l=split(remove_punctuation(lower(l)))  
+        for word in subject:  
+            for ch in l:  
+                if ch==word:  
+                    return True  
+        return False    
+    return help  
+  
+    # END PROBLEM 2
+```
+
+一个二维遍历
+
+#### q3
+
+```
+=====================================================================
+Assignment: Project 2: Cats
+OK, version v1.18.1
+=====================================================================
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Unlocking tests
+
+At each "? ", type what you would expect the output to be.
+Type exit() to quit
+
+---------------------------------------------------------------------
+Problem 3 > Suite 1 > Case 1
+(cases remaining: 103)
+
+>>> from cats import accuracy
+>>> accuracy("12345", "12345") # This should return 100.0 (not the integer 100!)
+? 100.0
+-- OK! --
+
+>>> accuracy("a b c", "a b c")
+? 100.0
+-- OK! --
+
+>>> accuracy("a  b  c  d", "b  a  c  d")
+? 50.0
+-- OK! --
+
+>>> accuracy("a b", "c d e")
+? 0.0
+-- OK! --
+
+>>> accuracy("Cat", "cat") # the function is case-sensitive
+? 0.0
+-- OK! --
+
+>>> accuracy("a b c d", "a d")
+? 50.0
+-- Not quite. Try again! --
+
+? 25.0
+-- OK! --
+
+>>> accuracy("abc", " ")
+? 0.0
+-- OK! --
+
+>>> accuracy("a b \tc" , "a b c") # Tabs don't count as words
+? 100.0
+-- OK! --
+
+>>> accuracy("abc", "")
+? 0.0
+-- OK! --
+
+>>> accuracy("", "abc")
+? 0.0
+-- OK! --
+
+>>> accuracy("a b c d", "b c d")
+? 0.0
+-- OK! --
+
+>>> accuracy("cats.", "cats") # punctuation counts
+? 50.0
+-- Not quite. Try again! --
+
+? 0.0
+-- OK! --
+
+>>> accuracy("", "") # Returns 100.0
+? 100.0
+-- OK! --
+```
+
+代码：
+
+```
+def accuracy(typed, source):  
+    typed_words = split(typed)  
+    source_words = split(source)  
+    # BEGIN PROBLEM 3  
+    len_typed=len(typed_words)  
+    len_source=len(source_words)  
+  
+    if len_typed==0 and len_source==0:  
+        return 100.0  
+    if len_typed==0 or len_source==0:  
+        return 0.0  
+  
+    len_min=min(len_typed,len_source)  
+    typed_i=0  
+  
+    for i in range(0,len_min):  
+        if typed_words[i]==source_words[i]:  
+            typed_i+=1  
+  
+    return typed_i / len_typed * 100  
+    # END PROBLEM 3
+```
+
+#### q4
+
+```
+=====================================================================
+Assignment: Project 2: Cats
+OK, version v1.18.1
+=====================================================================
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Unlocking tests
+
+At each "? ", type what you would expect the output to be.
+Type exit() to quit
+
+---------------------------------------------------------------------
+Problem 4 > Suite 1 > Case 1
+(cases remaining: 104)
+
+>>> from cats import wpm
+>>> wpm("12345", 3) # Note: wpm returns a float (with a decimal point)
+? 20.0
+-- OK! --
+
+>>> wpm("a b c", 20)
+? 3.0
+-- OK! --
+
+>>> wpm("", 10)
+? 0.0
+-- OK! --
+```
+
+代码：
+
+```
+def wpm(typed, elapsed):  
+    assert elapsed > 0, 'Elapsed time must be positive'  
+    # BEGIN PROBLEM 4  
+    return 12*len(typed)/elapsed  
+    # END PROBLEM 4
+```
+
+一行解决
+
+#### q5
+
+```                                                                              =====================================================================
+Assignment: Project 2: Cats
+OK, version v1.18.1
+=====================================================================
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Unlocking tests
+
+At each "? ", type what you would expect the output to be.
+Type exit() to quit
+
+---------------------------------------------------------------------
+Problem 5 > Suite 1 > Case 1
+(cases remaining: 104)
+
+>>> from cats import autocorrect, lines_from_file
+>>> abs_diff = lambda w1, w2, limit: abs(len(w2) - len(w1))
+>>> autocorrect("cul", ["culture", "cult", "cultivate"], abs_diff, 10)
+? cult
+-- Not quite. Try again! --
+
+? 'cult'
+-- OK! --
+
+>>> autocorrect("cul", ["culture", "cult", "cultivate"], abs_diff, 0)
+? 'cul'
+-- OK! --
+
+>>> autocorrect("wor", ["worry", "car", "part"], abs_diff, 10)
+? 'car'
+-- OK! --
+
+>>> first_diff = lambda w1, w2, limit: 1 if w1[0] != w2[0] else 0
+>>> autocorrect("wrod", ["word", "rod"], first_diff, 1)
+? 'word'
+-- OK! --
+
+>>> autocorrect("inside", ["idea", "inside"], first_diff, 0.5)
+? 'idea'
+-- Not quite. Try again! --
+
+? 'inside'
+-- OK! --
+
+>>> autocorrect("inside", ["idea", "insider"], first_diff, 0.5)
+? 'idea'
+-- OK! --
+
+>>> autocorrect("outside", ["idea", "insider"], first_diff, 0.5)
+? 'outside'
+-- OK! --
+
+>>> length_ratio = lambda w1, w2, limit: len(w2) / len(w1) # An asymmetric diff function
+>>> autocorrect("aaa", ["a"], length_ratio, 2) # typed_word ("aaa") is passed in as the first argument to a diff function
+? 'a'
+-- OK! --
+
+>>> autocorrect("cats", ["panthers", "lions"], length_ratio, 2)
+? 'lions'
+-- OK! --
+```
+
+代码：
+
+```
+def autocorrect(typed_word, word_list, diff_function, limit):  
+    # BEGIN PROBLEM 5    if typed_word in word_list:  
+        return typed_word  
+    diff_list=[diff_function(typed_word,word,limit) for word in word_list]  
+    min_diff=min(diff_list)  
+    if min_diff<=limit:  
+        return word_list[diff_list.index(min_diff)]  
+    else:  
+        return typed_word  
+    # END PROBLEM 5
+```
+
+这里使用了列表推导式，感觉不错
+
+#### q6
+
+```
+=====================================================================
+Assignment: Project 2: Cats
+OK, version v1.18.1
+=====================================================================
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Unlocking tests
+
+At each "? ", type what you would expect the output to be.
+Type exit() to quit
+
+---------------------------------------------------------------------
+Problem 6 > Suite 1 > Case 1
+(cases remaining: 106)
+
+-- Already unlocked --
+
+---------------------------------------------------------------------
+Problem 6 > Suite 1 > Case 2
+(cases remaining: 105)
+
+>>> from cats import feline_fixes, autocorrect
+>>> import tests.construct_check as test
+>>> big_limit = 10
+>>> feline_fixes("nice", "rice", big_limit)    # Substitute: n -> r
+? 1
+-- OK! --
+
+>>> feline_fixes("range", "rungs", big_limit)  # Substitute: a -> u, e -> s
+? 2
+-- OK! --
+
+>>> feline_fixes("pill", "pillage", big_limit) # Don't substitute anything, length difference of 3.
+? 3
+-- OK! --
+
+>>> feline_fixes("roses", "arose", big_limit)  # Substitute: r -> a, o -> r, s -> o, e -> s, s -> e
+? 5
+-- OK! --
+
+>>> feline_fixes("rose", "hello", big_limit)   # Substitute: r->h, o->e, s->l, e->l, length difference of 1.
+? 5
+-- OK! --
+```
+
+只能用递归写，看一眼，感觉像是得用之前那个字底向上的递归。
+
+```
+def feline_fixes(typed, source, limit):  
+    # BEGIN PROBLEM 6    
+    
+    if limit<0:  
+        return limit+1  
+  
+    elif len(typed)==0 or len(source)==0:  
+        return abs(len(typed)-len(source))  
+  
+    elif typed[0]!=source[0]:  
+        return 1+feline_fixes(typed[1:],source[1:],limit-1)  
+  
+    else:  
+        return feline_fixes(typed[1:],source[1:],limit)  
+  
+    # END PROBLEM 6
+```
+
+其实不用，但是这里我落入了一个坑，可能是没仔细看题目。如果超过limit之后直接返回。
+
+#### q7
+
+```
+=====================================================================
+Assignment: Project 2: Cats
+OK, version v1.18.1
+=====================================================================
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Unlocking tests
+
+At each "? ", type what you would expect the output to be.
+Type exit() to quit
+
+---------------------------------------------------------------------
+Problem 7 > Suite 1 > Case 1
+(cases remaining: 106)
+
+>>> from cats import minimum_mewtations, autocorrect
+>>> import tests.construct_check as test
+>>> big_limit = 10
+>>> minimum_mewtations("wind", "wind", big_limit)
+? 0
+-- OK! --
+
+>>> minimum_mewtations("wird", "wiry", big_limit)
+? 1
+-- OK! --
+
+>>> minimum_mewtations("wird", "bird", big_limit)
+? 1
+-- OK! --
+
+>>> minimum_mewtations("wird", "wir", big_limit)
+? 1
+-- OK! --
+
+>>> minimum_mewtations("wird", "bwird", big_limit)
+? 1
+-- OK! --
+
+>>> minimum_mewtations("speling", "spelling", big_limit)
+? 1
+-- OK! --
+
+>>> minimum_mewtations("used", "use", big_limit)
+? 1
+-- OK! --
+
+>>> minimum_mewtations("hash", "ash", big_limit)
+? 1
+-- OK! --
+
+>>> minimum_mewtations("ash", "hash", big_limit)
+? 1
+-- OK! --
+
+>>> minimum_mewtations("roses", "arose", big_limit)     # roses -> aroses -> arose
+? 2
+-- OK! --
+
+>>> minimum_mewtations("tesng", "testing", big_limit)   # tesng -> testng -> testing
+? 3
+-- Not quite. Try again! --
+
+? 2
+-- OK! --
+
+>>> minimum_mewtations("rlogcul", "logical", big_limit) # rlogcul -> logcul -> logicul -> logical
+? 3
+-- OK! --
+
+>>> minimum_mewtations("", "", big_limit) # nothing to nothing needs no edits
+? 0
+-- OK! --
+```
+
+代码：
+
+```
+def minimum_mewtations(typed, source, limit):  
+    if limit<0:  
+        return limit+1  
+  
+    if typed==source:  
+        return 0  
+  
+    if len(typed)==0 or len(source)==0:  
+        # 加法操作  
+        if len(typed)<len(source):  
+            return minimum_mewtations(source[0]+typed,source,limit-1)+1  
+  
+        # 减法操作  
+        if len(typed)>len(source):  
+            return minimum_mewtations(typed[1:],source,limit-1)+1  
+  
+    if typed[0]==source[0]:  
+        return minimum_mewtations(typed[1:],source[1:],limit)  
+  
+    # 加法操作  
+    add=minimum_mewtations(source[0]+typed,source,limit-1)+1  
+  
+    # 减法操作  
+    remove=minimum_mewtations(typed[1:],source,limit-1)+1  
+  
+    #替换操作  
+    substitute=minimum_mewtations(source[0]+typed[1:],source,limit-1)+1  
+  
+    return min(add,remove,substitute)
+```
+
+
+感觉有点难度的，后面那个min有想出来，但是一下子没想出来怎么min，后来突然发现模板。
+
+然后上面的代码在前面的部分有冗余，可以再修改一下。
+
+#### q8
+
+```
+=====================================================================
+Assignment: Project 2: Cats
+OK, version v1.18.1
+=====================================================================
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Unlocking tests
+
+At each "? ", type what you would expect the output to be.
+Type exit() to quit
+
+---------------------------------------------------------------------
+Problem 8 > Suite 1 > Case 1
+(cases remaining: 102)
+
+>>> from cats import report_progress
+>>> print_progress = lambda d: print('ID:', d['id'], 'Progress:', d['progress'])
+>>> typed = ['I', 'have', 'begun']
+>>> prompt = ['I', 'have', 'begun', 'to', 'type']
+>>> print_progress({'id': 1, 'progress': 0.6})
+? 'ID: 1 Progress: 0.6'
+-- Not quite. Try again! --
+
+? ID: 1 Progress: 0.6
+-- OK! --
+
+>>> report_progress(typed, prompt, 1, print_progress) # print_progress is called on the report
+(line 1)? ID: 1 Progress: 0.6
+(line 2)? 0.6
+-- OK! --
+
+>>> report_progress(['I', 'begun'], prompt, 2, print_progress)
+(line 1)? ID: 1 Progress: 0.2
+-- Not quite. Try again! --
+
+(line 1)? ID: 2 Progress: 0.2
+(line 2)? 0.2
+-- OK! --
+
+>>> report_progress(['I', 'hve', 'begun', 'to', 'type'], prompt, 3, print_progress)
+(line 1)? ID: 3 Progress: 0.2
+(line 2)? 0.2
+-- OK! --
+```
+
+代码：
+
+```
+def report_progress(typed, prompt, user_id, upload):  
+    # BEGIN PROBLEM 8    same=0  
+    for t,p in zip(typed,prompt):  
+        if t==p:  
+            same+=1  
+        else:  
+            break  
+    dic={  
+        'id': user_id,  
+        'progress': same/len(prompt)  
+    }  
+    upload(dic)  
+    return dic['progress']  
+    # END PROBLEM 8
+```
+
+#### q9
+
+```
+=====================================================================
+Assignment: Project 2: Cats
+OK, version v1.18.1
+=====================================================================
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Unlocking tests
+
+At each "? ", type what you would expect the output to be.
+Type exit() to quit
+
+---------------------------------------------------------------------
+Problem 9 > Suite 1 > Case 1
+(cases remaining: 102)
+
+>>> from cats import *
+>>> p = [[1, 4, 6, 7], [0, 4, 6, 9]]
+>>> words = ['This', 'is', 'fun']
+>>> match = time_per_word(words, p)
+>>> get_all_words(match)
+? ['This', 'is', 'fun']
+-- OK! --
+
+>>> get_all_times(match)
+? [[3,2,1],[4,2,3]]
+-- OK! --
+
+>>> p = [[0, 2, 3], [2, 4, 7]]
+>>> match = time_per_word(['hello', 'world'], p)
+>>> get_word(match, word_index=1)
+? 'hello'
+-- Not quite. Try again! --
+
+? 'world'
+-- OK! --
+
+>>> get_all_times(match)
+? [[2,1],[2,3]]
+-- OK! --
+
+>>> time(match, player_num=0, word_index=1)
+? [2,1]
+-- Not quite. Try again! --
+
+? 1
+-- OK! --
+```
+
+code:
+
+```
+def time_per_word(words, times_per_player):  
+    # BEGIN PROBLEM 9    
+    times = []  
+    for player_times in times_per_player:  
+        player_durations = []  
+        for i in range(len(player_times) - 1):  
+            player_durations.append(player_times[i+1] - player_times[i])  
+        times.append(player_durations)  
+  
+    return match(words, times)  
+    # END PROBLEM 9
+```
+
+既然都用python了，我感觉上面的代码有点蠢。所以......
+
+```
+def time_per_word(words, times_per_player):  
+    # BEGIN PROBLEM 9    
+    
+    times = [  
+        [player_times[i + 1] - player_times[i] for i in range(len(player_times) - 1)]  
+        for player_times in times_per_player  
+    ]  
+  
+    return match(words, times)  
+    # END PROBLEM 9
+```
+
+#### q10
+
+```
+=====================================================================
+Assignment: Project 2: Cats
+OK, version v1.18.1
+=====================================================================
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Unlocking tests
+
+At each "? ", type what you would expect the output to be.
+Type exit() to quit
+
+---------------------------------------------------------------------
+Problem 10 > Suite 1 > Case 1
+(cases remaining: 103)
+
+>>> from cats import match, fastest_words
+>>> p0 = [2, 2, 3]
+>>> p1 = [6, 1, 2]
+>>> fastest_words(match(['What', 'great', 'luck'], [p0, p1]))
+? p0
+-- Not quite. Try again! --
+
+? p1
+-- Not quite. Try again! --
+
+? [['What','luck'],[great]]
+-- Not quite. Try again! --
+
+? [['What',],['great','luck']]
+-- OK! --
+
+>>> p0 = [2, 2, 3]
+>>> p1 = [6, 1, 3]
+>>> fastest_words(match(['What', 'great', 'luck'], [p0, p1]))  # with a tie, choose the first player
+? [['What','luck'],['great']]
+-- OK! --
+
+>>> p2 = [4, 3, 1]
+>>> fastest_words(match(['What', 'great', 'luck'], [p0, p1, p2]))
+? [['What'],['great'],['luck']]
+-- OK! --
+```
+
+code:
+
+是不难实现的，但是很麻烦，现在不是很想写，先去搞其他事情去了（）就差这步了
+
+```
+
+```
