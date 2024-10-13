@@ -1049,6 +1049,32 @@ C(n-1,m)和C(n,m-1)，直到m和n分别到0为止。
 
 所以可以C(n,m)=C(n-1,m)和C(n,m-1)，定义递归基之后，便可求解。
 
+copy一下代码，忘记这里的笔记写在哪里了，有点逆天的
+
+```
+>>> def count_partitions(n, m):
+        """计算使用最大数 m 的整数分割 n 的方式的数量"""
+        if n == 0:
+            return 1
+        elif n < 0:
+            return 0
+        elif m == 0:
+            return 0
+        else:
+            return count_partitions(n-m, m) + count_partitions(n, m-1)
+
+>>> count_partitions(6, 4)
+9
+>>> count_partitions(5, 5)
+7
+>>> count_partitions(10, 10)
+42
+>>> count_partitions(15, 15)
+176
+>>> count_partitions(20, 20)
+627
+```
+
 ### 第一章总结一下
 
 函数的高级使用方法很不熟练，然后递归思想还得再多去理解以下
@@ -1439,7 +1465,131 @@ python里莫得链表，其实可以把这里的链表理解为每个根都只�
 
 他这里使用的构造就是这样子的
 
-后面先跳过。
+首先来解析一下这里的链表实现，使用列表，s[0]是数据，然后s[1]是后续链表。也就是说，对于每一个外层的列表来说，只有两个东西，数据和后继，所以is_link函数，这个函数判断s是否为链表的实现就是：如果直接是空，那么也算是一个链表，否则递归判断s[1]是不是链表（长度是否为2）且其后面的是不是也是个链表，直到遇到empty为止。
+
+然后就是link构造，使用递归构造，头节点和后续。
+
+返回头节点first函数，显示保证必须是链表，然后保证非空，最后返回s[0]
+
+返回后继其实也是一样的，返回s[1]
+
+上述实现其实和树的实现类似，使用递归构造，构造的也很巧妙。
+
+（其实我觉得应该把这部分放在树的前面，毕竟链表算是树的一种特殊情况）
+
+上述构造均使用双元素列表，也就是“对”的概念。
+
+然后接下来是返回链表长度，其实就是一直访问s[1]直到遇到empty为止
+
+返回链表s索引为i的元素，和上面的其实差不多。
+
+实现一下上面的所有功能：
+
+```
+empty='empty'  
+  
+def is_link(s):  
+    return s==empty or (len(s)==2 and is_link(s[1]))  
+  
+def link(first,rest):  
+    assert is_link(rest)  
+    return [first,rest]  
+  
+def first(s):  
+    return s[0]  
+  
+def rest(s):  
+    return s[1]  
+  
+def len_link(s):  
+    length=0  
+    while s!=empty:  
+        s,length=rest(s),length+1  
+    return length  
+  
+def getitem(s,i):  
+    while i>0:  
+        s,i=rest(s),i-1  
+    return first(s)
+```
+
+这里还是要注意一下面向对象的思想，也就是封装好，使用上面提供的函数，而不是自己再写。比如说上面已经定义了`empty='empty'`，就不要再使用`'empty'`了
+
+链表的实现并不是很难，这里可以注意到链表的访问并不是常数时间，而是线性的时间。
+
+然后后面又到了**递归**
+
+最后两个函数的实现可以用递归表示，比较简单，就不写了。接下来是给出了两个函数，其中一个是组合链表，另一个是类似于推导式那样子，将函数f应用到s的每一个元素。
+
+递归的思路都是拆解
+
+```
+def extend_link(s,t):  
+    if s==empty:  
+        return t  
+    return link(first(s),extend_link(rest(s),t))  
+  
+def apply_to_f(f,s):  
+    if s==empty:  
+        return s  
+    return link(f(first(s)),apply_to_f(f,rest(s)))
+```
+
+接下来两个函数，前面一个函数做到的功能是筛选并且输出一个新的链表，后面一个的功能是将链表拆分成一个由字符串组成的东西，也就是可视化了。
+
+前者的思路是
+
+后者的思路就是str前面一个东西，加上分隔符，然后递归求解后面的东西。
+
+```
+
+```
+
+
+
+
+
+==12345678986542356784212467863216754256==
+
+
+
+
+
+然后到了经典题，分割数，此前已经实现了两种分割数，一种就是使用普通的递归，一种使用二叉树，然后现在这里使用的是链表。
+
+思路都是一样的：
+
+1. 将 n - m 分割为不超过 m 的若干正整数之和
+2. 将 n 分割为不超过 m - 1 的若干正整数之和
+
+这里感觉其实就是应该把原来的一个数分割成两个链表，链表是一种特殊的树，在使用树求解的时候，利用的是二叉树的性质，左使用右不使用，从而推出结果。这里将
+
+这个逻辑又和之前的逻辑不大一样，我回去翻了一下最普通的办法的那个分割数，那个是实现累计和的，然后是二叉树版本的，二叉树版本天然地左使用右不使用。所以在使用m进行分割的时候，得把此前的m给统计上，这也是为什么会出现using m和with m两步的原因，前者进行n-m的分割，然后后者得把m本身给统计上。
+
+```
+def partitions(n,m):  
+    if n==0:  
+        return link(empty,empty)  
+    elif n<0 or m==0:  
+        return empty  
+    else:  
+        using_m=partitions(n-m,m)  
+        with_m=apply_to_f(lambda s:link(m,s),using_m)  
+        without_m=partitions(n,m-1)  
+        return extend_link(with_m,without_m)  
+  
+print(partitions(6,4))
+```
+
+输出：
+
+```
+[[4, [2, 'empty']], [[4, [1, [1, 'empty']]], [[3, [3, 'empty']], [[3, [2, [1, 'empty']]], [[3, [1, [1, [1, 'empty']]]], [[2, [2, [2, 'empty']]], [[2, [2, [1, [1, 'empty']]]], [[2, [1, [1, [1, [1, 'empty']]]]], [[1, [1, [1, [1, [1, [1, 'empty']]]]]], 'empty']]]]]]]]]
+```
+
+此前那个不用数据结构的版本事实上是统计，如果要让此前那个版本做到输出的话，应该是没什么办法的。
+
+然后就是下面的可视化，可视化和之前那个一样，
 
 ### 2.4 可变数据
 
@@ -1612,7 +1762,116 @@ python
 
 ~~去写了一两个hw和lab，感觉写的怪怪的，不知道为什么，可能是对于很多东西的理解依旧还是不够深刻，先这样，我感觉还是得先看书，或者找个时间先把cat给写完先~~
 
+局部状态（local state）是指某个对象或函数在执行过程中可以保持并修改其值的能力。
+
 在课本的例子里，with_draw被执行了两次，但是每次执行输出的都是不一样的东西。意味着withdraw在执行的时候更改了某些东西，而不是一成不变地执行。
 
 他产生了某种“副作用”，就好像是print函数事实上他的输出就是他的“副作用”一样，在这里，withdraw不仅仅返回内容，还对里面的东西进行了修改。
+
+**闭包和nonlocal**
+
+再看一眼nonlocal是什么东西，`nonlocal` 只能用于嵌套函数中，用于修改外层函数的变量。它不能用于修改全局变量。
+
+重新温故一下python的环境变量：
+
+- **局部作用域**：在函数内部定义的变量，只能在该函数内部访问。
+- **全局作用域**：在模块级别定义的变量，可以在模块的任何位置访问。
+- **非局部作用域**：在嵌套函数中，外层函数定义的变量。
+
+外层函数定义的变量是不能直接在嵌套函数里面直接使用的，比如说：
+
+```
+def outer():  
+    x=10  
+    def inner():  
+        x+=5  
+        return x  
+    inner()  
+    return x  
+  
+print(outer())
+```
+
+报错：
+
+```
+Traceback (most recent call last):
+  File "C:\Users\shadd\Desktop\test.py", line 9, in <module>
+    print(outer())
+          ^^^^^^^
+  File "C:\Users\shadd\Desktop\test.py", line 6, in outer
+    inner()
+  File "C:\Users\shadd\Desktop\test.py", line 4, in inner
+    x+=5
+    ^
+UnboundLocalError: cannot access local variable 'x' where it is not associated with a value
+```
+
+如果将x在inner里面也声明一下，声明为nonlocal x：
+
+```
+def outer():  
+    x=10  
+    def inner():  
+        nonlocal x  
+        x+=5  
+        return x  
+    inner()  
+    return x  
+  
+print(outer())
+```
+
+输出就是正常的15.
+
+但是为什么要使用nonlocal来定义之后才能在内部使用x？感觉应该和python的环境有关系。每一个函数里面的都是该函数内部私有的局部变量，所以如果没有声明nonlocal，那么python会认为这个变量是一个未声明的新变量。
+
+回到课本的例子上来：
+
+```
+def make_withdraw(balance):  
+    def withdraw(amount):  
+        nonlocal balance                 # 声明 balance 是非局部的  
+        if amount > balance:  
+            return '余额不足'  
+        balance = balance - amount       # 重新绑定  
+        return balance  
+    return withdraw
+```
+
+课本里的这个例子就是说，比方说创建一个函数`wd=make_withdraw(100)`，现在这个函数就已经记住`balance`的值是100，每次我调用`wd(digit)`的时候，都会在现在balance的基础上向下减，而不是每次都将balance初始化为100.
+
+非局部语句（nonlocal statement）会改变 withdraw 函数定义中剩余的所有赋值语句。在将 balance 声明为 nonlocal 后，任何尝试为 balance 赋值的语句，都不会直接在当前帧中寻找并更改 balance，而是找到定义 balance 变量的帧，并在该帧中更新该变量。如果在声明 nonlocal 之前 balance 还没有赋值，则 nonlocal 声明将会报错。
+
+就是课本里这段话
+
+#### 2.4.5 非局部Non-local赋值的好处
+
+这段话的意思就是说，每当我创建一个wd，比如wd1，wd2，我每次对wd1的操作并不会影响到wd2，wd1和wd2分别记住自己对应的数据，可记忆且相互独立
+
+#### 2.4.6 非局部Non-local赋值的代价
+
+首先第一段的意思就是说，与list类似的，比如我定义了一个wd1，然后让wd2=wd1，当更改wd2的时候，其实就是在更改wd1的值，也就是说wd2=wd1这个操作并不是重新生成一个，而是类似list那样的引用，也就是数据共享
+
+正确理解包含 nonlocal 声明的代码的关键是记住：只有函数调用才能引入新帧。赋值语句只能更改现有帧中的绑定关系。在这种情况下，除非 make_withdraw 被调用两次，否则只能有一个 balance 绑定。
+
+赋值语句不等于函数调用，和list一样，有两个列表l1和l2，l2=l1的话，赋值，而l1并非是返回一个列表给l2
+
+这里又提到了纯函数和非纯函数的概念，也就是说，如果我用一个东西去绑定纯函数，那么赋值给另一个变量，他们就不会是同步的了，而如果用非纯函数的话，就是同步的。
+
+重新提及一下什么是副作用，副作用就是说**不改变任何外部状态**
+
+#### 2.4.7 列表和字典实现
+
+这里让我们自己封装一个列表和字典，不过效率没有内置的列表和字典那么高效
+
+
+#### 2.4.8 调度字典
+
+
+
+
+### 2.5 面向对象编程
+
+byd终于到面向对象了
 

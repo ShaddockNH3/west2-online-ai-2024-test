@@ -89,7 +89,7 @@ def take_turn_for_one():
         else:
             pass
         if My_Pokemon_hp<=0 or Computer_Pokemon_hp<=0:#尚未实现
-            break;
+            break
     if My_Pokemon_hp>0:
         return True
     else:
