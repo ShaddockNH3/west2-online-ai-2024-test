@@ -37,15 +37,21 @@ class Pokemon:
         if random.random()<=self.dodge:
             raise DodgeException("技能被闪避！")
 
-    def receive_damage(self, damage, pokemon=None):
-        if pokemon is None:
-            pokemon=self
-
+    def receive_damage(self, damage,pokemon,other_pokemon):
         if pokemon.hp-damage<=0:
             pokemon.hp=0
         else:
-            pokemon.hp -= damage
+            pokemon.hp-=damage
 
+    def receive_normal_damage(self,damage,pokemon,other_pokemon):
+        if pokemon is None:
+            pokemon = self
+        if damage-pokemon.defence<=0:
+            damage=0
+        else:
+            damage-=pokemon.defence
+        pokemon.hp-=damage
+        print(f"该伤害为普通物理伤害，对方防御{pokemon.defence}")
 
     def receive_restore(self, restore, pokemon=None):
         if pokemon is None:
@@ -72,7 +78,7 @@ class Pokemon:
 
     def print_damage_happened(self,other_pokemon,now_damage,a_skill):
         print(f"{self.name} 使用了 {a_skill}")
-        print(f"{other_pokemon.name} 受到了 {now_damage} 点伤害！ 剩余 HP：{other_pokemon.hp}")
+        print(f"{other_pokemon.name} 受到了 {now_damage} 点伤害！剩余 HP：{other_pokemon.hp}")
 
     def print_restore_happened(self, now_restore, a_skill):
         print(f"{self.name} 使用了 {a_skill}")
@@ -126,9 +132,7 @@ class Water_Pokemon(Pokemon):#水属性宝可梦
     def restraint_water(self,other_pokemon):
         return self.restraint(other_pokemon,"fire","eletri")
 
-    def receive_damage(self, damage, pokemon=None):
-        if pokemon is None:
-            pokemon=self
+    def receive_damage(self, damage,pokemon,other_pokemon):
         if random.random()<=0.5:
             damage*=0.7
             print("水属性被动使用成功")
@@ -136,8 +140,21 @@ class Water_Pokemon(Pokemon):#水属性宝可梦
         if pokemon.hp-damage<=0:
             pokemon.hp=0
         else:
-            pokemon.hp -= damage
+            pokemon.hp-=damage
 
+    def receive_normal_damage(self,damage,pokemon,other_pokemon):
+        if pokemon is None:
+            pokemon = self
+        if random.random()<=0.5:
+            damage*=0.7
+            print("水属性被动使用成功")
+
+        if damage-pokemon.defence<=0:
+            damage=0
+        else:
+            damage-=pokemon.defence
+        pokemon.hp-=damage
+        print(f"该伤害为普通物理伤害，对方防御{pokemon.defence}")
 
     def begin(self):
         pass
@@ -165,6 +182,80 @@ class Eletri_Pokemon(Pokemon):
         #这里增加，如果触发了被动，那么可以立刻使用一次技能
         pass
 
+class Ice_Pokemon(Pokemon):
+    def __init__(self,hp,attack,defence,dodge):
+        Pokemon.__init__(self,hp,attack,defence,dodge)
+        self.property = "ice"
+        self.index=1
+
+    #冰系克制草，被火克制
+    def restraint_ice(self,other_pokemon):
+        return self.restraint(other_pokemon,"grass","fire")
+
+    '''
+    受到攻击时，对手的攻击力下降5点，最多叠加3层
+    '''
+
+    def forst(self,other_pokemon):
+        if self.index<=3:
+            self.index+=1
+            print("对方冰属性被动使用成功,当受到攻击时，我方宝可梦攻击力下降5点，最多三次")
+            other_pokemon.attack-=5
+
+    def receive_damage(self, damage,pokemon,other_pokemon):
+        if pokemon.hp - damage <= 0:
+            pokemon.hp = 0
+        else:
+            pokemon.hp -= damage
+        self.forst(other_pokemon)
+
+    def receive_normal_damage(self, damage, pokemon,other_pokemon):
+
+        if damage - pokemon.defence <= 0:
+            damage = 0
+        else:
+            damage -= pokemon.defence
+        pokemon.hp -= damage
+        print(f"该伤害为普通物理伤害，对方防御{pokemon.defence}")
+
+        self.forst(other_pokemon)
+
+    def begin(self):
+        pass
+
+    def end(self):
+        pass
+
+
+class Dragon_Pokemon(Pokemon):
+    def __init__(self, hp, attack, defence, dodge):
+        Pokemon.__init__(self, hp, attack, defence, dodge)
+        self.property = "dragon"
+        self.is_draconic_will=False
+
+    # 龙系克制龙，被龙克制
+    def restraint_dragon(self, other_pokemon):
+        return self.restraint(other_pokemon, "dragon", "dragon")
+
+    '''
+    龙属性特性: 龙魂（Draconic Will）
+    当我方生命降低至50%及以下时，在回合结束后，攻击力增加10点，防御力增加5点（每回合）
+    '''
+
+    def draconic_will(self):
+        if self.hp<=0.5*self.initial_hp:
+            self.is_draconic_will=True
+
+    def begin(self):
+        pass
+
+    def end(self):
+        self.draconic_will()
+        if self.is_draconic_will:
+            self.attack+=10
+            self.dodge+=5
+            self.is_draconic_will=False
+            print("龙属性被动使用成功")
 
 class Pokemon_PikaChu(Eletri_Pokemon):
     def __init__(self):
@@ -195,9 +286,7 @@ class Pokemon_Squirtle(Water_Pokemon):
     def change_shield(self):
         self.shield=True
 
-    def receive_damage(self, damage, pokemon=None):
-        if pokemon is None:
-            pokemon=self
+    def receive_damage(self, damage,pokemon,other_pokemon):
         if random.random()<=0.5:
             damage*=0.7
 
@@ -208,7 +297,7 @@ class Pokemon_Squirtle(Water_Pokemon):
         if pokemon.hp-damage<=0:
             pokemon.hp=0
         else:
-            pokemon.hp -= damage
+            pokemon.hp-=damage
 
 
 class Pokemon_Charmander(Fire_Pokemon):
@@ -226,15 +315,25 @@ class Pokemon_Charmander(Fire_Pokemon):
     def change_flame_charge(self):
         self.flame_charge=not self.flame_charge
 
+class Pokemon_Galcidrake(Ice_Pokemon,Dragon_Pokemon):
+    def __init__(self):
+        Ice_Pokemon.__init__(self, hp=110, attack=30, defence=8, dodge=0.12)
+        Dragon_Pokemon.__init__(self,hp=110,attack=30,defence=8,dodge=0.12)
+        self.name = "Galcidrake"
+        self.skill_data = Galcidrake_skills()
+        self.skill_data.add_skills_to_list()
+        self.skills = self.skill_data.skill_list
+
 '''
 自己设计的宝可梦
-先设计一个比较普通的：
-烈火战神
-hp:200,攻击力：50，防御力：1，属性：火，闪避率：0
-1.灵魂收割：对敌人造成0.7倍攻击力的！普通！伤害，并且自己也受到相同的伤害
-2.龙息喷射：对敌人造成固定40点的攻击伤害，并且有３０％的概率施加恐惧效果
-恐惧效果：
-对手降在下一回合跳过自己的行动
+双属性宝可梦！
+龙、冰
+属性: Ice/Dragon
+基础数值:
+血量 (HP): 110
+攻击力 (Attack): 30
+防御力 (Defense): 8
+闪避率 (Dodge Rate): 12%
 '''
 
 def create_pokemon_list():
@@ -242,6 +341,7 @@ def create_pokemon_list():
     pokemon_bulbasuar=Pokemon_Bulbasuar()
     pokemon_squirtle=Pokemon_Squirtle()
     pokemon_charmander=Pokemon_Charmander()
+    pokemon_galcidrake=Pokemon_Galcidrake()
 
     pokemon_list=[]
 
@@ -249,6 +349,7 @@ def create_pokemon_list():
     pokemon_list.append(pokemon_bulbasuar)
     pokemon_list.append(pokemon_squirtle)
     pokemon_list.append(pokemon_charmander)
+    pokemon_list.append(pokemon_galcidrake)
 
     return pokemon_list
 
@@ -289,7 +390,7 @@ class PikaChu_skills(Skills):
             other_pokemon.try_dodge()
 
             now_damage=1.4*pokemon.restraint_eletri(other_pokemon)
-            other_pokemon.receive_damage(now_damage,other_pokemon)
+            other_pokemon.receive_damage(now_damage,other_pokemon,pokemon)
             pokemon.print_damage_happened(other_pokemon, now_damage, "Thunderbolt")
 
             #麻痹效果
@@ -306,14 +407,14 @@ class PikaChu_skills(Skills):
             other_pokemon.try_dodge()
 
             now_damage=pokemon.attack
-            other_pokemon.receive_damage(now_damage, other_pokemon)
+            other_pokemon.receive_normal_damage(now_damage, other_pokemon,pokemon)
             pokemon.print_damage_happened(other_pokemon, now_damage, "Quick_Attack")
             if random.random()<=0.1:
                 print("触发第二次攻击")
                 try:
                     other_pokemon.try_dodge()
 
-                    other_pokemon.receive_damage(now_damage, other_pokemon)
+                    other_pokemon.receive_normal_damage(now_damage, other_pokemon,pokemon)
                     pokemon.print_damage_happened(other_pokemon, now_damage, "Quick_Attack")
 
 
@@ -334,7 +435,7 @@ class Bulbasaur_skills(Skills):
 
             #这里补充，草属性伤害十点。
             now_damage=pokemon.restraint_grass(other_pokemon)
-            other_pokemon.receive_damage(now_damage,other_pokemon)
+            other_pokemon.receive_damage(now_damage,other_pokemon,pokemon)
             pokemon.print_damage_happened(other_pokemon, now_damage, "Seed_Bomb")
             #这里需要实现中毒效果
 
@@ -343,7 +444,7 @@ class Bulbasaur_skills(Skills):
                 other_pokemon.state.append(poision_effect)
 
             #以下是斩杀
-            if other_pokemon.hp<=1:
+            if other_pokemon.hp<=20:
                 other_pokemon.hp=0
 
         except DodgeException as e:
@@ -367,7 +468,7 @@ class Squirtle_skills(Skills):
             other_pokemon.try_dodge()
 
             now_damage = 1.4 * pokemon.restraint_water(other_pokemon)
-            other_pokemon.receive_damage(now_damage, other_pokemon)
+            other_pokemon.receive_damage(now_damage, other_pokemon,pokemon)
             pokemon.print_damage_happened(other_pokemon, now_damage, "Aqua_Jet")
 
         except DodgeException as e:
@@ -391,7 +492,7 @@ class Charmander_skills(Skills):
             try:
                 other_pokemon.try_dodge()
                 now_damage = pokemon.restraint_fire(other_pokemon)
-                other_pokemon.receive_damage(now_damage, other_pokemon)
+                other_pokemon.receive_damage(now_damage, other_pokemon,pokemon)
                 pokemon.print_damage_happened(other_pokemon, now_damage, "Ember")
                 if random.random() <= 0.1:
                     #烧伤
@@ -419,6 +520,7 @@ class Charmander_skills(Skills):
 
             now_damage=3*pokemon.restraint_fire(other_pokemon)
             other_pokemon.dodge+=0.2
+            print("蓄力成功")
 
             try:
                 other_pokemon.try_dodge()
@@ -428,7 +530,7 @@ class Charmander_skills(Skills):
                     other_pokemon.state.append(burn_effect)
                     # 烧伤状态
 
-                other_pokemon.receive_damage(now_damage, other_pokemon)
+                other_pokemon.receive_damage(now_damage, other_pokemon,pokemon)
                 pokemon.print_damage_happened(other_pokemon, now_damage, "Flame_Charge")
 
                 pokemon.is_attack = True
@@ -437,6 +539,70 @@ class Charmander_skills(Skills):
                 print(e)
 
             other_pokemon.dodge -= 0.2
+
+class Galcidrake_skills(Skills):
+    def __init__(self):
+        super().__init__()
+        self.glacial_surge_cold=0
+
+    @Skills.add_is_skill
+    def Frozen_Fang(self,other_pokemon,pokemon):
+        try:
+            other_pokemon.try_dodge()
+
+            now_damage=pokemon.attack*1.6
+            other_pokemon.receive_damage(now_damage,other_pokemon,pokemon)
+            pokemon.print_damage_happened(other_pokemon,now_damage,"Frozen_Fang")
+            if random.random()<=0.3:
+                if pokemon.attack-5<=0:
+                    pokemon.attack=0
+                else:
+                    pokemon.attack-=5
+                print("自己陷入龙惧状态，攻击力减5")
+
+        except DodgeException as e:
+            print(e)
+
+        if self.glacial_surge_cold>0:
+            self.glacial_surge_cold-=1
+
+
+    @Skills.add_is_skill
+    def Glacial_Surge(self,other_pokemon,pokemon):
+        if self.glacial_surge_cold!=0:
+            print(f"这个技能正在冷却中，还剩下{self.glacial_surge_cold}回合后才能使用,自动跳转至frozen_fang")
+            self.Frozen_Fang(other_pokemon,pokemon)
+        else:
+            try:
+                other_pokemon.try_dodge()
+
+                now_damage=0.7*pokemon.restraint_ice(other_pokemon)
+                other_pokemon.receive_damage(now_damage,other_pokemon,pokemon)
+                other_pokemon.dodge-=0.05
+                pokemon.dodge+=0.05
+                pokemon.hp+=30
+                pokemon.print_damage_happened(other_pokemon,now_damage,"Glacial_Surge")
+                print("对敌方宝可梦造成40点固定冰属性伤害，并使它们的闪避率降低5%。Glacidrake的闪避率增加5%，并恢复30的生命")
+
+            except DodgeException as e:
+                print(e)
+            self.glacial_surge_cold=3
+
+''' 
+技能:
+1. Frozen Fang
+类型: Dragon
+效果:
+对目标造成攻击力的1.6倍的普通！伤害，并有30%几率使自己陷入“龙惧”状态
+龙惧：被自己的技能吓到了，普通攻击力减少5点
+
+2. Glacial Surge
+类型: Ice
+效果:
+召唤一场寒冰风暴，对敌方宝可梦造成0.7倍冰属性伤害，并使它们的闪避率降低5%。
+Glacidrake的闪避率增加5%，并恢复30的生命
+冷却时间: 3回合。
+'''
 
 class Effect:
     name:str
@@ -466,8 +632,8 @@ class Poision_Effect(Effect):
         super().__init__(duration)
 
     def apply(self,pokemon,my_pokemon=None):
-        damage=pokemon.hp*0.1
-        pokemon.receive_damage(damage,pokemon)
+        damage=pokemon.initial_hp*0.1
+        pokemon.receive_damage(damage,pokemon,my_pokemon)
         self.print_damage(pokemon,damage)
 
 class Parasitic_Seed_Effect(Poision_Effect):
@@ -479,7 +645,7 @@ class Parasitic_Seed_Effect(Poision_Effect):
     def apply(self, pokemon,my_pokemon=None):
         now_restore=pokemon.initial_hp*0.1
         now_damage=now_restore
-        pokemon.receive_damage(now_damage,pokemon)
+        pokemon.receive_damage(now_damage,pokemon,my_pokemon)
         if pokemon.hp+pokemon.initial_hp*0.1>pokemon.initial_hp:
             pokemon.hp=pokemon.initial_hp
         else:
@@ -495,7 +661,7 @@ class Burn_Effect(Effect):
         self.damage=damage
 
     def apply(self,pokemon,my_pokemon=None):
-        pokemon.receive_damage(self.damage,pokemon)
+        pokemon.receive_damage(self.damage,pokemon,my_pokemon)
         self.print_damage(pokemon,self.damage)
 
 class Numb_Effect(Effect):
@@ -576,7 +742,10 @@ class Play:
                 chosen_pokemon=self.player_team[current_choose-1]
                 if chosen_pokemon.alive:  #这里得另外实现
                     self.current_p_pokemon=chosen_pokemon
-                    self.current_p_pokemon.now_turn = self.turn
+                    if self.current_c_pokemon is None:
+                        self.current_p_pokemon.now_turn=self.turn
+                    else:
+                        self.current_p_pokemon.now_turn=self.current_c_pokemon.now_turn
                     return chosen_pokemon
                 else:
                     print("这只宝可梦昏厥了，请重新选择")
@@ -663,8 +832,8 @@ class Play:
             print("此回合，玩家跳过！")
         else:
             print("玩家使用技能")
-            self.current_p_pokemon.now_turn+=1
             self.p_chosse_skills()
+            self.current_p_pokemon.now_turn+=1
 
             self.check_game_status()
 
@@ -681,8 +850,8 @@ class Play:
             print("此回合，电脑跳过！")
         else:
             print("电脑使用技能")
-            self.current_c_pokemon.now_turn+=1
             self.c_choose_skills()
+            self.current_c_pokemon.now_turn+=1
 
             self.check_game_status()
 
