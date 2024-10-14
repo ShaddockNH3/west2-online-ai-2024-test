@@ -580,9 +580,9 @@ class Galcidrake_skills(Skills):
                 other_pokemon.receive_damage(now_damage,other_pokemon,pokemon)
                 other_pokemon.dodge-=0.05
                 pokemon.dodge+=0.05
-                pokemon.hp+=30
+                pokemon.receive_restore(30)
                 pokemon.print_damage_happened(other_pokemon,now_damage,"Glacial_Surge")
-                print("对敌方宝可梦造成40点固定冰属性伤害，并使它们的闪避率降低5%。Glacidrake的闪避率增加5%，并恢复30的生命")
+                print("对方闪避率降低5%。Glacidrake的闪避率增加5%，并恢复30的生命")
 
             except DodgeException as e:
                 print(e)
