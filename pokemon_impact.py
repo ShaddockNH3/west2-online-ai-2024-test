@@ -554,11 +554,11 @@ class Galcidrake_skills(Skills):
             other_pokemon.receive_damage(now_damage,other_pokemon,pokemon)
             pokemon.print_damage_happened(other_pokemon,now_damage,"Frozen_Fang")
             if random.random()<=0.3:
-                if pokemon.attack-5<=0:
-                    pokemon.attack=0
+                if other_pokemon.attack-5<=0:
+                    other_pokemon.attack=10
                 else:
-                    pokemon.attack-=5
-                print("自己陷入龙惧状态，攻击力减5")
+                    other_pokemon.attack-=5
+                print("对方宝可梦陷入龙惧状态，攻击力减5，最多减少到10")
 
         except DodgeException as e:
             print(e)
