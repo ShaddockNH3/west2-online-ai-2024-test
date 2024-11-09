@@ -2,6 +2,8 @@ import requests
 import re
 import pandas as pd
 
+
+
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
 }
@@ -14,19 +16,53 @@ def normal_get_id(li,url):
 def add_normal_url(agent,num):
     return 'https://jwch.fzu.edu.cn/info/'+agent+'/'+num+'.htm'
 
+def get_id(agent,num_list,url,num,ch):
+    normal_get_id(num_list,url)
+    num-=1
+    while num>=1:
+        current_url='https://jwch.fzu.edu.cn/jxtz/'+ch+'/'+str(num)+'.htm'
+        response=requests.get(url=current_url,headers=headers).text
+        pattern = r'info/\d+/(\d+)\.htm'
+        num_list.extend(re.findall(pattern, response))
+        num-=1
+
+
 def normal_get_one_resorces(agent,url,resource_list):
     dic={}
 
     response=requests.get(url=url,headers=headers)
     response.encoding='utf-8'
+
     dic['agent']=agent
     dic['title']=re.search(r'<title>(.*?)</title>',response.text).group(1)
-    dic['date']=re.search(r'<span class="xl_sj_icon">发布时间：(.*?)</span><span class="xl_sj_icon2">',response.text).group(1)
+    data_resorce=(re.search(r'发布时间：(.*?)</span>',response.text))
+    if  data_resorce:
+        dic['date']=data_resorce.group(1)
     dic['url']=url
 
     '''
     这里检查网页源码有没有附件之后，使用阿贾克斯请求来获取附件的个数和下载次数
     '''
+    dic['attachment']={}
+    dic['attachment']['url']=[]
+    dic['attachment']['name']=[]
+    dic['attachment']['webfile_id']=[]
+    dic['attachment']['times'] = []
+
+    pattern = r'info/\d+/(\d+)\.htm'
+
+    match_response=re.findall(r'a href="(/system/_content/download.jsp\?urltype=news.DownloadAttachUrl&owner=1744984858&wbfileid=(.*?))" target="_blank">(.*?)</a>',response.text)
+
+    for url, webfile_id, name in match_response:
+        dic['attachment']['url'].append(url)
+        dic['attachment']['webfile_id'].append(webfile_id)
+        dic['attachment']['name'].append(name)
+
+    for id in dic['attachment']['webfile_id']:
+        file_url='https://jwch.fzu.edu.cn/system/resource/code/news/click/clicktimes.jsp?wbnewsid='+id+'&owner=1744984858&type=wbnewsfile&randomid=nattach'
+        response_id=requests.get(url=file_url,headers=headers).text
+        times_match=re.search(r'{"wbshowtimes":(\d+),',response_id).group(1)
+        dic['attachment']['times'].append(times_match)
 
     resource_list.append(dic)
 
@@ -42,23 +78,68 @@ if __name__ == '__main__':
 
     zhk_agent = '1035'
     jxyx_agent = '1036'
+    jyjg_agent= '1037'
+    jhk_agent='1038'
+    sjk_agent='1039'
+    zlb_agent='1040'
+    tpxqglk_agent='1152'
+
+    #这里还差一个教材中心
 
     zhk_num_list = []
     jxyx_num_list = []
+    jyjg_num_list=[]
+    jhk_num_list=[]
+    sjk_num_list=[]
+    zlb_num_list=[]
+    tpxqglk_num_list=[]
 
     zhk_url = 'https://jwch.fzu.edu.cn/jxtz/zhk.htm'
     jxyx_url = 'https://jwch.fzu.edu.cn/jxtz/jxyx.htm'
+    jyjg_url='https://jwch.fzu.edu.cn/jxtz/jyjg.htm'
+    jhk_url='https://jwch.fzu.edu.cn/jxtz/jhk.htm'
+    sjk_url='https://jwch.fzu.edu.cn/jxtz/sjk.htm'
+    zlb_url='https://jwch.fzu.edu.cn/jxtz/zlb.htm'
+    tpxqglk_url='https://jwch.fzu.edu.cn/jxtz/tpxqglk.htm'
 
     zhk_resource_list=[]#封装一个列表，列表里的元素是字典
     jxyx_resource_list=[]
+    jyjg_resource_list=[]
+    jhk_resource_list=[]
+    sjk_resource_list=[]
+    zlb_resource_list=[]
+    tpxqglk_resource_list=[]
 
     #获取id
-    normal_get_id(zhk_num_list,zhk_url)
+    get_id(zhk_agent,zhk_num_list,zhk_url,20,'zhk')
+    get_id(jxyx_agent,jxyx_num_list,jxyx_url,80,'jxyx')
+    get_id(jyjg_agent,jyjg_num_list,jyjg_url,22,'jyjg')
+    get_id(jhk_agent,jhk_num_list,jhk_url,10,'jhk')
+    get_id(sjk_agent,sjk_num_list,sjk_url,45,'sjk')
+    get_id(zlb_agent,zlb_num_list,zlb_url,17,'zlb')
+    get_id(tpxqglk_agent,tpxqglk_num_list,tpxqglk_url,4,'tpxqglk')
 
 
     #获取数据
     normal_get_all_resorces(zhk_resource_list,zhk_num_list,zhk_agent)
+    normal_get_all_resorces(jxyx_resource_list,jxyx_num_list,jxyx_agent)
+    normal_get_all_resorces(jyjg_resource_list,jyjg_num_list,jyjg_agent)
+    normal_get_all_resorces(jhk_resource_list,jhk_num_list,jhk_agent)
+    normal_get_all_resorces(sjk_resource_list,sjk_num_list,sjk_agent)
+    normal_get_all_resorces(zlb_resource_list,zlb_num_list,zlb_agent)
+    normal_get_all_resorces(tpxqglk_resource_list,tpxqglk_num_list,tpxqglk_agent)
 
+    all_list=(zhk_resource_list+jxyx_resource_list+jyjg_resource_list+
+              jhk_resource_list+sjk_resource_list+zlb_resource_list+
+              tpxqglk_resource_list)
 
-    print(zhk_resource_list)
+    df=pd.json_normalize(all_list,sep='_')
 
+    df=df.explode(['attachment_url',
+                   'attachment_name',
+                   'attachment_webfile_id',
+                   'attachment_times']).reset_index(drop=True)
+
+    df.to_csv("fzu_edu.csv",index=False)
+
+    print("ok")
