@@ -783,6 +783,8 @@ class Play:
         self.current_c_pokemon.useskill(skill_option,self.current_p_pokemon)
 
     def finish_game(self):
+        print()
+        input("输入任意值后结束进程")
         sys.exit()
         #强行结束进程
 
@@ -937,3 +939,4 @@ if __name__=="__main__":
         play.a_game()
     else:
         print("选择失败，请重新开始选择")
+        input("输入任意值后结束进程")
