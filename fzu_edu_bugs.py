@@ -170,13 +170,13 @@ if __name__ == '__main__':
                      'attachment_webfile_id',
                      'attachment_times']).reset_index(drop=True)
 
-    df.to_csv("fzu_edu.csv", index=False)
+    df.to_csv("fzu_edu.csv", index=False,encoding='utf-8-sig')
 
     print('to csv ok')
 
     attach_urls_name = df[["attachment_url", "attachment_name"]]
 
-    folder_path = 'D:/The_Day_I_Became_a_God/Shaddock/3.bugs/fzu_all_attachment'
+    folder_path = 'D:/The_Day_I_Became_a_God/Shaddock/'
 
     for url, name in attach_urls_name.itertuples(index=False):
         if pd.isna(url):

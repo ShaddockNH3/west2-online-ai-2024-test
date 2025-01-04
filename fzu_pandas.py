@@ -120,6 +120,29 @@ def q4(agents):
     plt.show()
 
     print()
+    
+def q5(agents):
+    print("q5")
+    print("q5是基于时间与下载次数关系之间的分析，最终的出来是一张图")
+
+    df=pd.DataFrame(agents)
+
+    df['date']=pd.to_datetime(df['date'])
+    df_grouped=df.groupby('date').agg({'attachment_times': 'sum'}).reset_index()
+
+    plt.figure(figsize=(10, 6))
+    plt.scatter(df_grouped['date'], df_grouped['attachment_times'], color='blue', label='下载次数')
+
+    plt.title('附件下载次数与日期的关系', fontsize=16)
+    plt.xlabel('日期', fontsize=12)
+    plt.ylabel('下载次数', fontsize=12)
+
+    plt.xticks(rotation=45)
+
+    plt.grid(True)
+
+    plt.tight_layout()
+    plt.show()
 
 if __name__=="__main__":
     fzu_department = {
@@ -135,6 +158,9 @@ if __name__=="__main__":
 
     fzu_edu=pd.read_csv("fzu_edu.csv")
 
+    '''
     q2(fzu_edu["agent"],fzu_department)
     q3(fzu_edu[["agent","attachment_times"]],fzu_department)
     q4(fzu_edu["date"])
+    '''
+    q5(fzu_edu[["date","attachment_times"]])

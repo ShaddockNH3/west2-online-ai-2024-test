@@ -32,6 +32,7 @@ while i<=51:
         print(f"qestion {i-1} has been append")
 
         i += 1
+
     except:
         print(f"Element {i-1} not found, scrolling...")
         driver.execute_script(f"window.scrollBy(0, {1000});")
