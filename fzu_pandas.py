@@ -158,9 +158,18 @@ if __name__=="__main__":
 
     fzu_edu=pd.read_csv("fzu_edu.csv")
 
-    '''
-    q2(fzu_edu["agent"],fzu_department)
-    q3(fzu_edu[["agent","attachment_times"]],fzu_department)
-    q4(fzu_edu["date"])
-    '''
-    q5(fzu_edu[["date","attachment_times"]])
+    a=int(input("请输入一个数字（从2到5中选择一个）："))
+
+    if a==2:
+        q2(fzu_edu["agent"],fzu_department)
+    elif a==3:
+        q3(fzu_edu[["agent","attachment_times"]],fzu_department)
+    elif a==4:
+        q4(fzu_edu["date"])
+    elif a==5:
+        q5(fzu_edu[["date","attachment_times"]])
+    else:
+        print("输入无效，程序结束")
+
+    print()
+    input("输入任意结束")
