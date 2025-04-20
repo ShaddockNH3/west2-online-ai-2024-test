@@ -1,0 +1,546 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="description" content ="CS 61A: Structure and Interpretation of Computer Programs" />
+    <meta name="keywords" content ="CS 61A, Computer Science, CS, 61A, Programming, John DeNero, Berkeley, EECS" />
+    <meta name="author" content ="John DeNero, Hany Farid" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="../../assets/js/hl.js"></script>
+    <script src="../../assets/js/toggledarkmode.js"></script>
+    <script>
+        // we aren't registering builtins since
+        //      (1) they don't render differently in the current CSS from other names
+        //      (2) it's a mess to list all of them. You can extract from the site but that takes effort
+        // if (1) ceases to be true, (2) might be worth the effort. For now, we're leaving as is
+        hljsRegister({
+            'keyword': "define if cond and or let begin lambda mu quote delay cons-stream set! quasiquote unquote unquote-splicing define-macro"
+        });
+        hljs.initHighlightingOnLoad();
+    </script>
+    <script src="../../assets/js/dark-mode.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata|Roboto:300,400,500|Work+Sans:400,700">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/mono-blue.css">
+    <link rel="icon" href="../../assets/images/favicon.ico">
+
+    
+
+    <title>
+Study Guide: Interpreters | CS 61A Spring 2023
+</title>
+  </head>
+
+  <body id="index" class="home">
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container noselect">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-section">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../../index.html">
+            <img style="max-width:60px; margin-top: -20px;" class="logo" src="../../assets/images/logo.png"/>
+          </a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbar-collapse-section">
+          <ul class="nav navbar-nav navbar-right">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Calendar
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../../weekly.html">Weekly Schedule</a></li>
+                <li><a href="../../office-hours.html">Office Hours</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Links
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://sections.cs61a.org">Sections Tool</a></li>
+                <li><a href="https://oh.cs61a.org">Office Hours Queue</a></li>
+                <li><a href="https://go.cs61a.org/regrade-request">Request a Regrade</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Staff
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../../instructor.html">Instructors</a></li>
+                <li><a href="../../TAs.html">TAs</a></li>
+                <li><a href="../../tutors.html">Tutors</a></li>
+                <li><a href="../../academic-interns.html">Academic Interns</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Resources
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://go.cs61a.org/extensions">Request an Extension</a></li>
+                <li><a href="https://go.cs61a.org/accommodation-appts">Book an Accommodations Appointment</a></li>
+                <li><a href="../../resources.1.html">Topical Resources + Past Exams</a></li>
+                <li><a href="https://tutor.cs61a.org/">PythonTutor</a></li>
+                <li><a href="https://code.cs61a.org/">Code</a></li>
+                <li><a href="https://edstem.org/us/courses/34756/discussion/" target="_blank">Ed</a></li>
+                <li><a href="../../articles/campus-res/index.html">Department/Campus Resources</a></li>
+              </ul>
+            </li>
+            <li><a href="../../articles/about.html">Syllabus</a></li>
+            <li><a href="../../contact.1.html">Contact</a></li>
+            <li>
+              <label class="switch">
+                <input type="checkbox" id="toggle-mode-cb">
+                <span class="slider round"></span>
+              </label>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main id="content" class="container">
+      
+<div class='row'>
+  <div class='col-md-9'>
+    <header>
+      <h1>
+        
+Study Guide: Interpreters
+
+        
+        
+        
+      </h1>
+    </header>
+    
+<div class="alert storable-login-status"></div>
+
+<h2>Instructions</h2>
+
+<p>This is a study guide with links to past
+lectures, assignments, and handouts, as well as
+additional practice problems to assist you in learning the concepts.</p>
+
+
+  <p><strong>Assignments</strong></p>
+  <blockquote><p>Important: For solutions to these assignments once they have been released, see <a href="../../index.html">the main website</a></p></blockquote>
+
+<ul>
+  <li><a href="../../lab/lab11.1.html">Lab 11</a></li>
+  <li><a href="../../hw/hw08.1.html">Hw 8</a></li>
+</ul>
+
+
+
+  <p><strong>Handouts</strong></p>
+  <ul>
+  <li><a href="https://cs61a.org/disc/disc10.pdf">Discussion 10</a></li>
+</ul>
+
+
+
+  <p><strong>Lectures</strong></p>
+  <ul>
+  <li><a href="https://fa20.cs61a.org/assets/slides/30-Interpreters_full.pdf">Interpreters</a></li>
+</ul>
+
+
+
+  <p><strong>Readings</strong></p>
+  <ul>
+  <li><a href="http://composingprograms.com/pages/35-interpreters-for-languages-with-abstraction.html">Section 3.5</a></li>
+</ul>
+
+
+
+    
+<h1 id="guides">Guides</h1>
+
+
+<p>How does the computer make sense of the questions we ask in the interpreter?</p>
+
+<pre><code class="scheme">scm&gt; (+ 1 2)
+3</code></pre>
+
+
+
+<p>When we type the characters, <code>(+ 1 2)</code>, how does a computer understand the
+meaning of each character: the open parenthesis <code>(</code>, the plus symbol, <code>+</code>, the
+space character <code></code>, and so forth?</p>
+
+
+<h2 id="interpreters">Interpreters</h2>
+
+
+<p>An <strong>interpreter</strong> is a program which can directly execute instructions in a
+programming language like Python or Scheme. To do this, the interpreter needs
+to understand how the rules of a language work, and to do that, the interpreter
+needs to be designed (by a human, usually!) to follow those rules. In CS 61A,
+we'd like to learn how the interpreter <em>program</em> works and understand the ideas
+that go into an interpreter to reveal the magic behind how a computer makes
+sense of <code>(+ 1 2)</code> in Scheme and <code>1 + 2</code> in Python.</p>
+
+
+<h3 id="repl">REPL</h3>
+
+
+<p>The interpreters we study in this course are designed around a
+<strong>Read-Eval-Print-Loop</strong>.</p>
+
+<p>The interpreter waits for our input, looping until we type in a string of
+characters, <code>(+ 1 2)</code>.</p>
+
+<ol>
+  <li><p>In the <strong>Read</strong> stage, we take the string of characters and convert those
+  characters into data structures that can be understood by the interpreter. In
+  the Scheme interpreter, we'd like to take the string of characters <code>(+ 1 2)</code>
+  and convert it into a <code>Pair</code> structure, <code>Pair(&#x27;+&#x27;, Pair(1, Pair(2, nil)))</code>.</p>
+
+  <ul>
+    <li>The <strong>Lexer</strong> takes the string <code>(+ 1 2)</code> and splits into meaningful
+    <em>tokens</em> wherever there is whitespace or a syntax character like the open
+    parenthesis <code>(</code>. The lexer returns a structure that kind of resembles a list
+    of individual characters like <code>[&#x27;(&#x27;, &#x27;+&#x27;, 1, 2, &#x27;)&#x27;]</code>.</li>
+    <li>The <strong>Parser</strong> takes the list of smaller strings and converts them into
+    a data structure that understands the nesting in the language. It's not too
+    tricky to convert the example above from <code>[&#x27;(&#x27;, &#x27;+&#x27;, &#x27;1&#x27;, &#x27;2&#x27;, &#x27;)&#x27;]</code> to
+    <code>Pair(&#x27;+&#x27;, Pair(1, Pair(2, nil)))</code>. But the pair structure is much more useful
+    when we want to work on a more nested example like <code>(= (+ 1 2) 3)</code> which the lexer converts
+    into the flat list <code>[&#x27;(&#x27;, &#x27;=&#x27;, &#x27;(&#x27;, &#x27;+&#x27;, 1, 2, &#x27;)&#x27;, 3, &#x27;)&#x27;]</code>. As the expressions
+    get more and more complicated, using a nested data structure helps the computer
+    make sense of the expression in chunks, much like how we humans make sense of
+    a Scheme expression as well.</li>
+  </ul></li>
+  <li><p>In the <strong>Eval</strong> stage, we evaluate the nested data structure to a value.</p>
+
+  <ul>
+    <li>If the expression is simple, like a number or a boolean, we can just
+    return the number or boolean itself without any further evaluation. Evaluating
+    1 in the global frame returns the number <code>1</code>. If we pass in a name like 'x',
+    we'll try to evaluate the name 'x' in the current environment, looking up
+    through the parent frames as necessary.</li>
+    <li>If we pass a call expression like <code>Pair(&#x27;+&#x27;, Pair(1, Pair(2, nil)))</code> into
+    the evaluator, we'll follow the call expression evaluation rules to determine
+    the value of the value of the expression. We'll evaluate the operator, <code>&#x27;+&#x27;</code>,
+    to the built-in procedure which adds values, and each operand, 1 and 2, before
+    applying the procedure to the arguments.</li>
+    <li>if the expression is a special form like
+    <code>Pair(&#x27;define&#x27;, Pair(&#x27;x&#x27;, Pair(1, nil)))</code> (after parsing <code>(define x 1)</code>), then
+    we'll follow the special form evaluation rules defined in the Scheme
+    interpreter. In this example, we don't need to evaluate the name 'x' (it's just
+    a name!) but we do need to evaluate the value, the number <code>1</code>.</li>
+  </ul></li>
+  <li>In the <strong>Print</strong> stage, we take the value we determined in the evaluation
+  stage and figure out how to display the value to the user. Even if an
+  expression evaluates to a number, the computer actually stores that number in
+  its memory as a bunch of 0 and 1 binary digits! We take that number and convert
+  it back to a more readable representation like '3'!</li>
+  <li>Once we've displayed the value, we can wait in a <strong>Loop</strong> until the user
+  asks another question to the interpreter.</li>
+</ol>
+
+<p>There are some special rules in the parser to handle scenarios like the quote
+operator <code>&#x27;</code>. Run <code>python3 scheme_reader.py</code> to explore its behavior.</p>
+
+<pre><code>read&gt; &#x27;1
+str : (quote 1)
+repr: Pair(&#x27;quote&#x27;, Pair(1, nil))
+read&gt; &#x27;(1 2 3)
+str : (quote (1 2 3))
+repr: Pair(&#x27;quote&#x27;, Pair(Pair(1, Pair(2, Pair(3, nil))), nil))</code></pre>
+
+<p>Likewise, the evaluator also needs to handle the behavior of special forms
+differently from standard call expressions. The <a href="../../articles/scheme-spec/index.html#special-forms">Scheme Specification</a>
+contains more information, and the special form evaluation rules will also be
+briefly described by example here.</p>
+
+
+<h3 id="counting-calls">Counting Calls</h3>
+
+
+<p>One way of understanding what occurs in the Scheme interpreter is by counting
+the number of calls to <code>scheme_eval</code> that occur when evaluating an expression.</p>
+
+<p>Atomic data types like numbers, booleans, strings, symbols, etc. only take a
+single step to evaluate. Primitive expressions like names evaluate to a value
+in one step as well.</p>
+
+<pre><code>Expression: 1
+Eval:       &#x2d;       (1 scheme_eval)
+
+Expression: #t
+Eval:       &#x2d;&#x2d;      (1 scheme_eval)
+
+Expression: &#x27;cs61a
+Eval:       &#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;  (1 scheme_eval)</code></pre>
+
+
+<h4 id="call-expressions">Call Expressions</h4>
+
+
+<p>Call expressions follow the call expression evaluation procedure.</p>
+
+<pre><code>Expression: (+ 1 2)
+Eval:       &#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;
+             &#x2d; &#x2d; &#x2d;  (4 scheme_eval)
+Apply:      ~~~~~~~ (1 scheme_apply)
+
+Expression: (= (quotient 5 1) (+ 1 2))
+Eval:       &#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;
+             &#x2d; &#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;
+                &#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d; &#x2d; &#x2d;
+Apply:         ~~~~~~~~~~~~~~
+Eval:                         &#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;
+                               &#x2d; &#x2d; &#x2d;   (10 scheme_eval)
+Apply:                        ~~~~~~~
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~ (3 scheme_apply)</code></pre>
+
+
+<h4 id="special-forms">Special Forms</h4>
+
+
+<p>Special forms follow different evaluation rules. A more complete description of
+their behaviors is described in the <a href="../../proj/scheme.1.html">Scheme Project</a> and the
+<a href="../../articles/scheme-spec/index.html#special-forms">Scheme Specification</a>.</p>
+
+<p>Unlike call expressions where we need to evaluate the operator, special forms
+do not need to evaluate the first term. In <code>scheme_eval</code>, the logic looks like
+this.</p>
+
+<pre><code>SPECIAL_FORMS = {
+    &#x27;and&#x27;: do_and_form,
+    &#x27;begin&#x27;: do_begin_form,
+    &#x27;cond&#x27;: do_cond_form,
+    &#x27;define&#x27;: do_define_form,
+    &#x27;if&#x27;: do_if_form,
+    &#x27;lambda&#x27;: do_lambda_form,
+    &#x27;let&#x27;: do_let_form,
+    &#x27;or&#x27;: do_or_form,
+    &#x27;quote&#x27;: do_quote_form,
+}
+
+first, rest = expr.first, expr.second
+if scheme_symbolp(first) and first in SPECIAL_FORMS:
+    return SPECIAL_FORMS[first](rest, env)</code></pre>
+
+<p>Instead of continuing with the call expression evaluation procedure, we handle
+the special form with its own set of rules.</p>
+
+<pre><code>Expression: (if (= 1 1) #t #f)
+Eval:       &#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;
+                &#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;        (note that if is not evaluated)
+                 &#x2d; &#x2d; &#x2d;
+Apply:          ~~~~~~~        (1 scheme_apply)
+Eval:                   &#x2d;&#x2d;     (6 scheme_eval)
+                               (note that #f is not evaluated)</code></pre>
+
+<p>We can also trace through how our Scheme interpreter handles another special
+form, <code>cond</code>.</p>
+
+<pre><code>Expression: (cond ((= 1 2) #f) (else #t))
+Eval:       &#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;
+                   &#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;
+                    &#x2d; &#x2d; &#x2d;
+Apply:             ~~~~~~~               (1 scheme_apply)
+Eval:                                &#x2d;&#x2d;  (6 scheme_eval)</code></pre>
+
+
+<h1 id="practice-problems">Practice Problems</h1>
+
+
+
+<h3 id="q1-eval-apply">Q1: Eval/Apply</h3>
+
+
+<p>This question is from the CS 61A Summer 2017 Final Exam.</p>
+
+<p>With your Project 4 implementation, how many total calls to <code>scheme_eval</code> and
+<code>scheme_apply</code> would be made when evaluating the following two expressions?
+Assume that you are not using the tail call optimized <code>scheme_eval_optimized</code>
+function.</p>
+
+<p>Suppose we have already evaluated the following definition in the current
+environment.</p>
+
+<pre><code>(define lst (list 1 2 3))</code></pre>
+
+<p>How many calls are made to <code>scheme_eval</code> and <code>scheme_apply</code>?</p>
+
+<pre><code>(+ (car lst) (&#x2d; 5 (car (cdr lst))))</code></pre>
+
+<div class="solution solution-1">
+
+<pre><code>13 eval calls, 5 apply calls</code></pre>
+
+</div>
+        <button id='solution-1' class='btn btn-outline btn-lg solutiontoggle solution'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+<p>How many calls are made to <code>scheme_eval</code> and <code>scheme_apply</code>?</p>
+
+<pre><code>((if (or (null? lst) (null? (cdr lst)))
+     (lambda (s) 0)
+     (lambda (s) (car (cdr s))))
+ lst)</code></pre>
+
+<div class="solution solution-2">
+
+<pre><code>18 eval calls, 6 apply calls</code></pre>
+
+</div>
+        <button id='solution-2' class='btn btn-outline btn-lg solutiontoggle solution'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+  </div>
+
+  <div class='col-md-3 sticky'>
+    <nav class='hidden-print hidden-sm hidden-xs sidebar'>
+      <ul>
+  <li><a href="index.html#guides">Guides</a></li>
+  <ul>
+    <li><a href="index.html#interpreters">Interpreters</a></li>
+    <ul>
+      <li><a href="index.html#repl">REPL</a></li>
+      <li><a href="index.html#counting-calls">Counting Calls</a></li>
+      <ul>
+        <li><a href="index.html#call-expressions">Call Expressions</a></li>
+        <li><a href="index.html#special-forms">Special Forms</a></li>
+      </ul>
+    </ul>
+  </ul>
+  <li><a href="index.html#practice-problems">Practice Problems</a></li>
+  <ul>
+    <li><a href="index.html#q1-eval-apply">Q1: Eval/Apply</a></li>
+  </ul>
+</ul>
+    </nav>
+  </div>
+</div>
+
+    </main>
+
+    <footer class="container">
+      <div class="row text-center">
+        <div class="col col-sm-4">
+          <h3><a href="../../index.html">CS 61A</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../weekly.html">Weekly Schedule</a></li>
+            <li><a href="../../office-hours.html">Office Hours</a></li>
+            <li><a href="../../staff.html">Staff</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../../resources.1.html">Resources</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../articles/studying.html">Studying Guide</a></li>
+            <li><a href="../../articles/debugging.html">Debugging Guide</a></li>
+            <li><a href="../../articles/composition.html">Composition Guide</a></li>
+            <li><a href="../../articles/pair-programming.html">Pair Programming</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../../articles/about.html">Policies</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../articles/about.html#assignments">Assignments</a></li>
+            <li><a href="../../articles/about.html#exams">Exams</a></li>
+            <li><a href="../../articles/about.html#grading">Grading</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/loader.min.js"></script>
+  <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/editor/editor.main.min.css">
+  <script>
+      require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs' }});
+      window.MonacoEnvironment = { getWorkerUrl: () => URL.createObjectURL(new Blob([`
+      self.MonacoEnvironment = {
+          baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min'
+      };
+      importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/base/worker/workerMain.min.js');
+  `], { type: 'text/javascript' }))
+  };
+  </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.15.5/js/jsplumb.min.js"></script>
+    <script src="../../assets/js/network_storage.js"></script>
+    <script src="../../assets/js/storable.js"></script>
+    <script src="../../assets/js/editor.js"></script>
+    <script src="../../assets/js/copy-button.js"></script>
+    <script src="../../assets/js/env-diagram.js"></script>
+    
+<script src="../../assets/js/sketchy.js"></script>
+<script>
+  $('.sidebar ul').addClass('nav nav-stacked noselect');
+  $('body').scrollspy({
+    target: '.sidebar',
+    offset: 40
+  });
+
+  function goToId(id) {
+    var target = $(id);
+    target.parent().show();
+    $('html,body').animate({
+      scrollTop: target.offset().top,
+    }, 100);
+    $("body").scrollspy('refresh');
+  }
+
+  if (location.hash) {
+    setTimeout(function() {
+      if (location.hash) {
+        goToId(location.hash);
+      }
+    }, 1);
+  }
+
+  $("a").click(function(event) {
+    var urlBeforeHashRegEx = new RegExp("^"+window.location.href.split("#")[0]);
+    if (/^#/.test(this.hash) && urlBeforeHashRegEx.test(this.href)) {
+      event.preventDefault();
+      goToId(this.hash);
+      document.location.hash = this.hash;
+    }
+  });
+</script>
+
+<script type="text/javascript" src="../../assets/js/config.js"></script>
+<script>
+$(function() {
+    $('.solutiontoggle').css('display', 'inline-block');
+      $('.solutiontoggle').click(function() {
+        var solution_id = $(this).attr('id');
+        $('div.' + solution_id).slideToggle(600);
+    });
+    $('.alwaystoggle').css('display', 'inline-block');
+    $('.alwaystoggle').click(function() {
+      var solution_id = $(this).attr('id');
+      $('div.' + solution_id).slideToggle(600);
+    });
+});
+</script>
+
+  </body>
+</html>

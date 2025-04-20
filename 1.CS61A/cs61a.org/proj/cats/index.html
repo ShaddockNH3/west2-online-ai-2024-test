@@ -1,0 +1,1199 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="description" content ="CS 61A: Structure and Interpretation of Computer Programs" />
+    <meta name="keywords" content ="CS 61A, Computer Science, CS, 61A, Programming, John DeNero, Berkeley, EECS" />
+    <meta name="author" content ="John DeNero, Hany Farid" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="../../assets/js/hl.js"></script>
+    <script src="../../assets/js/toggledarkmode.js"></script>
+    <script>
+        // we aren't registering builtins since
+        //      (1) they don't render differently in the current CSS from other names
+        //      (2) it's a mess to list all of them. You can extract from the site but that takes effort
+        // if (1) ceases to be true, (2) might be worth the effort. For now, we're leaving as is
+        hljsRegister({
+            'keyword': "define if cond and or let begin lambda mu quote delay cons-stream set! quasiquote unquote unquote-splicing define-macro"
+        });
+        hljs.initHighlightingOnLoad();
+    </script>
+    <script src="../../assets/js/dark-mode.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata|Roboto:300,400,500|Work+Sans:400,700">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/mono-blue.css">
+    <link rel="icon" href="../../assets/images/favicon.ico">
+
+    
+
+<link href="../../assets/css/project.css" rel="stylesheet" type="text/css">
+
+
+    <title>
+Project 2: CS 61A Autocorrected Typing Software | CS 61A Spring 2023
+</title>
+  </head>
+
+  <body id="index" class="home">
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container noselect">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-section">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../../index.html">
+            <img style="max-width:60px; margin-top: -20px;" class="logo" src="../../assets/images/logo.png"/>
+          </a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbar-collapse-section">
+          <ul class="nav navbar-nav navbar-right">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Calendar
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../../weekly.html">Weekly Schedule</a></li>
+                <li><a href="../../office-hours.html">Office Hours</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Links
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://sections.cs61a.org">Sections Tool</a></li>
+                <li><a href="https://oh.cs61a.org">Office Hours Queue</a></li>
+                <li><a href="https://go.cs61a.org/regrade-request">Request a Regrade</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Staff
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../../instructor.html">Instructors</a></li>
+                <li><a href="../../TAs.html">TAs</a></li>
+                <li><a href="../../tutors.html">Tutors</a></li>
+                <li><a href="../../academic-interns.html">Academic Interns</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Resources
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://go.cs61a.org/extensions">Request an Extension</a></li>
+                <li><a href="https://go.cs61a.org/accommodation-appts">Book an Accommodations Appointment</a></li>
+                <li><a href="../../resources.1.html">Topical Resources + Past Exams</a></li>
+                <li><a href="https://tutor.cs61a.org/">PythonTutor</a></li>
+                <li><a href="https://code.cs61a.org/">Code</a></li>
+                <li><a href="https://edstem.org/us/courses/34756/discussion/" target="_blank">Ed</a></li>
+                <li><a href="../../articles/campus-res/index.html">Department/Campus Resources</a></li>
+              </ul>
+            </li>
+            <li><a href="../../articles/about.html">Syllabus</a></li>
+            <li><a href="../../contact.1.html">Contact</a></li>
+            <li>
+              <label class="switch">
+                <input type="checkbox" id="toggle-mode-cb">
+                <span class="slider round"></span>
+              </label>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main id="content" class="container">
+      
+<div class='row'>
+  <div class='col-md-9'>
+    <header>
+      <h1>
+        
+Project 2: CS 61A Autocorrected Typing Software
+
+        
+        
+        <ul class="inline-block list-inline">
+          <li><a href="cats.zip" class="label label-outline">cats.zip</a></li>
+        </ul>
+        
+        
+      </h1>
+    </header>
+    
+<div class="haiku">
+  <img class="img-responsive center-block" id="cats_typing" src="images/cats_typing_still.gif" class="img-responsive center-block"/>
+
+<blockquote><cite>
+  Programmers dream of<br/>
+  Abstraction, recursion, and<br/>
+  Typing really fast.
+</cite></blockquote>
+</div>
+
+    
+
+<h2 id="introduction">Introduction</h2>
+
+
+<blockquote><p><strong>Important submission note:</strong> For full credit:</p>
+
+<ul>
+  <li>Submit with Phase 1 complete by <strong>Tuesday, February 21</strong>, worth 1 pt.</li>
+  <li>Submit with all phases complete by <strong>Friday, February 24</strong>.</li>
+</ul>
+
+<p>Try to attempt the problems in order, as some later problems will depend
+on earlier problems in their implementation and therefore also when
+running <code>ok</code> tests.</p>
+
+<p>The entire project can be completed with a partner.</p>
+
+<p>You can get 1 bonus point by submitting the entire project by
+<strong>Thursday, February 23</strong>.</p></blockquote>
+
+<p>In this project, you will write a program that measures typing speed.
+Additionally, you will implement typing autocorrect, which is a feature that
+attempts to correct the spelling of a word after a user types it. This project
+is inspired by <a href="https://play.typeracer.com/">typeracer</a>.</p>
+
+<blockquote><p>When students in the past have tried to implement the functions without
+thoroughly reading the problem description, they’ve often run into issues.
+😱
+<strong>Read each description thoroughly before starting to code.</strong></p></blockquote>
+
+
+<h2 id="final-product">Final Product</h2>
+
+
+<p>Our staff solution to the project can be interacted with at
+<a href="https://cats.cs61a.org">cats.cs61a.org</a>.
+If you'd like, feel free to try it out now.
+When you finish the project, you'll have implemented a significant part of
+this match yourself!</p>
+
+
+<h2 id="download-starter-files">Download starter files</h2>
+
+
+<p>You can download all of the project code as a <a href="cats.zip">zip archive</a>.
+This project includes several files, but your changes will be made only to
+<code>cats.py</code>. Here are the files included in the archive:</p>
+
+<ul>
+  <li><code>cats.py</code>: The typing test logic.</li>
+  <li><code>utils.py</code>: Utility functions for interacting with files and strings.</li>
+  <li><code>ucb.py</code>: Utility functions for CS 61A projects.</li>
+  <li><code>data/sample_paragraphs.txt</code>: A file containing text samples to be typed.
+  These are
+  <a href="https://github.com/kavigupta/wikivideos/blob/626de521e04ca643751ed85d549faca6ea528b1d/get_corpus.py">scraped</a>
+  Wikipedia articles about various subjects.</li>
+  <li><code>data/common_words.txt</code>: A file containing common
+  <a href="https://github.com/first20hours/google-10000-english/blob/master/google-10000-english-usa-no-swears.txt">English words in order of frequency</a>.</li>
+  <li><code>data/words.txt</code>: A file containing many more
+  <a href="https://github.com/first20hours/google-10000-english/blob/master/google-10000-english-usa-no-swears.txt">English words in order of frequency</a>.</li>
+  <li><code>data/final_diff_words.txt</code>: A file containing even more English words!</li>
+  <li><code>cats_gui.py</code>: A web server for the web-based graphical user interface (GUI).</li>
+  <li><code>gui_files</code>: A directory of files needed for the graphical user interface
+  (GUI).</li>
+  <li><code>multiplayer</code>: A directory of files needed to support multiplayer mode.</li>
+  <li><code>favicons</code>: A directory of icons.</li>
+  <li><code>images</code>: A directory of images.</li>
+  <li><code>ok</code>, <code>proj02.ok</code>, <code>tests</code>: Testing files.</li>
+</ul>
+
+
+
+
+<h2 id="logistics">Logistics</h2>
+
+
+
+<!-- <p>Remember that you can earn an additional bonus point by submitting the
+  project at least 24 hours before the deadline.</p> -->
+
+
+
+<p>The project is worth 20 points.
+19 points are for correctness
+and 1 point is for submitting Phase 1 by the checkpoint date.</p>
+
+
+<p>You will turn in the following files:</p>
+
+<ul>
+  <li><code>cats.py</code></li>
+</ul>
+
+<p>You do not need to modify or turn in any other files to complete the
+project. To submit the project, <b> submit the required files to the appropriate Gradescope assignment.</b></p>
+
+<p>For the functions that we ask you to complete, there may be some
+initial code that we provide. If you would rather not use that code,
+feel free to delete it and start from scratch. You may also add new
+function definitions as you see fit.</p>
+
+<p><b>However, please do not modify any other functions or edit any files not
+listed above</b>. Doing so may result in your code failing our autograder tests.
+Also, please do not change any function signatures (names, argument order, or
+number of arguments).</p>
+
+
+
+<p>Throughout this project, you should be testing the correctness of your code.
+It is good practice to test often, so that it is easy to isolate any problems.
+However, you should not be testing <i>too</i> often, to allow yourself time to
+think through problems.</p>
+
+<p>We have provided an <b>autograder</b> called <code>ok</code> to help you
+with testing your code and tracking your progress. The first time you run the
+autograder, you will be asked to <b>log in with your Ok account using your web
+browser</b>. Please do so. Each time you run <code>ok</code>, it will back up
+your work and progress on our servers.</p>
+
+<p>The primary purpose of <code>ok</code> is to test your implementations.</p>
+
+<!-- <p>First, some of the test cases are <i>locked</i>. To unlock tests, run the
+following command from your terminal:</p>
+
+<pre><code>python3 ok -u</code></pre>
+
+<p>This command will start an interactive prompt that looks like:</p>
+
+<pre>
+=====================================================================
+Assignment: CS 61A Autocorrected Typing Software
+Ok, version ...
+=====================================================================
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Unlocking tests
+
+At each "? ", type what you would expect the output to be.
+Type exit() to quit
+
+---------------------------------------------------------------------
+Question 0 &gt; Suite 1 &gt; Case 1
+(cases remaining: 1)
+
+&gt;&gt;&gt; Code here
+?
+</pre>
+
+<p>At the <code>?</code>, you can type what you expect the output to be. If you
+are correct, then this test case will be available the next time you run the
+autograder.</p>
+
+<p>The idea is to understand <i>conceptually</i> what your program should do
+first, before you start writing any code.</p>
+
+<p>Once you have unlocked some tests and written some code, you can check the
+correctness of your program using the tests that you have unlocked:</p>
+
+<pre>python3 ok</pre>
+
+<p>Most of the time, you will want to focus on a particular question. Use the
+<code>-q</code> option as directed in the problems below.</p>  -->
+
+<!-- <p>Second, there may be some test cases that are <i>hidden</i>. These test cases are
+<b>not</b> run by the command:</p> -->
+
+<!--<pre>python3 ok</pre>-->
+
+<!-- <p>They are only run when you submit:</p> -->
+
+<!-- <pre>python3 ok --submit</pre> -->
+
+<!-- <p> We keep test cases hidden to ensure that you write your code with the intention
+of solving the question at hand, not purely to pass the given tests. The hidden
+tests will be run when you submit your project. You will receive an email with part of
+the autograder results after submitting. However, the autograder has a 15 minute
+cooldown period. If you submit before 15 minutes have passed, the autograder will
+not run.</p> -->
+
+<!-- <p>We recommend that you submit <b>after you finish each
+problem</b>. Only your last submission will be graded. It is also useful for us
+to have more backups of your code in case you run into a submission issue. <b>If you forget to submit, your last backup will be automatically converted to a submission. </b></p>
+-->
+
+<!--<p>After you run this command, you will receive an email (to the address-->
+<!--that you used to sign up for Ok) that has the output from all <i>failed</i>-->
+<!--unlocked tests, including hidden tests, along with your score at the bottom. You-->
+<!--can continue submitting until you pass all the tests. However, you will receive-->
+<!--<b>at most one email every half hour</b>.</p>-->
+
+<!--<p>This buffer period is meant for you and your partner to try and understand-->
+<!--where your error comes from, and take some time to think through your code. We-->
+<!--encourage you to do this for all projects.</p>-->
+
+<!---
+<p>If you are trying to debug a test failure, you can launch an interactive session
+after the test is run with:</p>
+
+<pre><code>python3 ok &#x2d;q 05 &#x2d;i</code></pre>
+
+<p>This will run the tests and launch an interactive session if a test does not
+pass.</p>
+
+<pre><code>=====================================================================
+Assignment: Project 1: Hog
+Ok, version ....
+=====================================================================
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Running tests
+
+&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;
+Question ... &gt; Suite ... &gt; Case ...
+
+&gt;&gt;&gt; the_test()
+"expected value"
+
+# Error: expected
+#     "expected value"
+# but got
+#     None
+
+# Interactive console. Type exit() to quit
+&gt;&gt;&gt;</code></pre>
+-->
+
+
+<!--- <p>The <code>tests</code> folder is used to store autograder tests, so
+<b>do not modify it</b>. You may lose all your unlocking progress if you
+do. If you need to get a fresh copy, you can download the
+<a href="cats.zip">zip archive</a> and copy it over, but you
+will need to start unlocking from scratch.</p> -->
+
+<!---
+<p>If you do not want us to record a backup of your work or information about
+your progress, you can run
+
+<pre>python3 ok --local</pre>
+
+
+With this option, no information will be sent to our course
+servers.
+
+-->
+
+If you want to test your code interactively, you can run
+
+<pre> python3 ok -q [question number] -i </pre>
+
+with the appropriate question number (e.g. <code>01</code>) inserted.
+This will run the tests for that question until the first one you failed,
+then give you a chance to test the functions you wrote interactively.</p>
+
+<p>You can also use the debugging print feature in OK by writing
+
+<pre> print("DEBUG:", x) </pre>
+
+which will produce an output in your terminal without causing OK tests to fail
+with extra output.
+
+<h1 id="getting-started-videos">Getting Started Videos</h1>
+
+
+<blockquote><p>To see these videos, you should be logged into your berkeley.edu email.</p></blockquote>
+
+
+        <button id='toggle-1' class='btn btn-outline btn-lg alwaystoggle toggle'>
+        Getting Started Videos<noscript> (enable JavaScript)</noscript>
+        </button>
+        <div class="solution toggle-1">
+<br>
+
+            <iframe width="560" height="315" src="https://youtube.com/embed/videoseries?list=PLx38hZJ5RLZcodOfKxNkF7JzVBrbZ2qN7"
+                frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe><p><a href='https://youtu.be/playlist?list=PLx38hZJ5RLZcodOfKxNkF7JzVBrbZ2qN7'> YouTube link </a></p>
+</div>
+
+
+<h1 id="phase-1-typing">Phase 1: Typing</h1>
+
+
+<blockquote><p>When students in the past have tried to implement the functions without
+thoroughly reading the problem description, they’ve often run into issues.
+😱
+<strong>Read each description thoroughly before starting to code.</strong></p></blockquote>
+
+
+<h3 id="problem-1-1-pt">Problem 1 (1 pt)</h3>
+
+
+<p>Throughout the project, we will be making changes to functions in <code>cats.py</code>.</p>
+
+<p>Implement <code>pick</code>. This function selects which paragraph the user will type.
+It takes three parameters:</p>
+
+<ul>
+  <li>a list of paragraphs (strings) called <code>paragraphs</code></li>
+  <li>a <code>select</code> function, which returns <code>True</code> for paragraphs that can be selected</li>
+  <li>a non-negative index <code>k</code></li>
+</ul>
+
+<p>The <code>pick</code> function returns the <code>k</code>th paragraph for which <code>select</code> returns
+<code>True</code>. If no such paragraph exists (because <code>k</code> is too large), then <code>pick</code>
+returns the empty string.</p>
+
+<p>Before writing any code, unlock the tests to verify your understanding of the question:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q 01 -u<button id="copy-code-python3ok-q01-u" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-q01-u").onclick = () => copyCode('python3 ok -q 01 -u', "copy-code-python3ok-q01-u");
+        </script>
+        <br/>
+<p>Once you are done unlocking, begin implementing your solution. You can check your correctness with:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q 01<button id="copy-code-python3ok-q01" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-q01").onclick = () => copyCode('python3 ok -q 01', "copy-code-python3ok-q01");
+        </script>
+        <br/>
+
+
+<h3 id="problem-2-1-pt">Problem 2 (1 pt)</h3>
+
+
+<p>Implement <code>about</code>, which takes a list of <code>subject</code> words. It returns a function
+which takes a paragraph and returns a boolean indicating whether that paragraph
+contains any of the words in <code>subject</code>.</p>
+
+<p>Once we've implemented <code>about</code>, we'll be able to pass the returned function to
+<code>pick</code> as the <code>select</code> argument, which will be useful as we continue to
+implement our typing test.</p>
+
+<p>To be able to make this comparison accurately, you will need to ignore case
+(that is, assume that uppercase and lowercase letters don't change what word
+it is) and punctuation in the paragraph. Additionally, only check for exact
+matches of the words in subject in the paragraph, not substrings. For example,
+"dogs" is not a match for the word "dog".</p>
+
+<blockquote><p><strong>Hint</strong>:
+You may use the string utility functions in <code>utils.py</code>.
+You can reference the docstrings of the utility functions to see how
+they are being used.</p></blockquote>
+
+<p>Before writing any code, unlock the tests to verify your understanding of the question:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q 02 -u<button id="copy-code-python3ok-q02-u" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-q02-u").onclick = () => copyCode('python3 ok -q 02 -u', "copy-code-python3ok-q02-u");
+        </script>
+        <br/>
+<p>Once you are done unlocking, begin implementing your solution. You can check your correctness with:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q 02<button id="copy-code-python3ok-q02" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-q02").onclick = () => copyCode('python3 ok -q 02', "copy-code-python3ok-q02");
+        </script>
+        <br/>
+
+
+<h3 id="problem-3-2-pts">Problem 3 (2 pts)</h3>
+
+
+<p>Implement <code>accuracy</code>, which takes a <code>typed</code> paragraph and a <code>source</code>
+paragraph. It returns the percentage of words in <code>typed</code> that exactly match
+the corresponding words in <code>source</code>. Case and punctuation must match as
+well. "Corresponding" here means that two words must occur at the same indices
+in <code>typed</code> and <code>source</code>—the first words of both must match, the second words
+of both must match, and so on.</p>
+
+<p>A <em>word</em> in this context is any sequence of characters separated from other
+words by whitespace, so treat "dog;" as a single word.</p>
+
+<p>If <code>typed</code> is longer than <code>source</code>, then the extra words in <code>typed</code> that
+have no corresponding word in <code>source</code> are all incorrect.</p>
+
+<p>If both <code>typed</code> and <code>source</code> are empty, then the accuracy is 100.0.
+If <code>typed</code> is empty but <code>source</code> is not empty, then the accuracy is zero.
+If <code>typed</code> is not empty but <code>source</code> is empty, then the accuracy is zero.</p>
+
+<p>Before writing any code, unlock the tests to verify your understanding of the question:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q 03 -u<button id="copy-code-python3ok-q03-u" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-q03-u").onclick = () => copyCode('python3 ok -q 03 -u', "copy-code-python3ok-q03-u");
+        </script>
+        <br/>
+<p>Once you are done unlocking, begin implementing your solution. You can check your correctness with:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q 03<button id="copy-code-python3ok-q03" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-q03").onclick = () => copyCode('python3 ok -q 03', "copy-code-python3ok-q03");
+        </script>
+        <br/>
+
+<p>👩🏽‍💻👨🏿‍💻 <a href="../../articles/pair-programming.html">Pair programming?</a>
+Remember to alternate between driver and navigator roles.
+The driver controls the keyboard;
+the navigator watches, asks questions, and suggests ideas.</p>
+
+
+<h3 id="problem-4-1-pt">Problem 4 (1 pt)</h3>
+
+
+<p>Implement <code>wpm</code>, which computes the <em>words per minute</em>, a measure of typing
+speed, given a string <code>typed</code> and the amount of <code>elapsed</code> time in <strong>seconds.</strong>
+Despite its name, <em>words per minute</em> is not based on the number of words typed,
+but instead the number of groups of 5 characters, so that a typing test is not
+biased by the length of words. The formula for <em>words per minute</em> is the ratio
+of the number of characters (including spaces) typed divided by 5 (a typical
+word length) to the elapsed time in <strong>minutes.</strong></p>
+
+<p>For example, the string <code>&quot;I am glad!&quot;</code> contains three words and ten characters
+(not including the quotation marks). The words per minute calculation uses 2 as
+the number of words typed (because 10 / 5 = 2). If someone typed this string in
+30 seconds (half a minute), their speed would be 4 words per minute.</p>
+
+<p>Before writing any code, unlock the tests to verify your understanding of the question:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q 04 -u<button id="copy-code-python3ok-q04-u" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-q04-u").onclick = () => copyCode('python3 ok -q 04 -u', "copy-code-python3ok-q04-u");
+        </script>
+        <br/>
+<p>Once you are done unlocking, begin implementing your solution. You can check your correctness with:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q 04<button id="copy-code-python3ok-q04" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-q04").onclick = () => copyCode('python3 ok -q 04', "copy-code-python3ok-q04");
+        </script>
+        <br/>
+
+<p><strong>Time to test your typing speed!</strong> You can use the command line to test your
+typing speed on paragraphs about a particular subject. For example, the command
+below will load paragraphs about cats or kittens. See the <code>run_typing_test</code>
+function for the implementation if you're curious (but it is defined for you).</p>
+
+<pre><code>python3 cats.py &#x2d;t cats kittens</code></pre>
+
+<p>You can try out the web-based graphical user interface (GUI) using the
+following command.
+(You may have to use <code>Ctrl+C</code> or <code>Cmd+C</code> on your terminal to quit the GUI
+after you close the tab in your browser).</p>
+
+<pre><code>python3 cats_gui.py</code></pre>
+
+<p><strong>Submit your Phase 1 checkpoint</strong></p>
+
+<p>Check to make sure that you completed all the problems in Phase 1:</p>
+
+<pre><code>python3 ok &#x2d;&#x2d;score</code></pre>
+
+<p>Then, submit <code>cats.py</code> to the <strong>Cats Checkpoint</strong> assignment on <strong>Gradescope</strong> before the checkpoint deadline.</p>
+
+<p>When you run <code>ok</code> commands, you'll still see that some tests are locked
+because you haven't completed the whole project yet. You'll get full credit for
+the checkpoint if you complete all the problems up to this point.</p>
+
+<p>👩🏽‍💻👨🏿‍💻 <a href="../../articles/pair-programming.html">Pair programming?</a>
+This would be a good time to switch roles.
+Switching roles makes sure
+that you both benefit from the learning experience of being in each role.</p>
+
+
+<h1 id="phase-2-autocorrect">Phase 2: Autocorrect</h1>
+
+
+<blockquote><p>When students in the past have tried to implement the functions without
+thoroughly reading the problem description, they’ve often run into issues.
+😱
+<strong>Read each description thoroughly before starting to code.</strong></p></blockquote>
+
+<p>In the web-based GUI, there is an autocorrect button, but right now it doesn't
+do anything. Let's implement automatic correction of typos. Whenever the user
+presses the space bar, if the last word they typed doesn't match a word in the
+dictionary but is close to one, then that similar word will be substituted for
+what they typed.</p>
+
+
+<h3 id="problem-5-2-pts">Problem 5 (2 pts)</h3>
+
+
+<p>Implement <code>autocorrect</code>, which takes a <code>typed_word</code>, a
+<code>word_list</code>, a <code>diff_function</code>, and a <code>limit</code>.</p>
+
+<p>If the <code>typed_word</code> is contained inside the <code>word_list</code>, <code>autocorrect</code>
+returns that word.</p>
+
+<p><em>Otherwise</em>,
+<code>autocorrect</code> returns the word from <code>word_list</code>
+that has the lowest difference from the provided <code>typed_word</code> based on the
+<code>diff_function</code>. However, if the lowest difference between <code>typed_word</code> and any
+of the words in <code>word_list</code> is greater than <code>limit</code>, then <code>typed_word</code> is returned
+instead.</p>
+
+<p><strong>Note</strong>: Assume that <code>typed_word</code> and all elements of <code>word_list</code> are lowercase and
+have no punctuation.</p>
+
+<blockquote><p><strong>Important</strong>:
+If <code>typed_word</code> is not contained inside <code>word_list</code>, and multiple strings
+have the same lowest difference from <code>typed_word</code> according to
+the <code>diff_function</code>, <code>autocorrect</code> should return the string that appears
+first in <code>word_list</code>.</p></blockquote>
+
+<p>A diff function takes in three arguments. The first is the <code>typed_word</code>, the second is
+the source word (in this case, a word from <code>word_list</code>), and
+the third argument is the <code>limit</code>. The output of the diff function, which is
+a number, represents the amount of difference between the two strings.</p>
+
+<blockquote><p><strong>Note</strong>:
+Some diff functions may be asymmetric (meaning flipping the first two parameters may yield a different output),
+so make sure to pass in the arguments to <code>diff_function</code> in the correct order. We will see an example of an
+asymmetric diff function in problem 7.</p></blockquote>
+
+<p>Here is an example of a diff function that computes the minimum of <code>1 + limit</code>
+and the difference in length between the two input strings:</p>
+
+<pre><code>&gt;&gt;&gt; def length_diff(w1, w2, limit):
+...     return min(limit + 1, abs(len(w2) &#x2d; len(w1)))
+&gt;&gt;&gt; length_diff(&#x27;mellow&#x27;, &#x27;cello&#x27;, 10)
+1
+&gt;&gt;&gt; length_diff(&#x27;hippo&#x27;, &#x27;hippopotamus&#x27;, 5)
+6</code></pre>
+
+<blockquote><p><strong>Hint</strong>:
+Try using <code>max</code> or <code>min</code> with the optional <code>key</code> argument (which takes in a one-argument function).
+For example, <code>max([&#x2d;7, 2, &#x2d;1], key = abs)</code> would return <code>&#x2d;7</code> since <code>abs(&#x2d;7)</code> is greater than <code>abs(2)</code> and <code>abs(&#x2d;1)</code>.</p></blockquote>
+
+<p>Before writing any code, unlock the tests to verify your understanding of the question:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q 05 -u<button id="copy-code-python3ok-q05-u" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-q05-u").onclick = () => copyCode('python3 ok -q 05 -u', "copy-code-python3ok-q05-u");
+        </script>
+        <br/>
+<p>Once you are done unlocking, begin implementing your solution. You can check your correctness with:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q 05<button id="copy-code-python3ok-q05" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-q05").onclick = () => copyCode('python3 ok -q 05', "copy-code-python3ok-q05");
+        </script>
+        <br/>
+
+
+<h3 id="problem-6-3-pts">Problem 6 (3 pts)</h3>
+
+
+<p>Implement <code>feline_fixes</code>, which is a diff function that takes two strings. It
+returns the minimum number of characters that must be changed in the <code>typed</code>
+word in order to transform it into the <code>source</code> word. If the strings are not of
+equal length, the difference in lengths is added to the total.</p>
+
+<blockquote><p><strong>Important</strong>:
+You may not use <code>while</code>, <code>for</code>, or list comprehensions in your implementation.
+Use recursion.</p></blockquote>
+
+<p>Here are some examples:</p>
+
+<pre><code>&gt;&gt;&gt; big_limit = 10
+&gt;&gt;&gt; feline_fixes(&quot;nice&quot;, &quot;rice&quot;, big_limit)    # Substitute: n &#x2d;&gt; r
+1
+&gt;&gt;&gt; feline_fixes(&quot;range&quot;, &quot;rungs&quot;, big_limit)  # Substitute: a &#x2d;&gt; u, e &#x2d;&gt; s
+2
+&gt;&gt;&gt; feline_fixes(&quot;pill&quot;, &quot;pillage&quot;, big_limit) # Don&#x27;t substitute anything, length difference of 3.
+3
+&gt;&gt;&gt; feline_fixes(&quot;goodbye&quot;, &quot;good&quot;, big_limit) # Don&#x27;t substitute anything, length difference of 3.
+3
+&gt;&gt;&gt; feline_fixes(&quot;roses&quot;, &quot;arose&quot;, big_limit)  # Substitute: r &#x2d;&gt; a, o &#x2d;&gt; r, s &#x2d;&gt; o, e &#x2d;&gt; s, s &#x2d;&gt; e
+5
+&gt;&gt;&gt; feline_fixes(&quot;rose&quot;, &quot;hello&quot;, big_limit)   # Substitute: r&#x2d;&gt;h, o&#x2d;&gt;e, s&#x2d;&gt;l, e&#x2d;&gt;l, length difference of 1.
+5</code></pre>
+
+<blockquote><p><strong>Important:</strong>
+If the number of characters that must change is greater than <code>limit</code>,
+then <code>feline_fixes</code> should return any number larger than <code>limit</code> and
+should minimize the amount of computation needed to do so.</p>
+
+<p>These two calls to <code>feline_fixes</code> should take about the same amount of time to
+evaluate:</p>
+
+<pre><code>&gt;&gt;&gt; limit = 4
+&gt;&gt;&gt; feline_fixes(&quot;roses&quot;, &quot;arose&quot;, limit) &gt; limit
+True
+&gt;&gt;&gt; feline_fixes(&quot;rosesabcdefghijklm&quot;, &quot;arosenopqrstuvwxyz&quot;, limit) &gt; limit
+True</code></pre></blockquote>
+
+<p>Before writing any code, unlock the tests to verify your understanding of the question:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q 06 -u<button id="copy-code-python3ok-q06-u" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-q06-u").onclick = () => copyCode('python3 ok -q 06 -u', "copy-code-python3ok-q06-u");
+        </script>
+        <br/>
+<p>Once you are done unlocking, begin implementing your solution. You can check your correctness with:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q 06<button id="copy-code-python3ok-q06" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-q06").onclick = () => copyCode('python3 ok -q 06', "copy-code-python3ok-q06");
+        </script>
+        <br/>
+
+<p>Try turning on autocorrect in the GUI. Does it help you type faster? Are the
+corrections accurate?</p>
+
+
+<h3 id="problem-7-3-pts">Problem 7 (3 pts)</h3>
+
+
+<p>Implement <code>minimum_mewtations</code>, which is a diff function that returns the
+minimum number of edit operations needed to transform the <code>typed</code> word into
+the <code>source</code> word.</p>
+
+<p>There are three kinds of edit operations, with some examples:</p>
+
+<ol>
+  <li><p>Add a letter to <code>typed</code>.</p>
+
+  <ul>
+    <li>Adding <code>&quot;k&quot;</code> to <code>&quot;itten&quot;</code> gives us <code>&quot;kitten&quot;</code>.</li>
+  </ul></li>
+  <li><p>Remove a letter from <code>typed</code>.</p>
+
+  <ul>
+    <li>Removing <code>&quot;s&quot;</code> from <code>&quot;scat&quot;</code> givs us <code>&quot;cat&quot;</code>.</li>
+  </ul></li>
+  <li><p>Substitute a letter in <code>typed</code> for another.</p>
+
+  <ul>
+    <li>Substituting <code>&quot;z&quot;</code> with <code>&quot;j&quot;</code> in <code>&quot;zaguar&quot;</code> gives us <code>&quot;jaguar&quot;</code>.</li>
+  </ul></li>
+</ol>
+
+<p>Each edit operation contributes 1 to the difference between two words.</p>
+
+<pre><code>&gt;&gt;&gt; big_limit = 10
+&gt;&gt;&gt; minimum_mewtations(&quot;cats&quot;, &quot;scat&quot;, big_limit)       # cats &#x2d;&gt; scats &#x2d;&gt; scat
+2
+&gt;&gt;&gt; minimum_mewtations(&quot;purng&quot;, &quot;purring&quot;, big_limit)   # purng &#x2d;&gt; purrng &#x2d;&gt; purring
+2
+&gt;&gt;&gt; minimum_mewtations(&quot;ckiteus&quot;, &quot;kittens&quot;, big_limit) # ckiteus &#x2d;&gt; kiteus &#x2d;&gt; kitteus &#x2d;&gt; kittens
+3</code></pre>
+
+<p>We have provided a template of an implementation in <code>cats.py</code>.</p>
+
+<blockquote><p><strong>Hint:</strong>
+This is a recursive function with three recursive calls.
+One of these recursive calls will be similar to the recursive call
+in <code>feline_fixes</code>. Additionally, you will need more than one base case
+to solve this problem.</p></blockquote>
+
+<p>You may modify the template however you want or delete it entirely.</p>
+
+<blockquote><p><strong>Important:</strong>
+If the number of edits required is greater than <code>limit</code>,
+then <code>minimum_mewtations</code> should return any number larger than <code>limit</code> and
+should minimize the amount of computation needed to do so.</p>
+
+<p>These two calls to <code>minimum_mewtations</code> should take about the same amount of
+time to evaluate:</p>
+
+<pre><code>&gt;&gt;&gt; limit = 2
+&gt;&gt;&gt; minimum_mewtations(&quot;ckiteus&quot;, &quot;kittens&quot;, limit) &gt; limit
+True
+&gt;&gt;&gt; minimum_mewtations(&quot;ckiteusabcdefghijklm&quot;, &quot;kittensnopqrstuvwxyz&quot;, limit) &gt; limit
+True</code></pre></blockquote>
+
+<p>Before writing any code, unlock the tests to verify your understanding of the question:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q 07 -u<button id="copy-code-python3ok-q07-u" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-q07-u").onclick = () => copyCode('python3 ok -q 07 -u', "copy-code-python3ok-q07-u");
+        </script>
+        <br/>
+<p>Once you are done unlocking, begin implementing your solution. You can check your correctness with:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q 07<button id="copy-code-python3ok-q07" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-q07").onclick = () => copyCode('python3 ok -q 07', "copy-code-python3ok-q07");
+        </script>
+        <br/>
+
+<p>Try typing again. Are the corrections more accurate?</p>
+
+<pre><code>python3 cats_gui.py</code></pre>
+
+<p>👩🏽‍💻👨🏿‍💻 <a href="../../articles/pair-programming.html">Pair programming?</a>
+Celebrate, take a break, and switch roles!</p>
+
+
+<h3 id="optional-extension-final-diff-0pt">(Optional) Extension: final diff (0pt)</h3>
+
+
+<p>You may optionally design your own diff function called
+<code>final_diff</code>. Here are some ideas for making even more accurate corrections:</p>
+
+<ul>
+  <li>Take into account which additions and deletions are more likely than others.
+  For example, it's much more likely that you'll accidentally leave out a
+  letter if it appears twice in a row.</li>
+  <li>Treat two adjacent letters that have swapped positions as one change,
+  not two.</li>
+  <li>Try to incorporate common misspellings.</li>
+</ul>
+
+<p>You can also set the limit you'd like your diff function to use by changing
+the value of the variable <code>FINAL_DIFF_LIMIT</code> in <code>cats.py</code>.</p>
+
+<p>You can check your <code>final_diff</code>'s success rate by running:</p>
+
+<pre><code> python3 score.py</code></pre>
+
+<p>If you don't know where to start, try copy-pasting your code for <code>feline_fixes</code>
+and <code>minimum_mewtations</code> into <code>final_diff</code> and scoring them. Looking at the
+typos they accidentally fixed might give you some ideas!</p>
+
+
+<h1 id="phase-3-multiplayer">Phase 3: Multiplayer</h1>
+
+
+<blockquote><p>When students in the past have tried to implement the functions without
+thoroughly reading the problem description, they’ve often run into issues.
+😱
+<strong>Read each description thoroughly before starting to code.</strong></p></blockquote>
+
+<p>Typing is more fun with friends! You'll now implement multiplayer
+functionality, so that when you run <code>cats_gui.py</code> on your computer,
+it connects to the course server at
+<a href="https://cats.cs61a.org">cats.cs61a.org</a>
+and looks for someone else to race against.</p>
+
+<p>To race against a friend, 5 different programs will be running:</p>
+
+<ul>
+  <li>Your GUI, which is a program that handles all the text coloring and display
+  in your web browser.</li>
+  <li>Your <code>cats_gui.py</code>, which is a web server that communicates with your GUI using
+  the code you wrote in <code>cats.py</code>.</li>
+  <li>Your opponent's <code>cats_gui.py</code>.</li>
+  <li>Your opponent's GUI.</li>
+  <li>The CS 61A multiplayer server, which matches players together and passes
+  messages around.</li>
+</ul>
+
+<p>When you type, your GUI uploads what you have typed to your <code>cats_gui.py</code> server,
+which computes how much progress you have made and returns a progress update.
+It also uploads a progress update to the multiplayer server, so that your
+opponent's GUI can display it.</p>
+
+<p>Meanwhile, your GUI display is always trying to keep current by asking for
+progress updates from <code>cats_gui.py</code>, which in turn requests that info from the
+multiplayer server.</p>
+
+<p>Each player has an <code>id</code> number that is used by the server to track typing
+progress.</p>
+
+
+<h3 id="problem-8-2-pts">Problem 8 (2 pts)</h3>
+
+
+<p>Implement <code>report_progress</code>, which is called every time the user finishes
+typing a word. It takes a list of the words <code>typed</code>, a list of the words in
+the <code>prompt</code>, the user's <code>user_id</code>, and a <code>upload</code> function that is used to upload
+a progress report to the multiplayer server. There will never be more words in
+<code>typed</code> than in <code>prompt</code>.</p>
+
+<p>Your progress is a ratio of the words in the <code>prompt</code> that you have typed
+correctly, up to the first incorrect word, divided by the number of <code>prompt</code>
+words. For example, this example has a progress of <code>0.25</code>:</p>
+
+<pre><code>report_progress([&quot;Hello&quot;, &quot;ths&quot;, &quot;is&quot;], [&quot;Hello&quot;, &quot;this&quot;, &quot;is&quot;, &quot;wrong&quot;], ...)</code></pre>
+
+<p>Your <code>report_progress</code> function should do two things: upload a message to the
+multiplayer server and return the progress of the player with <code>user_id</code>.</p>
+
+<p>You can upload a message to the multiplayer server by calling the <code>upload</code>
+function on a two-element dictionary containing the keys <code>&#x27;id&#x27;</code> and
+<code>&#x27;progress&#x27;</code>. You should then return the player's progress, which is the ratio
+of words you computed.</p>
+
+<blockquote><p><strong>Hint:</strong>
+See the dictionary below for an example of a potential input into the <code>upload</code>
+function.
+This dictionary represents a player with <code>user_id</code> 1 and <code>progress</code> 0.6.</p>
+
+<p><code>{&#x27;id&#x27;: 1, &#x27;progress&#x27;: 0.6}</code></p></blockquote>
+
+<p>Before writing any code, unlock the tests to verify your understanding of the question:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q 08 -u<button id="copy-code-python3ok-q08-u" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-q08-u").onclick = () => copyCode('python3 ok -q 08 -u', "copy-code-python3ok-q08-u");
+        </script>
+        <br/>
+<p>Once you are done unlocking, begin implementing your solution. You can check your correctness with:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q 08<button id="copy-code-python3ok-q08" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-q08").onclick = () => copyCode('python3 ok -q 08', "copy-code-python3ok-q08");
+        </script>
+        <br/>
+
+
+<h3 id="problem-9-2-pts">Problem 9 (2 pts)</h3>
+
+
+<p>Implement <code>time_per_word</code>, which takes in a list <code>words</code> and
+<code>times_per_player</code>, a list of lists for each player with timestamps indicating
+when each player finished typing every individual word in <code>words</code>.
+It returns a <code>match</code> with the given information.</p>
+
+<p>A <code>match</code> is a <em>data abstraction</em> that stores <code>words</code> and <code>times</code>. The
+<code>times</code> are stored as a list of lists of how long it took each player to type
+every word in <code>words</code>. Specifically,
+<code>times[i][j]</code> indicates how long it took player <code>i</code> to type <code>words[j]</code>.</p>
+
+<p>For example,
+say <code>words = [&#x27;Hello&#x27;, &#x27;world&#x27;]</code>
+and <code>times = [[5, 1], [4, 2]]</code>,
+then <code>[5, 1]</code> corresponds to the list of times for player 0,
+and <code>[4, 2]</code> corresponds to the list of times for player 1.
+Thus, player 0 took <code>5</code> units of time to write the word <code>&#x27;Hello&#x27;</code>.</p>
+
+<blockquote><p><strong>Important</strong>:
+Be sure to use the <code>match</code> constructor when returning a <code>match</code>.
+The tests will check that you are using the <code>match</code> data abstraction
+rather than assuming a particular data format.</p>
+
+<p>Read the definitions for the <code>match</code> constructor in <code>cats.py</code>
+to learn more about how the data abstraction is implemented.</p></blockquote>
+
+<p>Timestamps are cumulative and always increasing,
+while the values in <code>times</code> are
+<strong>differences between consecutive timestamps for each player</strong>.</p>
+
+<p>Here's an example:
+If <code>times_per_player = [[1, 3, 5], [2, 5, 6]]</code>, the corresponding <code>times</code>
+attribute of the <code>match</code> would be <code>[[2, 2], [3, 1]]</code>.
+This is because the differences in timestamps are
+<code>(3&#x2d;1)</code>, <code>(5&#x2d;3)</code> for the first player and
+<code>(5&#x2d;2)</code>, <code>(6&#x2d;5)</code> for the second player.
+The first value of each list within <code>times_per_player</code> represents the
+initial starting time for each player.</p>
+
+<p>Before writing any code, unlock the tests to verify your understanding of the question:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q 09 -u<button id="copy-code-python3ok-q09-u" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-q09-u").onclick = () => copyCode('python3 ok -q 09 -u', "copy-code-python3ok-q09-u");
+        </script>
+        <br/>
+<p>Once you are done unlocking, begin implementing your solution. You can check your correctness with:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q 09<button id="copy-code-python3ok-q09" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-q09").onclick = () => copyCode('python3 ok -q 09', "copy-code-python3ok-q09");
+        </script>
+        <br/>
+
+<p>👩🏽‍💻👨🏿‍💻 <a href="../../articles/pair-programming.html">Pair programming?</a>
+We suggest switching roles now, if you haven't recently. Almost done!</p>
+
+
+<h3 id="problem-10-2-pts">Problem 10 (2 pts)</h3>
+
+
+<p>Implement <code>fastest_words</code>, which returns which words each player typed fastest.
+This function is called once both players have finished typing.
+It takes in a <code>match</code>.</p>
+
+<p>Specifically, the <code>fastest_words</code> function returns a list of lists of words,
+one list for each player, and within each list the words they typed the fastest
+(against all the other players). In the case of a tie, consider the earliest
+player in the list (the smallest player index) to be the one who typed it the
+fastest.</p>
+
+<p>For example consider the following match with the words <code>&#x27;Just&#x27;</code>, <code>&#x27;have&#x27;</code>, and
+<code>&#x27;fun&#x27;</code>. Player 0 typed <code>&#x27;fun&#x27;</code> the fastest (3 seconds), Player 1 typed <code>&#x27;Just&#x27;</code> the
+fastest (4 seconds), and they tied on the word <code>&#x27;have&#x27;</code> (both took 1 second) so
+we consider to Player 0 to be the fastest, because they are the earliest player
+in the list.</p>
+
+<pre><code>&gt;&gt;&gt; player_0 = [5, 1, 3]
+&gt;&gt;&gt; player_1 = [4, 1, 6]
+&gt;&gt;&gt; fastest_words(match([&#x27;Just&#x27;, &#x27;have&#x27;, &#x27;fun&#x27;], [player_0, player_1]))
+[[&#x27;have&#x27;, &#x27;fun&#x27;], [&#x27;Just&#x27;]]</code></pre>
+
+<p>The <code>match</code> argument is a <code>match</code> data abstraction, like the one returned in
+Problem 9. You can access words in the <code>match</code> with the selector <code>get_word</code>,
+which takes in a <code>match</code> and the <code>word_index</code> (an integer). With <code>get_word</code> you
+can access the time it took any player to type any word using <code>time</code>.</p>
+
+<blockquote><p><strong>Important</strong>:
+Be sure to use the <code>match</code> constructor when returning a <code>match</code>.
+The tests will check that you are using the <code>match</code> data abstraction
+rather than assuming a particular data format.</p>
+
+<p>Make sure your implementation does not mutate the given player input lists.
+For the example above, calling <code>fastest_words</code> on <code>[player_0, player_1]</code>
+should <strong>not</strong> mutate <code>player_0</code> or <code>player_1</code>.</p></blockquote>
+
+<p>Before writing any code, unlock the tests to verify your understanding of the question:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q 10 -u<button id="copy-code-python3ok-q10-u" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-q10-u").onclick = () => copyCode('python3 ok -q 10 -u', "copy-code-python3ok-q10-u");
+        </script>
+        <br/>
+<p>Once you are done unlocking, begin implementing your solution. You can check your correctness with:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q 10<button id="copy-code-python3ok-q10" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-q10").onclick = () => copyCode('python3 ok -q 10', "copy-code-python3ok-q10");
+        </script>
+        <br/>
+
+<p>Congratulations! Now you can play against other students in the course. Set
+<code>enable_multiplayer</code> to <code>True</code> near the bottom of <code>cats.py</code> and type swiftly!</p>
+
+<pre><code>python3 cats_gui.py</code></pre>
+
+
+<h2 id="project-submission">Project submission</h2>
+
+
+<p>Run <code>ok</code> on all problems to make sure all tests are unlocked and pass:</p>
+
+<pre><code>python3 ok</code></pre>
+
+<p>You can also check your score on each part of the project:</p>
+
+<pre><code>python3 ok &#x2d;&#x2d;score</code></pre>
+
+<p>Once you are satisfied, submit this assignment by uploading <code>cats.py</code> to the <strong>Cats</strong> assignment on <strong>Gradescope.</strong> For a refresher on how to do this, refer to <a href="../../lab/lab00.1.html#task-b-submitting-the-assignment">Lab 00</a>.</p>
+
+<p>You can add a partner to your Gradescope submission by clicking on <strong>+ Add Group Member</strong> under your name on the right hand side of your submission. Only one partner needs to submit to Gradescope.</p>
+
+<script>
+/*
+This code is duplicated in lab-check-in.html. Doesn't work if we move it to a separate
+file because of JQuery document ready concurrency issues.
+*/
+$(function() {
+    $('.alwaystoggle').css('display', 'inline-block');
+    $('.alwaystoggle').click(function() {
+      var solution_id = $(this).attr('id');
+      $('div.' + solution_id).slideToggle(600);
+    });
+});
+</script>
+
+<script>
+$("#cats_typing").hover(
+  function() {
+    $("#cats_typing").attr("src", "images/cats_typing.gif");
+  },
+  function() {
+    $("#cats_typing").attr("src", "images/cats_typing_still.gif");
+  }
+);
+</script>
+
+
+
+  </div>
+
+  <div class='col-md-3 sticky'>
+    <nav class='hidden-print hidden-sm hidden-xs sidebar'>
+      <ul>
+  <li><a href="index.html#introduction">Introduction</a></li>
+  <li><a href="index.html#final-product">Final Product</a></li>
+  <li><a href="index.html#download-starter-files">Download starter files</a></li>
+  <li><a href="index.html#logistics">Logistics</a></li>
+  <li><a href="index.html#getting-started-videos">Getting Started Videos</a></li>
+  <li><a href="index.html#phase-1-typing">Phase 1: Typing</a></li>
+  <ul>
+    <li><a href="index.html#problem-1-1-pt">Problem 1 (1 pt)</a></li>
+    <li><a href="index.html#problem-2-1-pt">Problem 2 (1 pt)</a></li>
+    <li><a href="index.html#problem-3-2-pts">Problem 3 (2 pts)</a></li>
+    <li><a href="index.html#problem-4-1-pt">Problem 4 (1 pt)</a></li>
+  </ul>
+  <li><a href="index.html#phase-2-autocorrect">Phase 2: Autocorrect</a></li>
+  <ul>
+    <li><a href="index.html#problem-5-2-pts">Problem 5 (2 pts)</a></li>
+    <li><a href="index.html#problem-6-3-pts">Problem 6 (3 pts)</a></li>
+    <li><a href="index.html#problem-7-3-pts">Problem 7 (3 pts)</a></li>
+    <li><a href="index.html#optional-extension-final-diff-0pt">(Optional) Extension: final diff (0pt)</a></li>
+  </ul>
+  <li><a href="index.html#phase-3-multiplayer">Phase 3: Multiplayer</a></li>
+  <ul>
+    <li><a href="index.html#problem-8-2-pts">Problem 8 (2 pts)</a></li>
+    <li><a href="index.html#problem-9-2-pts">Problem 9 (2 pts)</a></li>
+    <li><a href="index.html#problem-10-2-pts">Problem 10 (2 pts)</a></li>
+  </ul>
+  <ul>
+    <li><a href="index.html#project-submission">Project submission</a></li>
+  </ul>
+</ul>
+    </nav>
+  </div>
+</div>
+
+    </main>
+
+    <footer class="container">
+      <div class="row text-center">
+        <div class="col col-sm-4">
+          <h3><a href="../../index.html">CS 61A</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../weekly.html">Weekly Schedule</a></li>
+            <li><a href="../../office-hours.html">Office Hours</a></li>
+            <li><a href="../../staff.html">Staff</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../../resources.1.html">Resources</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../articles/studying.html">Studying Guide</a></li>
+            <li><a href="../../articles/debugging.html">Debugging Guide</a></li>
+            <li><a href="../../articles/composition.html">Composition Guide</a></li>
+            <li><a href="../../articles/pair-programming.html">Pair Programming</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../../articles/about.html">Policies</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../articles/about.html#assignments">Assignments</a></li>
+            <li><a href="../../articles/about.html#exams">Exams</a></li>
+            <li><a href="../../articles/about.html#grading">Grading</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/loader.min.js"></script>
+  <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/editor/editor.main.min.css">
+  <script>
+      require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs' }});
+      window.MonacoEnvironment = { getWorkerUrl: () => URL.createObjectURL(new Blob([`
+      self.MonacoEnvironment = {
+          baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min'
+      };
+      importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/base/worker/workerMain.min.js');
+  `], { type: 'text/javascript' }))
+  };
+  </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.15.5/js/jsplumb.min.js"></script>
+    <script src="../../assets/js/network_storage.js"></script>
+    <script src="../../assets/js/storable.js"></script>
+    <script src="../../assets/js/editor.js"></script>
+    <script src="../../assets/js/copy-button.js"></script>
+    <script src="../../assets/js/env-diagram.js"></script>
+    
+<script src="../../assets/js/sketchy.js"></script>
+<script>
+  $('.sidebar ul').addClass('nav nav-stacked noselect');
+  $('body').scrollspy({
+    target: '.sidebar',
+    offset: 40
+  });
+
+  function goToId(id) {
+    var target = $(id);
+    target.parent().show();
+    $('html,body').animate({
+      scrollTop: target.offset().top,
+    }, 100);
+    $("body").scrollspy('refresh');
+  }
+
+  if (location.hash) {
+    setTimeout(function() {
+      if (location.hash) {
+        goToId(location.hash);
+      }
+    }, 1);
+  }
+
+  $("a").click(function(event) {
+    var urlBeforeHashRegEx = new RegExp("^"+window.location.href.split("#")[0]);
+    if (/^#/.test(this.hash) && urlBeforeHashRegEx.test(this.href)) {
+      event.preventDefault();
+      goToId(this.hash);
+      document.location.hash = this.hash;
+    }
+  });
+</script>
+
+  </body>
+</html>

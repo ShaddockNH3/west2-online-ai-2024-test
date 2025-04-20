@@ -1,0 +1,678 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="description" content ="CS 61A: Structure and Interpretation of Computer Programs" />
+    <meta name="keywords" content ="CS 61A, Computer Science, CS, 61A, Programming, John DeNero, Berkeley, EECS" />
+    <meta name="author" content ="John DeNero, Hany Farid" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="../../assets/js/hl.js"></script>
+    <script src="../../assets/js/toggledarkmode.js"></script>
+    <script>
+        // we aren't registering builtins since
+        //      (1) they don't render differently in the current CSS from other names
+        //      (2) it's a mess to list all of them. You can extract from the site but that takes effort
+        // if (1) ceases to be true, (2) might be worth the effort. For now, we're leaving as is
+        hljsRegister({
+            'keyword': "define if cond and or let begin lambda mu quote delay cons-stream set! quasiquote unquote unquote-splicing define-macro"
+        });
+        hljs.initHighlightingOnLoad();
+    </script>
+    <script src="../../assets/js/dark-mode.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata|Roboto:300,400,500|Work+Sans:400,700">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/mono-blue.css">
+    <link rel="icon" href="../../assets/images/favicon.ico">
+
+    
+
+    <title>
+Study Guide: BNF (Backus-Naur Form) | CS 61A Spring 2023
+</title>
+  </head>
+
+  <body id="index" class="home">
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container noselect">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-section">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../../index.html">
+            <img style="max-width:60px; margin-top: -20px;" class="logo" src="../../assets/images/logo.png"/>
+          </a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbar-collapse-section">
+          <ul class="nav navbar-nav navbar-right">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Calendar
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../../weekly.html">Weekly Schedule</a></li>
+                <li><a href="../../office-hours.html">Office Hours</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Links
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://sections.cs61a.org">Sections Tool</a></li>
+                <li><a href="https://oh.cs61a.org">Office Hours Queue</a></li>
+                <li><a href="https://go.cs61a.org/regrade-request">Request a Regrade</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Staff
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../../instructor.html">Instructors</a></li>
+                <li><a href="../../TAs.html">TAs</a></li>
+                <li><a href="../../tutors.html">Tutors</a></li>
+                <li><a href="../../academic-interns.html">Academic Interns</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Resources
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://go.cs61a.org/extensions">Request an Extension</a></li>
+                <li><a href="https://go.cs61a.org/accommodation-appts">Book an Accommodations Appointment</a></li>
+                <li><a href="../../resources.1.html">Topical Resources + Past Exams</a></li>
+                <li><a href="https://tutor.cs61a.org/">PythonTutor</a></li>
+                <li><a href="https://code.cs61a.org/">Code</a></li>
+                <li><a href="https://edstem.org/us/courses/34756/discussion/" target="_blank">Ed</a></li>
+                <li><a href="../../articles/campus-res/index.html">Department/Campus Resources</a></li>
+              </ul>
+            </li>
+            <li><a href="../../articles/about.html">Syllabus</a></li>
+            <li><a href="../../contact.1.html">Contact</a></li>
+            <li>
+              <label class="switch">
+                <input type="checkbox" id="toggle-mode-cb">
+                <span class="slider round"></span>
+              </label>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main id="content" class="container">
+      
+<div class='row'>
+  <div class='col-md-9'>
+    <header>
+      <h1>
+        
+Study Guide: BNF (Backus-Naur Form)
+
+        
+        
+        
+      </h1>
+    </header>
+    
+<div class="alert storable-login-status"></div>
+
+<h2>Instructions</h2>
+
+<p>This is a study guide with links to past
+lectures, assignments, and handouts, as well as
+additional practice problems to assist you in learning the concepts.</p>
+
+
+  <p><strong>Assignments</strong></p>
+  <blockquote><p>For solutions to these assignments once they have been released, find the links in the front page calendar.</p></blockquote>
+
+<ul>
+  <li><a href="../../lab/lab13.1.html">Lab 13</a></li>
+  <li><a href="../../hw/hw09.1.html">HW 9</a></li>
+</ul>
+
+
+
+
+
+  <p><strong>Lectures</strong></p>
+  <ul>
+  <li>BNF: Backus-Naur Form: <a href="https://cs61a.org/assets/slides/32-BNF_Backus-Naur_Form_full.pdf">Slides</a>, <a href="https://youtu.be/S0NJXXLUwgo?t=136&list=PLx38hZJ5RLZdZZCX2Tgw1XWF7x40vLO-Q">Recording</a></li>
+  <li>Review: BNF + RegEx: <a href="https://cs61a.org/assets/slides/33-Review_Regular_Expressions_+_BNF.html">Slides</a>, <a href="https://youtu.be/8dvuVt8sxZU?t=207&list=PLx38hZJ5RLZdZZCX2Tgw1XWF7x40vLO-Q">Recording</a></li>
+</ul>
+
+
+
+  <p><strong>Readings</strong></p>
+  <p>BNF is not covered in the 61A textbook, but here's a chapter from a UCI textbook: <a href="https://www.ics.uci.edu/~pattis/ICS-33/lectures/ebnf.pdf">EBNF: A Notation to Describe Syntax</a>. That chapter goes into more detail than strictly needed for our class,
+but may be helpful for those of you who like to learn from textbook readings.</p>
+
+
+
+    
+<h1 id="guides">Guides</h1>
+
+
+
+<h2 id="bnf">BNF</h2>
+
+
+<p>Backus-Naur Form (BNF) is a syntax for describing a <a href="https://en.wikipedia.org/wiki/Context-free_grammar">context-free grammar</a>. It was invented for describing the syntax of programming languages, and is still commonly used in documentation and language parsers. EBNF is a dialect of BNF which contains some convenient shorthands.</p>
+
+<p>An EBNF grammar contains symbols and a set of recursive production rules. In 61A, we are using the Python Lark library to write EBNF grammars, which has a few specific rules for grammar writing.</p>
+
+<p>There are two types of symbols:
+Non-terminal symbols can expand into non-terminals (including themselves) or terminals. In the Python Lark library, non-terminal symbols are always lowercase.
+Terminal symbols can be strings or regular expressions. In Lark, terminals are always uppercase.</p>
+
+<p>Consider these two production rules:</p>
+
+<pre><code>numbers: INTEGER | numbers &quot;,&quot; INTEGER
+INTEGER: /&#x2d;?\d+/</code></pre>
+
+
+
+<p>The symbol <code>numbers</code> is  a non-terminal with a recursive production rule. It corresponds to either an <code>INTEGER</code> terminal or to the <code>numbers</code> symbol (itself) plus a comma plus an <code>INTEGER</code> terminal. The <code>INTEGER</code> terminal is defined using a regular expression which matches any number of digits with an optional - sign in front.</p>
+
+<p>This grammar can describe strings like:</p>
+
+<pre><code>10
+10,&#x2d;11
+10,&#x2d;11,12</code></pre>
+
+
+
+<p>And so on, with any number of integers in front.</p>
+
+<p>A grammar should also specify a start symbol, which corresponds to the whole expression being parsed (or the whole sentence, for a spoken language).</p>
+
+<p>For the simple example of comma-separated numbers, the start symbol could just be the numbers terminal itself:</p>
+
+<pre><code>?start: numbers
+numbers: numbers &quot;,&quot; INTEGER | INTEGER
+INTEGER: /&#x2d;?\d+/</code></pre>
+
+
+
+<p>EBNF grammars can use these shorthand notations for specifying how many symbols to match:</p>
+
+
+
+
+        <div class="table-responsive">
+          <table class="table table-bordered">
+          
+  <tr>
+    <th>EBNF Notation</th>
+    <th>Meaning</th>
+    <th>Pure BNF Equivalent</th>
+  </tr>
+  <tr>
+    <td>item*</td>
+    <td>Zero or more items</td>
+    <td>items: &#124; items item</td>
+  </tr>
+  <tr>
+    <td>item+</td>
+    <td>One or more items</td>
+    <td>items: item &#124; items item</td>
+  </tr>
+  <tr>
+    <td>[item] <br> item?</td>
+    <td>Optional item</td>
+    <td>optitem: &#124; item</td>
+  </tr>
+
+          </table>
+        </div>
+        
+
+
+
+<p>Lark also includes a few handy features:</p>
+
+<ul>
+  <li>You can specify tokens to complete ignore by using the ignore directive at the bottom of a grammar. For example, <code>%ignore /\s+/</code> ignores all whitespace (tabs/spaces/new lines).</li>
+  <li>You can import pre-defined terminals for common types of data to match. For example, %import common.NUMBER imports a terminal that matches any integer or decimal number.</li>
+</ul>
+
+<p>Using all of that, here's an EBNF grammar that corresponds to the Calculator language:</p>
+
+<pre><code>start: calc_expr?
+calc_expr: NUMBER | calc_op
+calc_op: &quot;(&quot; OPERATOR calc_expr* &quot;)&quot;
+OPERATOR: &quot;+&quot; | &quot;&#x2d;&quot; | &quot;*&quot; | &quot;/&quot;
+
+%ignore /\s+/
+%import common.NUMBER</code></pre>
+
+
+
+<p>You can paste that into code.cs61a.org and then input Calculator expressions in the interpreter to see their parse trees. Try it!</p>
+
+
+<h1 id="practice-problems">Practice Problems</h1>
+
+
+
+<h3 id="q1-toddler-ese">Q1: Toddler-ese</h3>
+
+
+<p>Consider this EBNF grammar for "Toddler-ese", a language for communicating wants and needs with toddlers.</p>
+
+<pre><code>?start: sentence
+sentence: describe_wants | describe_feeling
+describe_wants: TODDLER &quot; wants &quot; noun_phrase &quot;!&quot;
+noun_phrase: (ARTICLE &quot; &quot;)? NOUN
+describe_feeling: TODDLER &quot; is &quot; EMOTION &quot;!&quot;
+
+TODDLER: &quot;beverly&quot; | &quot;baggy&quot; | &quot;baby&quot;
+ARTICLE: &quot;the&quot; | &quot;a&quot; | &quot;an&quot; | &quot;un&quot; | &quot;una&quot;
+NOUN: &quot;ball&quot; | &quot;elmo&quot; | &quot;chalk&quot; | &quot;gusano&quot;
+EMOTION: &quot;sad&quot; | &quot;mad&quot; | &quot;tired&quot;</code></pre>
+
+
+
+<p>Which of these phrases <em>cannot</em> be parsed by this grammar?</p>
+
+<ol>
+  <li><code>baby wants ball!</code></li>
+  <li><code>baggy is mad!</code></li>
+  <li><code>beverly is elmo!</code></li>
+  <li><code>baggy wants un elmo!</code></li>
+</ol>
+
+<div class="solution solution-1">
+Phrase #3, <code>beverly is elmo!</code>, cannot be parsed by this grammar. The "is" will be matched by the <code>describe_feeling</code> non-terminal, but "elmo" isn't matched by the <code>EMOTION</code> terminal, so there is no rule that matches the whole phrase.
+
+<p><strong>Remember that you can paste the grammar in code.cs61a.org and then enter expressions in the terminal
+below to see the parse trees or errors for each expression!</strong>
+</div>
+        <button id='solution-1' class='btn btn-outline btn-lg solutiontoggle solution'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        </p>
+
+<p>Which of these phrases <em>can</em> be parsed by this grammar?</p>
+
+<ol>
+  <li><code>baggy is mad!!</code></li>
+  <li><code>beverly is un gusano!</code></li>
+  <li><code>baggy wants a sad elmo!</code></li>
+  <li><code>baby wants the ball!</code></li>
+</ol>
+
+<div class="solution solution-2">
+Only phrase #4, <code>baby wants the ball!</code>, can be parsed by this grammar. Phrase #1 has too many exclamation points,
+phrase #2 is using a <code>NOUN</code> where an <code>EMOTION</code> is expected. Phrase #3 adds an adjective where none is allowed.
+</div>
+        <button id='solution-2' class='btn btn-outline btn-lg solutiontoggle solution'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+<p>Which BNF line would we modify to add support for emotions in front of the <code>NOUN</code>s, like "mad elmo"?</p>
+
+<ol>
+  <li><code>sentence: describe_wants | describe_feeling</code></li>
+  <li><code>noun_phrase: (ARTICLE &quot; &quot;)? NOUN</code></li>
+  <li><code>ARTICLE: &quot;the&quot; | &quot;an&quot; | &quot;a&quot; | &quot;una&quot; | &quot;un&quot;</code></li>
+  <li><code>NOUN: &quot;ball&quot; | &quot;elmo&quot; | &quot;chalk&quot; | &quot;gusano&quot;</code></li>
+</ol>
+
+<div class="solution solution-3">
+The best option in those lines is the <code>noun_phrase</code> non-terminal, modifying it like so:
+
+<p><code>noun_phrase: (ARTICLE &quot; &quot;)? (EMOTION &quot; &quot;)? NOUN</code>
+</div>
+        <button id='solution-3' class='btn btn-outline btn-lg solutiontoggle solution'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        </p>
+
+
+<h3 id="q2-python-integers">Q2: Python integers</h3>
+
+
+<p>Consider this EBNF grammar for allowed integer formats in the Python language,
+adopted from the <a href="https://docs.python.org/3/reference/lexical_analysis.html#numeric-literals">Python documentation</a>.</p>
+
+<pre><code>?start: integer
+integer:  decinteger | bininteger | octinteger | hexinteger
+decinteger:  NONZERODIGIT DIGIT*
+bininteger:  &quot;0&quot; (&quot;b&quot; | &quot;B&quot;) BINDIGIT+
+octinteger:  &quot;0&quot; (&quot;o&quot; | &quot;O&quot;) OCTDIGIT+
+hexinteger:  &quot;0&quot; (&quot;x&quot; | &quot;X&quot;) hexdigit+
+NONZERODIGIT:  /[1&#x2d;9]/
+DIGIT:  /[0&#x2d;9]/
+BINDIGIT:  /[01]/
+OCTDIGIT:  /[0&#x2d;7]/
+hexdigit:  DIGIT | /[a&#x2d;f]/ | /[A&#x2d;F]/</code></pre>
+
+
+
+<p>Which of these are valid Python integers, according to the grammar? <em>Select all that apply</em></p>
+
+<ol>
+  <li>0xF9</li>
+  <li>0x55</li>
+  <li>0xf9</li>
+  <li>0xG9</li>
+  <li>0xFFF</li>
+</ol>
+
+<div class="solution solution-4">
+They are all valid integers, matching the <code>hexinteger</code> rule, except for <code>0xG9</code>. That one is not valid
+because it contains a "G" and <code>hexdigit</code> only matches <code>[0&#x2d;9]</code>, <code>[a&#x2d;F]</code>, <code>[A&#x2d;F]</code>.
+
+<p><strong>Remember that you can paste the grammar in code.cs61a.org and then enter expressions in the terminal
+below to see the parse trees or errors for each expression!</strong>
+</div>
+        <button id='solution-4' class='btn btn-outline btn-lg solutiontoggle solution'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        </p>
+
+<p>Which of these is <em>not</em> a valid Python integer, according to the grammar? <em>Select one</em></p>
+
+<ol>
+  <li>07543</li>
+  <li>0b0101</li>
+  <li>0o7543</li>
+  <li>0x1011</li>
+</ol>
+
+<div class="solution solution-5">
+The first number 07543 is not valid since it does not match any of the rules. Decimal integers
+cannot start with a zero and the other integer types start with either "0b", "0o", or "0x".
+</div>
+        <button id='solution-5' class='btn btn-outline btn-lg solutiontoggle solution'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+<p>Which of these can be parsed by the grammar? <em>Select all that apply</em></p>
+
+<ol>
+  <li>0</li>
+  <li>0b</li>
+  <li>0x</li>
+  <li>0o</li>
+</ol>
+
+<div class="solution solution-6">
+None of them! The zero by itself cannot be parsed, since a <code>decinteger</code> must start with a non-zero digit
+and the other integer types require an additional letter.
+The other options can't be parsed, since the <code>bininteger</code>, <code>hexinteger</code>, and <code>octinteger</code> rules
+require at least 1 digit after the "b"/"x"/"o".
+</div>
+        <button id='solution-6' class='btn btn-outline btn-lg solutiontoggle solution'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+<p>Which of these symbols are considered a non-terminal symbol? <em>Select one</em></p>
+
+<ol>
+  <li><code>NONZERODIGIT</code></li>
+  <li><code>DIGIT</code></li>
+  <li><code>BINDIGIT</code></li>
+  <li><code>OCTDIGIT</code></li>
+  <li><code>hexdigit</code></li>
+</ol>
+
+<div class="solution solution-7">
+The <code>hexdigit</code> symbol is a non-terminal symbol, since its rule can expand to another symbol, <code>DIGIT</code>.
+The other symbols in the list are all terminal symbols, since they are defined by regular expressions,
+not other symbols.
+</div>
+        <button id='solution-7' class='btn btn-outline btn-lg solutiontoggle solution'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+
+<h3 id="q3-scheme-expressions">Q3: Scheme expressions</h3>
+
+
+<p>Consider this EBNF grammar for a subset of Scheme expressions,
+adopted from the <a href="https://www.scheme.com/tspl2d/grammar.html">Scheme documentation</a>.</p>
+
+<pre><code>?start: expression
+expression: constant | variable | &quot;(if &quot; expression expression expression? &quot;)&quot; | application
+constant: BOOLEAN | NUMBER
+variable: identifier
+application: &quot;(&quot; expression expression* &quot;)&quot;
+
+identifier: initial subsequent* | &quot;+&quot; | &quot;&#x2d;&quot; | &quot;...&quot;
+initial: LETTER | &quot;!&quot; | &quot;$&quot; | &quot;%&quot; | &quot;&amp;&quot; | &quot;*&quot; | &quot;/&quot; | &quot;:&quot; | &quot;&lt;&quot; | &quot;=&quot; | &quot;&gt;&quot; | &quot;?&quot; | &quot;~&quot; | &quot;_&quot; | &quot;^&quot;
+subsequent: initial | DIGIT | &quot;.&quot; | &quot;+&quot; | &quot;&#x2d;&quot;
+LETTER: /[a&#x2d;zA&#x2d;z]/
+DIGIT: /[0&#x2d;9]/
+BOOLEAN:  &quot;#t&quot; | &quot;#f&quot;
+
+%import common.NUMBER
+%ignore /\s+/</code></pre>
+
+
+
+<p>Which of these Scheme expressions can be parsed by that grammar? <em>Select all that apply</em></p>
+
+<ol>
+  <li><code>#t</code></li>
+  <li>193</li>
+  <li><code>x</code></li>
+  <li><code>&#x2d;xy</code></li>
+</ol>
+
+<div class="solution solution-8">
+The fourth expression <code>&#x2d;xy</code> cannot be parsed by the grammar - it doesn't match variable since it starts with a "-" and doesn't match the other symbols since it doesn't start with a parentheses.
+</div>
+        <button id='solution-8' class='btn btn-outline btn-lg solutiontoggle solution'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+<p>What would be equivalent to the current regular expression for <code>DIGIT</code>? <em>Select all that apply</em></p>
+
+<ol>
+  <li><code>DIGIT: /\d+/</code></li>
+  <li><code>DIGIT: /\d*/</code></li>
+  <li><code>DIGIT: /\d/</code></li>
+  <li><code>DIGIT: /\d?/</code></li>
+</ol>
+
+<div class="solution solution-9">
+The original regular expression matches a single digit from 0 to 9. Only the third option <code>/\d/</code> would be equivalent. The other options have quantifiers, so they would match more or less than a single digit as well.
+</div>
+        <button id='solution-9' class='btn btn-outline btn-lg solutiontoggle solution'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+<p>Which of these Scheme expressions can be parsed by that grammar? <em>Select all that apply</em></p>
+
+<ol>
+  <li><code>(define x 5)</code></li>
+  <li><code>(if (= x 5) x y)</code></li>
+  <li><code>(begin (print 1) (print 2) (print 3))</code></li>
+  <li><code>(print (+ 1 2))</code></li>
+</ol>
+
+<div class="solution solution-10">
+All of those expressions can be parsed by that grammar. However, the <code>define</code> and <code>begin</code> expressions
+would be parsed as an <code>application</code>, even though they are special forms.
+In the full Scheme EBNF grammar, there is a separate symbol for the special forms,
+so that the parser knows they aren't just standard procedure calls.
+
+<p>For example, to parse the <code>define</code> form, we could modify the grammar like so:</p>
+
+<pre><code>expression: constant | variable | &quot;(if &quot; expression expression expression? &quot;)&quot; | define | application
+define: &quot;(define&quot; variable expression &quot;)&quot;</code></pre>
+
+
+
+</div>
+        <button id='solution-10' class='btn btn-outline btn-lg solutiontoggle solution'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+<p>Which of these statements is true? <em>Select all that apply</em></p>
+
+<ol>
+  <li>If an expression parses with this grammar, then it is possible to run that code without error in a Scheme interpreter.</li>
+  <li>This grammar contains all the information needed to build a working interpreter for this subset of Scheme.</li>
+  <li>This grammar contains the information needed for the phase of the interpreter that parses an input string and turns it into an expression tree.</li>
+  <li>If an expression parses with this grammar, it is considered syntactically correct Scheme code.</li>
+</ol>
+
+<div class="solution solution-11">Options #3 and #4 are correct. Option #1 is not correct as some code is syntactically correct but still results in run-time errors, such as <code>(1 2)</code>. Option #2 is not correct since a grammar does not contain information on how to <em>evaluate</em> the code.
+</div>
+        <button id='solution-11' class='btn btn-outline btn-lg solutiontoggle solution'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+  </div>
+
+  <div class='col-md-3 sticky'>
+    <nav class='hidden-print hidden-sm hidden-xs sidebar'>
+      <ul>
+  <li><a href="index.html#guides">Guides</a></li>
+  <ul>
+    <li><a href="index.html#bnf">BNF</a></li>
+  </ul>
+  <li><a href="index.html#practice-problems">Practice Problems</a></li>
+  <ul>
+    <li><a href="index.html#q1-toddler-ese">Q1: Toddler-ese</a></li>
+    <li><a href="index.html#q2-python-integers">Q2: Python integers</a></li>
+    <li><a href="index.html#q3-scheme-expressions">Q3: Scheme expressions</a></li>
+  </ul>
+</ul>
+    </nav>
+  </div>
+</div>
+
+    </main>
+
+    <footer class="container">
+      <div class="row text-center">
+        <div class="col col-sm-4">
+          <h3><a href="../../index.html">CS 61A</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../weekly.html">Weekly Schedule</a></li>
+            <li><a href="../../office-hours.html">Office Hours</a></li>
+            <li><a href="../../staff.html">Staff</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../../resources.1.html">Resources</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../articles/studying.html">Studying Guide</a></li>
+            <li><a href="../../articles/debugging.html">Debugging Guide</a></li>
+            <li><a href="../../articles/composition.html">Composition Guide</a></li>
+            <li><a href="../../articles/pair-programming.html">Pair Programming</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../../articles/about.html">Policies</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../articles/about.html#assignments">Assignments</a></li>
+            <li><a href="../../articles/about.html#exams">Exams</a></li>
+            <li><a href="../../articles/about.html#grading">Grading</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/loader.min.js"></script>
+  <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/editor/editor.main.min.css">
+  <script>
+      require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs' }});
+      window.MonacoEnvironment = { getWorkerUrl: () => URL.createObjectURL(new Blob([`
+      self.MonacoEnvironment = {
+          baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min'
+      };
+      importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/base/worker/workerMain.min.js');
+  `], { type: 'text/javascript' }))
+  };
+  </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.15.5/js/jsplumb.min.js"></script>
+    <script src="../../assets/js/network_storage.js"></script>
+    <script src="../../assets/js/storable.js"></script>
+    <script src="../../assets/js/editor.js"></script>
+    <script src="../../assets/js/copy-button.js"></script>
+    <script src="../../assets/js/env-diagram.js"></script>
+    
+<script src="../../assets/js/sketchy.js"></script>
+<script>
+  $('.sidebar ul').addClass('nav nav-stacked noselect');
+  $('body').scrollspy({
+    target: '.sidebar',
+    offset: 40
+  });
+
+  function goToId(id) {
+    var target = $(id);
+    target.parent().show();
+    $('html,body').animate({
+      scrollTop: target.offset().top,
+    }, 100);
+    $("body").scrollspy('refresh');
+  }
+
+  if (location.hash) {
+    setTimeout(function() {
+      if (location.hash) {
+        goToId(location.hash);
+      }
+    }, 1);
+  }
+
+  $("a").click(function(event) {
+    var urlBeforeHashRegEx = new RegExp("^"+window.location.href.split("#")[0]);
+    if (/^#/.test(this.hash) && urlBeforeHashRegEx.test(this.href)) {
+      event.preventDefault();
+      goToId(this.hash);
+      document.location.hash = this.hash;
+    }
+  });
+</script>
+
+<script type="text/javascript" src="../../assets/js/config.js"></script>
+<script>
+$(function() {
+    $('.solutiontoggle').css('display', 'inline-block');
+      $('.solutiontoggle').click(function() {
+        var solution_id = $(this).attr('id');
+        $('div.' + solution_id).slideToggle(600);
+    });
+    $('.alwaystoggle').css('display', 'inline-block');
+    $('.alwaystoggle').click(function() {
+      var solution_id = $(this).attr('id');
+      $('div.' + solution_id).slideToggle(600);
+    });
+});
+</script>
+
+  </body>
+</html>

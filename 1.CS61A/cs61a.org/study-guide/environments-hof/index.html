@@ -1,0 +1,2713 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="description" content ="CS 61A: Structure and Interpretation of Computer Programs" />
+    <meta name="keywords" content ="CS 61A, Computer Science, CS, 61A, Programming, John DeNero, Berkeley, EECS" />
+    <meta name="author" content ="John DeNero, Hany Farid" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="../../assets/js/hl.js"></script>
+    <script src="../../assets/js/toggledarkmode.js"></script>
+    <script>
+        // we aren't registering builtins since
+        //      (1) they don't render differently in the current CSS from other names
+        //      (2) it's a mess to list all of them. You can extract from the site but that takes effort
+        // if (1) ceases to be true, (2) might be worth the effort. For now, we're leaving as is
+        hljsRegister({
+            'keyword': "define if cond and or let begin lambda mu quote delay cons-stream set! quasiquote unquote unquote-splicing define-macro"
+        });
+        hljs.initHighlightingOnLoad();
+    </script>
+    <script src="../../assets/js/dark-mode.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata|Roboto:300,400,500|Work+Sans:400,700">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/mono-blue.css">
+    <link rel="icon" href="../../assets/images/favicon.ico">
+
+    
+
+    <title>
+Study Guide: Environments and HOF | CS 61A Spring 2023
+</title>
+  </head>
+
+  <body id="index" class="home">
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container noselect">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-section">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../../index.html">
+            <img style="max-width:60px; margin-top: -20px;" class="logo" src="../../assets/images/logo.png"/>
+          </a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbar-collapse-section">
+          <ul class="nav navbar-nav navbar-right">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Calendar
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../../weekly.html">Weekly Schedule</a></li>
+                <li><a href="../../office-hours.html">Office Hours</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Links
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://sections.cs61a.org">Sections Tool</a></li>
+                <li><a href="https://oh.cs61a.org">Office Hours Queue</a></li>
+                <li><a href="https://go.cs61a.org/regrade-request">Request a Regrade</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Staff
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../../instructor.html">Instructors</a></li>
+                <li><a href="../../TAs.html">TAs</a></li>
+                <li><a href="../../tutors.html">Tutors</a></li>
+                <li><a href="../../academic-interns.html">Academic Interns</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Resources
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://go.cs61a.org/extensions">Request an Extension</a></li>
+                <li><a href="https://go.cs61a.org/accommodation-appts">Book an Accommodations Appointment</a></li>
+                <li><a href="../../resources.1.html">Topical Resources + Past Exams</a></li>
+                <li><a href="https://tutor.cs61a.org/">PythonTutor</a></li>
+                <li><a href="https://code.cs61a.org/">Code</a></li>
+                <li><a href="https://edstem.org/us/courses/34756/discussion/" target="_blank">Ed</a></li>
+                <li><a href="../../articles/campus-res/index.html">Department/Campus Resources</a></li>
+              </ul>
+            </li>
+            <li><a href="../../articles/about.html">Syllabus</a></li>
+            <li><a href="../../contact.1.html">Contact</a></li>
+            <li>
+              <label class="switch">
+                <input type="checkbox" id="toggle-mode-cb">
+                <span class="slider round"></span>
+              </label>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main id="content" class="container">
+      
+<div class='row'>
+  <div class='col-md-9'>
+    <header>
+      <h1>
+        
+Study Guide: Environments and HOF
+
+        
+        
+        
+      </h1>
+    </header>
+    
+<div class="alert storable-login-status"></div>
+
+<h2>Instructions</h2>
+
+<p>This is a study guide with links to past
+lectures, assignments, and handouts, as well as
+additional practice problems to assist you in learning the concepts.</p>
+
+<p>Draw environment diagrams automatically with <a href="http://tutor.cs61a.org">Python Tutor</a>.</p>
+
+
+  <p><strong>Assignments</strong></p>
+  <blockquote><p>Important: For solutions to these assignments once they have been released, see <a href="../../index.html">the main website</a></p></blockquote>
+
+<ul>
+  <li><a href="../../hw/hw02.html">HW 2</a></li>
+  <li><a href="../../lab/lab02.1.html">Lab 2</a></li>
+</ul>
+
+
+
+  <p><strong>Handouts</strong></p>
+  <ul>
+  <li><a href="https://cs61a.org/disc/disc01.pdf">Discussion 1</a> (<a href="https://cs61a.org/disc/disc01_sol.pdf">Solutions</a>)</li>
+</ul>
+
+
+
+  <p><strong>Lectures</strong></p>
+  <ul>
+  <li><a href="https://cs61a.org/assets/slides/03-Control_full.pdf">Control</a></li>
+  <li><a href="https://cs61a.org/assets/slides/04-Higher-Order_Functions_full.pdf">Higher-Order Functions</a></li>
+  <li><a href="https://cs61a.org/assets/slides/05-Environments_full.pdf">Environments</a></li>
+</ul>
+
+
+
+  <p><strong>Readings</strong></p>
+  <ul>
+  <li><a href="http://composingprograms.com/pages/15-control.html">Section 1.5</a></li>
+  <li><a href="http://composingprograms.com/pages/16-higher-order-functions.html">Section 1.6</a></li>
+</ul>
+
+
+
+    
+<h2 id="environment-diagrams">Environment Diagrams</h2>
+
+
+<blockquote><p><a href="http://albertwu.org/cs61a/notes/environments">Albert Wu's Environment Diagrams Guide</a>
+provides an alternative view of the rules and additional practice.</p></blockquote>
+
+<p>Environment diagrams help us visualize Python's process. For each line of code
+we should first identify what kind of statement or expression it is and then
+execute the line according to the rules.</p>
+
+<p>A couple tips:</p>
+
+<ul>
+  <li>You can only bind names to values. No expressions (like <code>3 + 4</code>) allowed on
+  environment diagrams!</li>
+  <li>Frames and functions both have parents.</li>
+  <li>Primitive values which include booleans (<code>True</code>, <code>False</code>), numbers (<code>42</code>),
+  and strings (<code>&#x27;cs 61a&#x27;</code>) go directly in the box for the value of a binding.</li>
+  <li>Composite values and function values are drawn off to the side and require a
+  pointer from the value box to the object.</li>
+</ul>
+
+
+<h3 id="expressions">Expressions</h3>
+
+
+
+<h4 id="primitive-expressions">Primitive Expressions</h4>
+
+
+<ol>
+  <li>In the current environment return the value of the primitive expression. If
+  the expression is just a number or a string, it evaluates to the Python
+  representation of that number or string. If the expression is a name, look
+  for the name in the current environment by following the lookup procedure by
+  starting in the current frame and looking up each parent frame until the
+  global frame.</li>
+</ol>
+
+
+<h4 id="call-expressions">Call Expressions</h4>
+
+
+<ol>
+  <li>Evaluate the operator, which could itself be another call expression.</li>
+  <li>Evaluate the operands from left to right, each of which could be call
+  expressions.</li>
+  <li>Apply the operator (evaluated as a <em>function</em>) to the operands (evaluated as
+  <em>arguments</em>). If this is a built-in function, we skip directly to the final
+  result because we don't know how built-in functions are implemented. But if
+  the function is user-defined, create a new frame in the environment diagram.</li>
+  <li>Bind the formal parameters to the argument values (the evaluated operands).</li>
+  <li>Evaluate the body of the function in the new frame.</li>
+  <li>After evaluating the body of the function, return to the frame that called
+  the function.</li>
+</ol>
+
+
+<h3 id="statements">Statements</h3>
+
+
+
+<h4 id="assignment-statements">Assignment Statements</h4>
+
+
+<blockquote><p>Note that assignment rules become more complicated with <code>nonlocal</code>.</p></blockquote>
+
+<ol>
+  <li>Evaluate the expression to the right of the assignment operator <code>=</code>.</li>
+  <li>Bind the variable name to the value of the expression in the current frame.
+  Be sure you override the variable name if it had a previous binding.</li>
+</ol>
+
+
+<h4 id="def-statements"><code>def</code> Statements</h4>
+
+
+<ol>
+  <li>Draw the <code>func name(arg1, arg2, ...)</code>.</li>
+  <li>The parent of the function is wherever the function was defined (the frame
+  we're currently in, since we're creating the function).</li>
+  <li>Bind the name of the function to the function value in the current frame.</li>
+</ol>
+
+
+<h4 id="return-statements"><code>return</code> Statements</h4>
+
+
+<ol>
+  <li>Evaluate the expression to the right of <code>return</code>.</li>
+  <li>In the current frame, create a space for the return value which contains the
+  value of the <code>return</code> expression.</li>
+</ol>
+
+
+<h1 id="interactive-environment-diagram-questions">Interactive Environment Diagram Questions</h1>
+
+<p><strong>Important</strong>: You may have to log in to your <a href="https://okpy.org">okpy</a> account to be able to modify the interactive diagrams below.</p>
+
+
+<h2 id="basic">Basic</h2>
+
+
+<h3 id="q1-environment-diagrams---basic">Q1: Environment Diagrams - Basic</h3>
+
+
+<blockquote><p>These questions were originally developed by <a href="http://albertwu.org/cs61a/">Albert Wu</a> and are included here for extra practice. We recommend checking your work in <a href="https://tutor.cs61a.org">PythonTutor</a> after filling in the diagrams for the code below.</p></blockquote>
+
+
+<h3 id="q1a">Q1a</h3>
+
+<p>Draw the environment diagram that results from executing the code below.</p>
+
+<blockquote><p>Guiding Question:</p>
+
+<ul>
+  <li>How does return behave differently than print?</li>
+</ul></blockquote>
+
+
+<pre><code>def square1(x):
+    return x * x
+
+def square2(x):
+    print(x * x)
+
+a = square1(3)
+b = square2(3)</code></pre>
+
+        <div class="env-diagram" id=env-diagram-awubasic1-diagram>
+          <div class="env-diagram-objects">
+            <div>Objects</div>
+            <ul><li>
+            <button class="env-diagram-connector" id="env-diagram-awubasic1-diagram-object0-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awubasic1-diagram-object0-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awubasic1-diagram-object1-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awubasic1-diagram-object1-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awubasic1-diagram-object2-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awubasic1-diagram-object2-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awubasic1-diagram-object3-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awubasic1-diagram-object3-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awubasic1-diagram-object4-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awubasic1-diagram-object4-value" type="text">
+            </li>
+            <li><button class="env-diagram-trash" title="Click here to remove a binding">🗑️</button></li>
+            </ul>
+        </div>
+          <div class="env-diagram-frame">
+                <div>Global frame</div>
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame0-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame0-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic1-diagram-frame0-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame0-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame0-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic1-diagram-frame0-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame0-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame0-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic1-diagram-frame0-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame0-binding3-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame0-binding3-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic1-diagram-frame0-binding3-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame0-binding4-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame0-binding4-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic1-diagram-frame0-binding4-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                    </tbody>
+                </table>
+            </div><div class="env-diagram-frame">
+                
+                <div>
+                f1: <input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame1-funcname">
+                [parent=<input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame1-parent">]
+                </div>
+            
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame1-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame1-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic1-diagram-frame1-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame1-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame1-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic1-diagram-frame1-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame1-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame1-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic1-diagram-frame1-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                <tr>
+                    <td>Return value</td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame1-return">
+                <button class="env-diagram-connector" id="env-diagram-awubasic1-diagram-frame1-return-connector">⬤
+                </button>
+            </td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div><div class="env-diagram-frame">
+                
+                <div>
+                f2: <input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame2-funcname">
+                [parent=<input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame2-parent">]
+                </div>
+            
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame2-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame2-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic1-diagram-frame2-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame2-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame2-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic1-diagram-frame2-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame2-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame2-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic1-diagram-frame2-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                <tr>
+                    <td>Return value</td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame2-return">
+                <button class="env-diagram-connector" id="env-diagram-awubasic1-diagram-frame2-return-connector">⬤
+                </button>
+            </td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div><div class="env-diagram-frame">
+                
+                <div>
+                f3: <input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame3-funcname">
+                [parent=<input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame3-parent">]
+                </div>
+            
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame3-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame3-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic1-diagram-frame3-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame3-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame3-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic1-diagram-frame3-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame3-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame3-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic1-diagram-frame3-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                <tr>
+                    <td>Return value</td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic1-diagram-frame3-return">
+                <button class="env-diagram-connector" id="env-diagram-awubasic1-diagram-frame3-return-connector">⬤
+                </button>
+            </td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="storable-status"></div>
+        
+
+
+<h3 id="q1b">Q1b</h3>
+
+<p>Draw the environment diagram that results from executing the code below.</p>
+
+<blockquote><p>Guiding Questions:</p>
+
+<ul>
+  <li>How many times do we call mul?</li>
+  <li>How many frames do we draw for mul?</li>
+</ul></blockquote>
+
+
+<pre><code>def square(x):
+    return x * x
+
+def sum_of_squares(x, y):
+    return square(x) + square(y)
+
+result = sum_of_squares(3, 4)</code></pre>
+
+        <div class="env-diagram" id=env-diagram-awubasic2-diagram>
+          <div class="env-diagram-objects">
+            <div>Objects</div>
+            <ul><li>
+            <button class="env-diagram-connector" id="env-diagram-awubasic2-diagram-object0-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awubasic2-diagram-object0-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awubasic2-diagram-object1-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awubasic2-diagram-object1-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awubasic2-diagram-object2-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awubasic2-diagram-object2-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awubasic2-diagram-object3-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awubasic2-diagram-object3-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awubasic2-diagram-object4-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awubasic2-diagram-object4-value" type="text">
+            </li>
+            <li><button class="env-diagram-trash" title="Click here to remove a binding">🗑️</button></li>
+            </ul>
+        </div>
+          <div class="env-diagram-frame">
+                <div>Global frame</div>
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame0-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame0-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic2-diagram-frame0-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame0-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame0-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic2-diagram-frame0-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame0-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame0-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic2-diagram-frame0-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame0-binding3-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame0-binding3-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic2-diagram-frame0-binding3-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame0-binding4-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame0-binding4-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic2-diagram-frame0-binding4-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                    </tbody>
+                </table>
+            </div><div class="env-diagram-frame">
+                
+                <div>
+                f1: <input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame1-funcname">
+                [parent=<input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame1-parent">]
+                </div>
+            
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame1-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame1-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic2-diagram-frame1-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame1-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame1-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic2-diagram-frame1-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame1-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame1-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic2-diagram-frame1-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                <tr>
+                    <td>Return value</td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame1-return">
+                <button class="env-diagram-connector" id="env-diagram-awubasic2-diagram-frame1-return-connector">⬤
+                </button>
+            </td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div><div class="env-diagram-frame">
+                
+                <div>
+                f2: <input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame2-funcname">
+                [parent=<input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame2-parent">]
+                </div>
+            
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame2-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame2-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic2-diagram-frame2-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame2-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame2-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic2-diagram-frame2-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame2-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame2-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic2-diagram-frame2-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                <tr>
+                    <td>Return value</td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame2-return">
+                <button class="env-diagram-connector" id="env-diagram-awubasic2-diagram-frame2-return-connector">⬤
+                </button>
+            </td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div><div class="env-diagram-frame">
+                
+                <div>
+                f3: <input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame3-funcname">
+                [parent=<input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame3-parent">]
+                </div>
+            
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame3-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame3-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic2-diagram-frame3-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame3-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame3-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic2-diagram-frame3-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame3-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame3-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic2-diagram-frame3-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                <tr>
+                    <td>Return value</td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic2-diagram-frame3-return">
+                <button class="env-diagram-connector" id="env-diagram-awubasic2-diagram-frame3-return-connector">⬤
+                </button>
+            </td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="storable-status"></div>
+        
+
+
+<h3 id="q1c">Q1c</h3>
+
+<p>Draw the environment diagram that results from executing the code below.</p>
+
+<blockquote><p>Guiding Questions:</p>
+
+<ul>
+  <li>What changes between the first time we call add and the second time?</li>
+  <li>How does this affect our diagram?</li>
+</ul></blockquote>
+
+
+<pre><code>from operator import add
+first = add(3, 4)
+
+def add(a, b):
+    return a + b
+
+second = add(3, 4)</code></pre>
+
+        <div class="env-diagram" id=env-diagram-awubasic3-diagram>
+          <div class="env-diagram-objects">
+            <div>Objects</div>
+            <ul><li>
+            <button class="env-diagram-connector" id="env-diagram-awubasic3-diagram-object0-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awubasic3-diagram-object0-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awubasic3-diagram-object1-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awubasic3-diagram-object1-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awubasic3-diagram-object2-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awubasic3-diagram-object2-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awubasic3-diagram-object3-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awubasic3-diagram-object3-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awubasic3-diagram-object4-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awubasic3-diagram-object4-value" type="text">
+            </li>
+            <li><button class="env-diagram-trash" title="Click here to remove a binding">🗑️</button></li>
+            </ul>
+        </div>
+          <div class="env-diagram-frame">
+                <div>Global frame</div>
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame0-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame0-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic3-diagram-frame0-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame0-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame0-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic3-diagram-frame0-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame0-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame0-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic3-diagram-frame0-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame0-binding3-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame0-binding3-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic3-diagram-frame0-binding3-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame0-binding4-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame0-binding4-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic3-diagram-frame0-binding4-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                    </tbody>
+                </table>
+            </div><div class="env-diagram-frame">
+                
+                <div>
+                f1: <input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame1-funcname">
+                [parent=<input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame1-parent">]
+                </div>
+            
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame1-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame1-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic3-diagram-frame1-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame1-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame1-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic3-diagram-frame1-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame1-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame1-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic3-diagram-frame1-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                <tr>
+                    <td>Return value</td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame1-return">
+                <button class="env-diagram-connector" id="env-diagram-awubasic3-diagram-frame1-return-connector">⬤
+                </button>
+            </td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div><div class="env-diagram-frame">
+                
+                <div>
+                f2: <input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame2-funcname">
+                [parent=<input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame2-parent">]
+                </div>
+            
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame2-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame2-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic3-diagram-frame2-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame2-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame2-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic3-diagram-frame2-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame2-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame2-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic3-diagram-frame2-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                <tr>
+                    <td>Return value</td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame2-return">
+                <button class="env-diagram-connector" id="env-diagram-awubasic3-diagram-frame2-return-connector">⬤
+                </button>
+            </td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div><div class="env-diagram-frame">
+                
+                <div>
+                f3: <input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame3-funcname">
+                [parent=<input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame3-parent">]
+                </div>
+            
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame3-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame3-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic3-diagram-frame3-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame3-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame3-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic3-diagram-frame3-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame3-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame3-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic3-diagram-frame3-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                <tr>
+                    <td>Return value</td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic3-diagram-frame3-return">
+                <button class="env-diagram-connector" id="env-diagram-awubasic3-diagram-frame3-return-connector">⬤
+                </button>
+            </td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="storable-status"></div>
+        
+
+
+<h3 id="q1d">Q1d</h3>
+
+<p>Draw the environment diagram that results from executing the code below.</p>
+
+<blockquote><p>Guiding Questions:</p>
+
+<ul>
+  <li>Did the global values of score and opp_score change?</li>
+</ul></blockquote>
+
+
+<pre><code>score, opp_score = 0, 0
+
+def assign(arg0, arg1):
+    score = arg0
+    opp_score = arg1
+    return True
+
+success = assign(3, 9001)</code></pre>
+
+        <div class="env-diagram" id=env-diagram-awubasic4-diagram>
+          <div class="env-diagram-objects">
+            <div>Objects</div>
+            <ul><li>
+            <button class="env-diagram-connector" id="env-diagram-awubasic4-diagram-object0-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awubasic4-diagram-object0-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awubasic4-diagram-object1-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awubasic4-diagram-object1-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awubasic4-diagram-object2-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awubasic4-diagram-object2-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awubasic4-diagram-object3-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awubasic4-diagram-object3-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awubasic4-diagram-object4-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awubasic4-diagram-object4-value" type="text">
+            </li>
+            <li><button class="env-diagram-trash" title="Click here to remove a binding">🗑️</button></li>
+            </ul>
+        </div>
+          <div class="env-diagram-frame">
+                <div>Global frame</div>
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame0-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame0-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic4-diagram-frame0-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame0-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame0-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic4-diagram-frame0-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame0-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame0-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic4-diagram-frame0-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame0-binding3-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame0-binding3-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic4-diagram-frame0-binding3-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame0-binding4-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame0-binding4-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic4-diagram-frame0-binding4-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                    </tbody>
+                </table>
+            </div><div class="env-diagram-frame">
+                
+                <div>
+                f1: <input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame1-funcname">
+                [parent=<input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame1-parent">]
+                </div>
+            
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame1-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame1-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic4-diagram-frame1-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame1-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame1-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic4-diagram-frame1-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame1-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame1-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic4-diagram-frame1-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame1-binding3-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame1-binding3-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic4-diagram-frame1-binding3-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                <tr>
+                    <td>Return value</td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame1-return">
+                <button class="env-diagram-connector" id="env-diagram-awubasic4-diagram-frame1-return-connector">⬤
+                </button>
+            </td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div><div class="env-diagram-frame">
+                
+                <div>
+                f2: <input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame2-funcname">
+                [parent=<input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame2-parent">]
+                </div>
+            
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame2-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame2-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic4-diagram-frame2-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame2-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame2-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic4-diagram-frame2-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame2-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame2-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic4-diagram-frame2-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                <tr>
+                    <td>Return value</td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame2-return">
+                <button class="env-diagram-connector" id="env-diagram-awubasic4-diagram-frame2-return-connector">⬤
+                </button>
+            </td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div><div class="env-diagram-frame">
+                
+                <div>
+                f3: <input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame3-funcname">
+                [parent=<input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame3-parent">]
+                </div>
+            
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame3-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame3-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic4-diagram-frame3-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame3-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame3-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic4-diagram-frame3-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame3-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame3-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic4-diagram-frame3-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                <tr>
+                    <td>Return value</td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic4-diagram-frame3-return">
+                <button class="env-diagram-connector" id="env-diagram-awubasic4-diagram-frame3-return-connector">⬤
+                </button>
+            </td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="storable-status"></div>
+        
+
+
+<h3 id="q1e">Q1e</h3>
+
+<p>Draw the environment diagram that results from executing the code below.</p>
+
+<blockquote><p>Guiding Questions:</p>
+
+<ul>
+  <li>What's the lookup procedure for goal?</li>
+  <li>Does result ever show up in the diagram?</li>
+</ul></blockquote>
+
+
+<pre><code>goal = 100
+
+def foo(x):
+    y = x + goal
+    return b
+
+result = foo(4)</code></pre>
+
+        <div class="env-diagram" id=env-diagram-awubasic5-diagram>
+          <div class="env-diagram-objects">
+            <div>Objects</div>
+            <ul><li>
+            <button class="env-diagram-connector" id="env-diagram-awubasic5-diagram-object0-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awubasic5-diagram-object0-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awubasic5-diagram-object1-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awubasic5-diagram-object1-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awubasic5-diagram-object2-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awubasic5-diagram-object2-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awubasic5-diagram-object3-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awubasic5-diagram-object3-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awubasic5-diagram-object4-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awubasic5-diagram-object4-value" type="text">
+            </li>
+            <li><button class="env-diagram-trash" title="Click here to remove a binding">🗑️</button></li>
+            </ul>
+        </div>
+          <div class="env-diagram-frame">
+                <div>Global frame</div>
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame0-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame0-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic5-diagram-frame0-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame0-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame0-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic5-diagram-frame0-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame0-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame0-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic5-diagram-frame0-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame0-binding3-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame0-binding3-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic5-diagram-frame0-binding3-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame0-binding4-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame0-binding4-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic5-diagram-frame0-binding4-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                    </tbody>
+                </table>
+            </div><div class="env-diagram-frame">
+                
+                <div>
+                f1: <input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame1-funcname">
+                [parent=<input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame1-parent">]
+                </div>
+            
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame1-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame1-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic5-diagram-frame1-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame1-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame1-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic5-diagram-frame1-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame1-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame1-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic5-diagram-frame1-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                <tr>
+                    <td>Return value</td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame1-return">
+                <button class="env-diagram-connector" id="env-diagram-awubasic5-diagram-frame1-return-connector">⬤
+                </button>
+            </td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div><div class="env-diagram-frame">
+                
+                <div>
+                f2: <input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame2-funcname">
+                [parent=<input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame2-parent">]
+                </div>
+            
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame2-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame2-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic5-diagram-frame2-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame2-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame2-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic5-diagram-frame2-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame2-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame2-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic5-diagram-frame2-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                <tr>
+                    <td>Return value</td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame2-return">
+                <button class="env-diagram-connector" id="env-diagram-awubasic5-diagram-frame2-return-connector">⬤
+                </button>
+            </td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div><div class="env-diagram-frame">
+                
+                <div>
+                f3: <input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame3-funcname">
+                [parent=<input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame3-parent">]
+                </div>
+            
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame3-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame3-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic5-diagram-frame3-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame3-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame3-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic5-diagram-frame3-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame3-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame3-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic5-diagram-frame3-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                <tr>
+                    <td>Return value</td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic5-diagram-frame3-return">
+                <button class="env-diagram-connector" id="env-diagram-awubasic5-diagram-frame3-return-connector">⬤
+                </button>
+            </td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="storable-status"></div>
+        
+
+
+<h3 id="q1f">Q1f</h3>
+
+<p>Draw the environment diagram that results from executing the code below.</p>
+
+
+<pre><code>from operator import add, sub
+def a_plus_abs_b(a, b):
+    if b &lt; 0:
+        op = sub
+    else:
+        op = add
+    return op(a, b)
+
+result = a_plus_abs_b(4, &#x2d;4)</code></pre>
+
+        <div class="env-diagram" id=env-diagram-awubasic6-diagram>
+          <div class="env-diagram-objects">
+            <div>Objects</div>
+            <ul><li>
+            <button class="env-diagram-connector" id="env-diagram-awubasic6-diagram-object0-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awubasic6-diagram-object0-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awubasic6-diagram-object1-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awubasic6-diagram-object1-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awubasic6-diagram-object2-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awubasic6-diagram-object2-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awubasic6-diagram-object3-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awubasic6-diagram-object3-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awubasic6-diagram-object4-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awubasic6-diagram-object4-value" type="text">
+            </li>
+            <li><button class="env-diagram-trash" title="Click here to remove a binding">🗑️</button></li>
+            </ul>
+        </div>
+          <div class="env-diagram-frame">
+                <div>Global frame</div>
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame0-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame0-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic6-diagram-frame0-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame0-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame0-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic6-diagram-frame0-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame0-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame0-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic6-diagram-frame0-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame0-binding3-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame0-binding3-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic6-diagram-frame0-binding3-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame0-binding4-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame0-binding4-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic6-diagram-frame0-binding4-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                    </tbody>
+                </table>
+            </div><div class="env-diagram-frame">
+                
+                <div>
+                f1: <input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame1-funcname">
+                [parent=<input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame1-parent">]
+                </div>
+            
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame1-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame1-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic6-diagram-frame1-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame1-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame1-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic6-diagram-frame1-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame1-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame1-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic6-diagram-frame1-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                <tr>
+                    <td>Return value</td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame1-return">
+                <button class="env-diagram-connector" id="env-diagram-awubasic6-diagram-frame1-return-connector">⬤
+                </button>
+            </td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div><div class="env-diagram-frame">
+                
+                <div>
+                f2: <input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame2-funcname">
+                [parent=<input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame2-parent">]
+                </div>
+            
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame2-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame2-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic6-diagram-frame2-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame2-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame2-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic6-diagram-frame2-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame2-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame2-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic6-diagram-frame2-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                <tr>
+                    <td>Return value</td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame2-return">
+                <button class="env-diagram-connector" id="env-diagram-awubasic6-diagram-frame2-return-connector">⬤
+                </button>
+            </td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div><div class="env-diagram-frame">
+                
+                <div>
+                f3: <input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame3-funcname">
+                [parent=<input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame3-parent">]
+                </div>
+            
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame3-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame3-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic6-diagram-frame3-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame3-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame3-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic6-diagram-frame3-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame3-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame3-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awubasic6-diagram-frame3-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                <tr>
+                    <td>Return value</td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awubasic6-diagram-frame3-return">
+                <button class="env-diagram-connector" id="env-diagram-awubasic6-diagram-frame3-return-connector">⬤
+                </button>
+            </td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="storable-status"></div>
+        
+
+
+<h2 id="challenge">Challenge</h2>
+
+
+<h3 id="q2-environment-diagrams---basic">Q2: Environment Diagrams - Basic</h3>
+
+
+<blockquote><p>These questions were originally developed by <a href="http://albertwu.org/cs61a/">Albert Wu</a> and are included here for extra practice. We recommend checking your work in <a href="https://tutor.cs61a.org">PythonTutor</a> after filling in the diagrams for the code below.</p></blockquote>
+
+<!-- Broke this up into two docs because it was long haha -->
+
+
+<h3 id="q2c">Q2c</h3>
+
+<p>Draw the environment diagram that results from executing the code below.</p>
+
+
+<pre><code>def fun(fun):
+    def time(time):
+        return fun(x)
+    x = 4
+    return time
+
+def boo(x):
+    return x**2
+    x = 5
+
+result = fun(boo)(10)</code></pre>
+
+        <div class="env-diagram" id=env-diagram-awuexam3-diagram>
+          <div class="env-diagram-objects">
+            <div>Objects</div>
+            <ul><li>
+            <button class="env-diagram-connector" id="env-diagram-awuexam3-diagram-object0-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awuexam3-diagram-object0-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awuexam3-diagram-object1-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awuexam3-diagram-object1-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awuexam3-diagram-object2-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awuexam3-diagram-object2-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awuexam3-diagram-object3-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awuexam3-diagram-object3-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awuexam3-diagram-object4-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awuexam3-diagram-object4-value" type="text">
+            </li>
+            <li><button class="env-diagram-trash" title="Click here to remove a binding">🗑️</button></li>
+            </ul>
+        </div>
+          <div class="env-diagram-frame">
+                <div>Global frame</div>
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame0-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame0-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam3-diagram-frame0-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame0-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame0-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam3-diagram-frame0-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame0-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame0-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam3-diagram-frame0-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame0-binding3-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame0-binding3-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam3-diagram-frame0-binding3-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame0-binding4-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame0-binding4-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam3-diagram-frame0-binding4-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                    </tbody>
+                </table>
+            </div><div class="env-diagram-frame">
+                
+                <div>
+                f1: <input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame1-funcname">
+                [parent=<input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame1-parent">]
+                </div>
+            
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame1-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame1-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam3-diagram-frame1-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame1-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame1-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam3-diagram-frame1-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame1-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame1-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam3-diagram-frame1-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                <tr>
+                    <td>Return value</td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame1-return">
+                <button class="env-diagram-connector" id="env-diagram-awuexam3-diagram-frame1-return-connector">⬤
+                </button>
+            </td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div><div class="env-diagram-frame">
+                
+                <div>
+                f2: <input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame2-funcname">
+                [parent=<input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame2-parent">]
+                </div>
+            
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame2-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame2-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam3-diagram-frame2-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame2-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame2-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam3-diagram-frame2-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame2-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame2-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam3-diagram-frame2-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                <tr>
+                    <td>Return value</td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame2-return">
+                <button class="env-diagram-connector" id="env-diagram-awuexam3-diagram-frame2-return-connector">⬤
+                </button>
+            </td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div><div class="env-diagram-frame">
+                
+                <div>
+                f3: <input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame3-funcname">
+                [parent=<input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame3-parent">]
+                </div>
+            
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame3-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame3-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam3-diagram-frame3-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame3-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame3-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam3-diagram-frame3-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame3-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame3-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam3-diagram-frame3-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                <tr>
+                    <td>Return value</td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam3-diagram-frame3-return">
+                <button class="env-diagram-connector" id="env-diagram-awuexam3-diagram-frame3-return-connector">⬤
+                </button>
+            </td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="storable-status"></div>
+        
+
+
+<h3 id="q2d">Q2d</h3>
+
+<p>Draw the environment diagram that results from executing the code below.</p>
+
+
+<pre><code>from operator import sub
+def trick(me, you):
+    sub = treat
+    return sub
+
+def treat(me, you):
+    return sub(me, 1)
+
+treat = trick
+trick(3, 4)</code></pre>
+
+        <div class="env-diagram" id=env-diagram-awuexam4-diagram>
+          <div class="env-diagram-objects">
+            <div>Objects</div>
+            <ul><li>
+            <button class="env-diagram-connector" id="env-diagram-awuexam4-diagram-object0-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awuexam4-diagram-object0-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awuexam4-diagram-object1-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awuexam4-diagram-object1-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awuexam4-diagram-object2-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awuexam4-diagram-object2-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awuexam4-diagram-object3-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awuexam4-diagram-object3-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awuexam4-diagram-object4-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awuexam4-diagram-object4-value" type="text">
+            </li>
+            <li><button class="env-diagram-trash" title="Click here to remove a binding">🗑️</button></li>
+            </ul>
+        </div>
+          <div class="env-diagram-frame">
+                <div>Global frame</div>
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame0-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame0-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam4-diagram-frame0-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame0-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame0-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam4-diagram-frame0-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame0-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame0-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam4-diagram-frame0-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame0-binding3-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame0-binding3-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam4-diagram-frame0-binding3-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame0-binding4-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame0-binding4-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam4-diagram-frame0-binding4-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                    </tbody>
+                </table>
+            </div><div class="env-diagram-frame">
+                
+                <div>
+                f1: <input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame1-funcname">
+                [parent=<input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame1-parent">]
+                </div>
+            
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame1-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame1-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam4-diagram-frame1-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame1-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame1-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam4-diagram-frame1-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame1-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame1-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam4-diagram-frame1-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame1-binding3-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame1-binding3-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam4-diagram-frame1-binding3-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                <tr>
+                    <td>Return value</td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame1-return">
+                <button class="env-diagram-connector" id="env-diagram-awuexam4-diagram-frame1-return-connector">⬤
+                </button>
+            </td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div><div class="env-diagram-frame">
+                
+                <div>
+                f2: <input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame2-funcname">
+                [parent=<input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame2-parent">]
+                </div>
+            
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame2-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame2-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam4-diagram-frame2-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame2-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame2-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam4-diagram-frame2-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame2-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame2-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam4-diagram-frame2-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                <tr>
+                    <td>Return value</td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame2-return">
+                <button class="env-diagram-connector" id="env-diagram-awuexam4-diagram-frame2-return-connector">⬤
+                </button>
+            </td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div><div class="env-diagram-frame">
+                
+                <div>
+                f3: <input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame3-funcname">
+                [parent=<input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame3-parent">]
+                </div>
+            
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame3-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame3-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam4-diagram-frame3-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame3-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame3-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam4-diagram-frame3-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame3-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame3-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam4-diagram-frame3-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                <tr>
+                    <td>Return value</td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam4-diagram-frame3-return">
+                <button class="env-diagram-connector" id="env-diagram-awuexam4-diagram-frame3-return-connector">⬤
+                </button>
+            </td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="storable-status"></div>
+        
+
+
+<h3 id="q2e">Q2e</h3>
+
+<p>Draw the environment diagram that results from executing the code below.</p>
+
+
+<pre><code>def easy(x):
+    def peasy(y):
+        def ironic(name):
+            return name(x, y)
+        return y
+    return peasy
+
+result = easy(4)(easy)(2)</code></pre>
+
+        <div class="env-diagram" id=env-diagram-awuexam5-diagram>
+          <div class="env-diagram-objects">
+            <div>Objects</div>
+            <ul><li>
+            <button class="env-diagram-connector" id="env-diagram-awuexam5-diagram-object0-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awuexam5-diagram-object0-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awuexam5-diagram-object1-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awuexam5-diagram-object1-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awuexam5-diagram-object2-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awuexam5-diagram-object2-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awuexam5-diagram-object3-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awuexam5-diagram-object3-value" type="text">
+            </li><li>
+            <button class="env-diagram-connector" id="env-diagram-awuexam5-diagram-object4-connector">▶</button>
+            <input class="env-text-storable" id="env-diagram-awuexam5-diagram-object4-value" type="text">
+            </li>
+            <li><button class="env-diagram-trash" title="Click here to remove a binding">🗑️</button></li>
+            </ul>
+        </div>
+          <div class="env-diagram-frame">
+                <div>Global frame</div>
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame0-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame0-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam5-diagram-frame0-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame0-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame0-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam5-diagram-frame0-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame0-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame0-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam5-diagram-frame0-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame0-binding3-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame0-binding3-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam5-diagram-frame0-binding3-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame0-binding4-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame0-binding4-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam5-diagram-frame0-binding4-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                    </tbody>
+                </table>
+            </div><div class="env-diagram-frame">
+                
+                <div>
+                f1: <input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame1-funcname">
+                [parent=<input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame1-parent">]
+                </div>
+            
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame1-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame1-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam5-diagram-frame1-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame1-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame1-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam5-diagram-frame1-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame1-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame1-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam5-diagram-frame1-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                <tr>
+                    <td>Return value</td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame1-return">
+                <button class="env-diagram-connector" id="env-diagram-awuexam5-diagram-frame1-return-connector">⬤
+                </button>
+            </td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div><div class="env-diagram-frame">
+                
+                <div>
+                f2: <input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame2-funcname">
+                [parent=<input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame2-parent">]
+                </div>
+            
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame2-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame2-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam5-diagram-frame2-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame2-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame2-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam5-diagram-frame2-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame2-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame2-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam5-diagram-frame2-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                <tr>
+                    <td>Return value</td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame2-return">
+                <button class="env-diagram-connector" id="env-diagram-awuexam5-diagram-frame2-return-connector">⬤
+                </button>
+            </td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div><div class="env-diagram-frame">
+                
+                <div>
+                f3: <input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame3-funcname">
+                [parent=<input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame3-parent">]
+                </div>
+            
+                <table class="table">
+                    <tbody>
+                    
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame3-binding0-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame3-binding0-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam5-diagram-frame3-binding0-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame3-binding1-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame3-binding1-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam5-diagram-frame3-binding1-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                <tr>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame3-binding2-name"></td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame3-binding2-value">
+                <button class="env-diagram-connector" id="env-diagram-awuexam5-diagram-frame3-binding2-connector">⬤
+                </button>
+            </td>
+                </tr>
+            
+                    
+                <tr>
+                    <td>Return value</td>
+                    <td><input type="text" class="env-text-storable" id="env-diagram-awuexam5-diagram-frame3-return">
+                <button class="env-diagram-connector" id="env-diagram-awuexam5-diagram-frame3-return-connector">⬤
+                </button>
+            </td>
+                </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="storable-status"></div>
+        
+
+
+<h1 id="additional-practice-problems">Additional Practice Problems</h1>
+
+
+<blockquote><p>These questions provide practice with drawing environment diagrams from scratch. We recommend solving these on paper and checking your work in PythonTutor.</p></blockquote>
+
+
+<h2 id="easy">Easy</h2>
+
+
+
+<h3 id="q3-make-adder">Q3: Make Adder</h3>
+
+
+<p>Draw the environment diagram for the following code.</p>
+
+<pre><code>&gt;&gt;&gt; def adder_maker(x):
+...     def adder(y):
+...         return x + y
+...     return adder
+&gt;&gt;&gt; add3 = adder_maker(3)
+&gt;&gt;&gt; add3(4)
+<div class="alt prompt-1">______</div><div class="solution prompt-1">&#x37;</div>
+&gt;&gt;&gt; sub5 = adder_maker(&#x2d;5)
+&gt;&gt;&gt; sub5(6)
+<div class="alt prompt-1">______</div><div class="solution prompt-1">&#x31;</div>
+&gt;&gt;&gt; sub5(10) == add3(2)
+<div class="alt prompt-1">______</div><div class="solution prompt-1">&#x54;&#x72;&#x75;&#x65;</div></code></pre>
+        <button id='prompt-1' class='btn btn-outline btn-lg solutiontoggle prompt'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+<h3 id="q4-alpaca-zebra">Q4: Alpaca Zebra</h3>
+
+
+<p>Draw the environment diagram for the following code.</p>
+
+<pre><code>def yak(zebra):
+    return 20 // zebra
+
+def llama(alpaca):
+    zebra = 0
+    def yak(zebra):
+        return alpaca(zebra)
+    return yak
+
+llama(yak)(4)</code></pre>
+
+<p>Verify your solution with <a href="http://tutor.cs61a.org">Python Tutor</a>.</p>
+
+<h3 id="q5-multiplication">Q5: Multiplication</h3>
+
+
+<p>Using a <code>lambda</code> expression, complete the <code>mul_by_num</code> function. This function
+should take an argument and return a one argument function that multiplies any
+value passed to it by the original number.</p>
+
+
+
+<pre><code>def mul_by_num(num):
+    &quot;&quot;&quot;
+    Returns a function that takes one argument and returns num
+    times that argument.
+    &gt;&gt;&gt; x = mul_by_num(5)
+    &gt;&gt;&gt; y = mul_by_num(2)
+    &gt;&gt;&gt; x(3)
+    15
+    &gt;&gt;&gt; y(&#x2d;4)
+    &#x2d;8
+    &quot;&quot;&quot;
+<div class="alt solution-1">    "*** YOUR CODE HERE ***"
+    return ______
+</div><div class="solution solution-1">&#x20;&#x20;&#x20;&#x20;&#x72;&#x65;&#x74;&#x75;&#x72;&#x6e;&#x20;&#x6c;&#x61;&#x6d;&#x62;&#x64;&#x61;&#x20;&#x6e;&#x75;&#x6d;&#x32;&#x3a;&#x20;&#x6e;&#x75;&#x6d;&#x20;&#x2a;&#x20;&#x6e;&#x75;&#x6d;&#x32;</div></code></pre>
+
+
+        <button id='solution-1' class='btn btn-outline btn-lg solutiontoggle solution'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+
+<h2 id="medium">Medium</h2>
+
+
+
+<h3 id="q6-community">Q6: Community</h3>
+
+
+<pre><code>&gt;&gt;&gt; def troy():
+...     abed = 0
+...     while abed &lt; 3:
+...         britta = lambda: abed
+...         print(abed)
+...         abed += 2
+...     annie = abed
+...     annie += 1
+...     abed = 6 # seasons and a movie
+...     return britta
+&gt;&gt;&gt; jeff = troy()
+<div class="alt prompt-2">______</div><div class="solution prompt-2">&#x30;&#xa;&#x32;</div>
+&gt;&gt;&gt; shirley = lambda: jeff
+&gt;&gt;&gt; pierce = shirley()
+&gt;&gt;&gt; pierce()
+<div class="alt prompt-2">______</div><div class="solution prompt-2">&#x36;</div></code></pre>
+        <button id='prompt-2' class='btn btn-outline btn-lg solutiontoggle prompt'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+<h3 id="q7-doge">Q7: Doge</h3>
+
+
+<p>Draw the environment diagram for the following code.</p>
+
+<pre><code>wow = 6
+
+def much(wow):
+    if much == wow:
+        such = lambda wow: 5
+        def wow():
+            return such
+        return wow
+    such = lambda wow: 4
+    return wow()
+
+wow = much(much(much))(wow)</code></pre>
+
+<p>You can check out what happens when you run the code block using
+<a href="https://goo.gl/rLDpDe">Python Tutor</a>. Please ignore the “ambiguous parent frame” message on step 18. The parent is in fact f1.</p>
+
+<div class="solution solution-2">
+<iframe width="800" height="500" frameborder="0" src="https://pythontutor.com/iframe-embed.html#code=wow%20%3D%206%0A%0Adef%20much%28wow%29%3A%0A%20%20%20%20if%20much%20%3D%3D%20wow%3A%0A%20%20%20%20%20%20%20%20such%20%3D%20lambda%20wow%3A%205%0A%20%20%20%20%20%20%20%20def%20wow%28%29%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20return%20such%0A%20%20%20%20%20%20%20%20return%20wow%0A%20%20%20%20such%20%3D%20lambda%20wow%3A%204%0A%20%20%20%20return%20wow%28%29%0A%0Awow%20%3D%20much%28much%28much%29%29%28wow%29&codeDivHeight=400&codeDivWidth=350&cumulative=false&curInstr=0&heapPrimitives=nevernest&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D&textReferences=false"></iframe>
+</div>
+        <button id='solution-2' class='btn btn-outline btn-lg solutiontoggle solution'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+<h3 id="q8-two-kinds-of-people">Q8: Two Kinds of People</h3>
+
+
+<p>Draw the environment diagram for the following code.</p>
+
+<pre><code>def blondie(f):
+    return lambda x: f(x + 1)
+
+tuco = blondie(lambda x: x * x)
+angel_eyes = tuco(2)</code></pre>
+
+<p>Verify your solution with <a href="http://tutor.cs61a.org">Python Tutor</a>.</p>
+
+<h3 id="q9-reruns">Q9: Reruns</h3>
+
+
+<pre><code>&gt;&gt;&gt; def troy():
+...     abed = 0
+...     while abed &lt; 10:
+...         britta = lambda: abed
+...         abed += 1
+...     abed = 20
+...     return britta
+...
+&gt;&gt;&gt; jeff = troy()
+&gt;&gt;&gt; shirley = lambda : jeff
+&gt;&gt;&gt; pierce = shirley()
+&gt;&gt;&gt; pierce()
+<div class="alt prompt-3">______</div><div class="solution prompt-3">&#x32;&#x30;</div></code></pre>
+        <button id='prompt-3' class='btn btn-outline btn-lg solutiontoggle prompt'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+  </div>
+
+  <div class='col-md-3 sticky'>
+    <nav class='hidden-print hidden-sm hidden-xs sidebar'>
+      <ul>
+  <li><a href="index.html#environment-diagrams">Environment Diagrams</a></li>
+  <ul>
+    <li><a href="index.html#expressions">Expressions</a></li>
+    <ul>
+      <li><a href="index.html#primitive-expressions">Primitive Expressions</a></li>
+      <li><a href="index.html#call-expressions">Call Expressions</a></li>
+    </ul>
+    <li><a href="index.html#statements">Statements</a></li>
+    <ul>
+      <li><a href="index.html#assignment-statements">Assignment Statements</a></li>
+      <li><a href="index.html#def-statements"><code>def</code> Statements</a></li>
+      <li><a href="index.html#return-statements"><code>return</code> Statements</a></li>
+    </ul>
+  </ul>
+  <li><a href="index.html#interactive-environment-diagram-questions">Interactive Environment Diagram Questions</a></li>
+  <ul>
+    <li><a href="index.html#basic">Basic</a></li>
+    <ul>
+      <li><a href="index.html#q1-environment-diagrams---basic">Q1: Environment Diagrams - Basic</a></li>
+      <li><a href="index.html#q1a">Q1a</a></li>
+      <li><a href="index.html#q1b">Q1b</a></li>
+      <li><a href="index.html#q1c">Q1c</a></li>
+      <li><a href="index.html#q1d">Q1d</a></li>
+      <li><a href="index.html#q1e">Q1e</a></li>
+      <li><a href="index.html#q1f">Q1f</a></li>
+    </ul>
+    <li><a href="index.html#challenge">Challenge</a></li>
+    <ul>
+      <li><a href="index.html#q2-environment-diagrams---basic">Q2: Environment Diagrams - Basic</a></li>
+      <li><a href="index.html#q2c">Q2c</a></li>
+      <li><a href="index.html#q2d">Q2d</a></li>
+      <li><a href="index.html#q2e">Q2e</a></li>
+    </ul>
+  </ul>
+  <li><a href="index.html#additional-practice-problems">Additional Practice Problems</a></li>
+  <ul>
+    <li><a href="index.html#easy">Easy</a></li>
+    <ul>
+      <li><a href="index.html#q3-make-adder">Q3: Make Adder</a></li>
+      <li><a href="index.html#q4-alpaca-zebra">Q4: Alpaca Zebra</a></li>
+      <li><a href="index.html#q5-multiplication">Q5: Multiplication</a></li>
+    </ul>
+    <li><a href="index.html#medium">Medium</a></li>
+    <ul>
+      <li><a href="index.html#q6-community">Q6: Community</a></li>
+      <li><a href="index.html#q7-doge">Q7: Doge</a></li>
+      <li><a href="index.html#q8-two-kinds-of-people">Q8: Two Kinds of People</a></li>
+      <li><a href="index.html#q9-reruns">Q9: Reruns</a></li>
+    </ul>
+  </ul>
+</ul>
+    </nav>
+  </div>
+</div>
+
+    </main>
+
+    <footer class="container">
+      <div class="row text-center">
+        <div class="col col-sm-4">
+          <h3><a href="../../index.html">CS 61A</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../weekly.html">Weekly Schedule</a></li>
+            <li><a href="../../office-hours.html">Office Hours</a></li>
+            <li><a href="../../staff.html">Staff</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../../resources.1.html">Resources</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../articles/studying.html">Studying Guide</a></li>
+            <li><a href="../../articles/debugging.html">Debugging Guide</a></li>
+            <li><a href="../../articles/composition.html">Composition Guide</a></li>
+            <li><a href="../../articles/pair-programming.html">Pair Programming</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../../articles/about.html">Policies</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../articles/about.html#assignments">Assignments</a></li>
+            <li><a href="../../articles/about.html#exams">Exams</a></li>
+            <li><a href="../../articles/about.html#grading">Grading</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/loader.min.js"></script>
+  <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/editor/editor.main.min.css">
+  <script>
+      require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs' }});
+      window.MonacoEnvironment = { getWorkerUrl: () => URL.createObjectURL(new Blob([`
+      self.MonacoEnvironment = {
+          baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min'
+      };
+      importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/base/worker/workerMain.min.js');
+  `], { type: 'text/javascript' }))
+  };
+  </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.15.5/js/jsplumb.min.js"></script>
+    <script src="../../assets/js/network_storage.js"></script>
+    <script src="../../assets/js/storable.js"></script>
+    <script src="../../assets/js/editor.js"></script>
+    <script src="../../assets/js/copy-button.js"></script>
+    <script src="../../assets/js/env-diagram.js"></script>
+    
+<script src="../../assets/js/sketchy.js"></script>
+<script>
+  $('.sidebar ul').addClass('nav nav-stacked noselect');
+  $('body').scrollspy({
+    target: '.sidebar',
+    offset: 40
+  });
+
+  function goToId(id) {
+    var target = $(id);
+    target.parent().show();
+    $('html,body').animate({
+      scrollTop: target.offset().top,
+    }, 100);
+    $("body").scrollspy('refresh');
+  }
+
+  if (location.hash) {
+    setTimeout(function() {
+      if (location.hash) {
+        goToId(location.hash);
+      }
+    }, 1);
+  }
+
+  $("a").click(function(event) {
+    var urlBeforeHashRegEx = new RegExp("^"+window.location.href.split("#")[0]);
+    if (/^#/.test(this.hash) && urlBeforeHashRegEx.test(this.href)) {
+      event.preventDefault();
+      goToId(this.hash);
+      document.location.hash = this.hash;
+    }
+  });
+</script>
+
+<script type="text/javascript" src="../../assets/js/config.js"></script>
+<script>
+$(function() {
+    $('.solutiontoggle').css('display', 'inline-block');
+      $('.solutiontoggle').click(function() {
+        var solution_id = $(this).attr('id');
+        $('div.' + solution_id).slideToggle(600);
+    });
+    $('.alwaystoggle').css('display', 'inline-block');
+    $('.alwaystoggle').click(function() {
+      var solution_id = $(this).attr('id');
+      $('div.' + solution_id).slideToggle(600);
+    });
+});
+</script>
+
+  </body>
+</html>

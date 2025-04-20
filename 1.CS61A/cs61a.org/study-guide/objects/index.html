@@ -1,0 +1,591 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="description" content ="CS 61A: Structure and Interpretation of Computer Programs" />
+    <meta name="keywords" content ="CS 61A, Computer Science, CS, 61A, Programming, John DeNero, Berkeley, EECS" />
+    <meta name="author" content ="John DeNero, Hany Farid" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="../../assets/js/hl.js"></script>
+    <script src="../../assets/js/toggledarkmode.js"></script>
+    <script>
+        // we aren't registering builtins since
+        //      (1) they don't render differently in the current CSS from other names
+        //      (2) it's a mess to list all of them. You can extract from the site but that takes effort
+        // if (1) ceases to be true, (2) might be worth the effort. For now, we're leaving as is
+        hljsRegister({
+            'keyword': "define if cond and or let begin lambda mu quote delay cons-stream set! quasiquote unquote unquote-splicing define-macro"
+        });
+        hljs.initHighlightingOnLoad();
+    </script>
+    <script src="../../assets/js/dark-mode.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata|Roboto:300,400,500|Work+Sans:400,700">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/mono-blue.css">
+    <link rel="icon" href="../../assets/images/favicon.ico">
+
+    
+
+    <title>
+Study Guide: Objects | CS 61A Spring 2023
+</title>
+  </head>
+
+  <body id="index" class="home">
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container noselect">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-section">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../../index.html">
+            <img style="max-width:60px; margin-top: -20px;" class="logo" src="../../assets/images/logo.png"/>
+          </a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbar-collapse-section">
+          <ul class="nav navbar-nav navbar-right">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Calendar
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../../weekly.html">Weekly Schedule</a></li>
+                <li><a href="../../office-hours.html">Office Hours</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Links
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://sections.cs61a.org">Sections Tool</a></li>
+                <li><a href="https://oh.cs61a.org">Office Hours Queue</a></li>
+                <li><a href="https://go.cs61a.org/regrade-request">Request a Regrade</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Staff
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../../instructor.html">Instructors</a></li>
+                <li><a href="../../TAs.html">TAs</a></li>
+                <li><a href="../../tutors.html">Tutors</a></li>
+                <li><a href="../../academic-interns.html">Academic Interns</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Resources
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://go.cs61a.org/extensions">Request an Extension</a></li>
+                <li><a href="https://go.cs61a.org/accommodation-appts">Book an Accommodations Appointment</a></li>
+                <li><a href="../../resources.1.html">Topical Resources + Past Exams</a></li>
+                <li><a href="https://tutor.cs61a.org/">PythonTutor</a></li>
+                <li><a href="https://code.cs61a.org/">Code</a></li>
+                <li><a href="https://edstem.org/us/courses/34756/discussion/" target="_blank">Ed</a></li>
+                <li><a href="../../articles/campus-res/index.html">Department/Campus Resources</a></li>
+              </ul>
+            </li>
+            <li><a href="../../articles/about.html">Syllabus</a></li>
+            <li><a href="../../contact.1.html">Contact</a></li>
+            <li>
+              <label class="switch">
+                <input type="checkbox" id="toggle-mode-cb">
+                <span class="slider round"></span>
+              </label>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main id="content" class="container">
+      
+<div class='row'>
+  <div class='col-md-9'>
+    <header>
+      <h1>
+        
+Study Guide: Objects
+
+        
+        
+        
+      </h1>
+    </header>
+    
+<div class="alert storable-login-status"></div>
+
+<h2>Instructions</h2>
+
+<p>This is a study guide with links to past
+lectures, assignments, and handouts, as well as
+additional practice problems to assist you in learning the concepts.</p>
+
+
+  <p><strong>Assignments</strong></p>
+  <blockquote><p>Important: For solutions to these assignments once they have been released, see <a href="../../index.html">the main website</a></p></blockquote>
+
+<ul>
+  <li><a href="../../lab/lab07.1.html">Lab 7</a></li>
+  <li><a href="../../hw/hw05.1.html">HW 5</a></li>
+</ul>
+
+
+
+  <p><strong>Handouts</strong></p>
+  <ul>
+  <li><a href="https://cs61a.org/disc/disc06.pdf">Discussion 6</a></li>
+</ul>
+
+
+
+  <p><strong>Lectures</strong></p>
+  <ul>
+  <li><a href="https://fa20.cs61a.org/assets/slides/18-Objects_full.pdf">Objects</a></li>
+  <li><a href="https://fa20.cs61a.org/assets/slides/19-Inheritance_full.pdf">Inheritance</a></li>
+</ul>
+
+
+
+  <p><strong>Readings</strong></p>
+  <ul>
+  <li><a href="http://composingprograms.com/pages/25-object-oriented-programming.html">Section 2.5</a></li>
+</ul>
+
+
+
+    
+<h1 id="guides">Guides</h1>
+
+
+
+<h2 id="objects">Objects</h2>
+
+
+<p>We saw previously that sequence types like lists and dictionaries could combine
+values together in a single unit with <strong>data abstraction</strong>, but the way we
+accessed that data required writing additional constructors and selectors.</p>
+
+<p>Objects and classes are a more convenient way to create data abstractions.
+<strong>Object-oriented programming</strong> is a programming paradigm that combines
+representation (data) together with behavior (functions). We can design a tree
+structure both using functional data abstraction (<code>tree</code>) as well as
+object-based data abstraction (<code>Tree</code>).</p>
+
+<p>Objects introduce additional complexity as we can mutate their attributes. In
+the functional data abstraction <code>tree</code>, to 'change' the values, we needed to
+call the <code>tree</code> constructor and create a new tree with the desired values. With
+<code>Tree</code> objects, we can now modify the tree without creating new trees.</p>
+
+<p>The Python documentation has a very thorough tutorial on <a href="https://docs.python.org/3/tutorial/classes.html">Classes</a> to help
+understand how Python evaluates <code>class</code> statements, data attributes, and methods.</p>
+
+
+<h3 id="attributes">Attributes</h3>
+
+
+<p><strong>Attributes</strong> are the name-value bindings that describe the data and functions contained in
+an object, just like how name-value bindings in a frame describe the data
+contained in a frame. Attributes are accessed using dot notation.</p>
+
+<pre><code>&gt;&gt;&gt; object.attribute
+value</code></pre>
+
+<p>Dot notation can also be chained arbitrarily.</p>
+
+<pre><code>&gt;&gt;&gt; object.attribute
+another object
+&gt;&gt;&gt; object.attribute.attribute
+value</code></pre>
+
+<p>And they are likewise assigned using the same dot notation.</p>
+
+<pre><code>&gt;&gt;&gt; object.attribute = 0
+&gt;&gt;&gt; object.attribute
+0</code></pre>
+
+<p><strong>Class attributes</strong> are shared by all the instance of a class. They can be
+accessed from both the class as well as individual instances.</p>
+
+<pre><code>&gt;&gt;&gt; class A:
+...     attribute = 0
+...
+&gt;&gt;&gt; A.attribute
+0
+&gt;&gt;&gt; a = A()
+&gt;&gt;&gt; a.attribute
+0</code></pre>
+
+<p>We can also define functions in a class, and they are <em>just functions</em>.</p>
+
+<pre><code>&gt;&gt;&gt; class A:
+...     def abs(x):
+...         if x &gt; 0:
+...             return x
+...         elif x == 0:
+...             return 0
+...         else:
+...             return &#x2d;x
+...
+&gt;&gt;&gt; A.abs(&#x2d;1)
+1
+&gt;&gt;&gt; A.abs(0)
+0
+&gt;&gt;&gt; A.abs(1)
+1</code></pre>
+
+<p><strong>Instance attributes</strong> are specific to each instance of a class.</p>
+
+<pre><code>&gt;&gt;&gt; class A:
+...     def __init__(self):
+...         self.attribute = 1
+...
+&gt;&gt;&gt; a = A()
+&gt;&gt;&gt; a.attribute
+1</code></pre>
+
+<p>If a class attribute and instance attribute have the same name, then the
+instance attribute will hide the class attribute. The instance can access only
+the instance attribute, although the class can still access the class
+attribute.</p>
+
+<pre><code>&gt;&gt;&gt; class A:
+...     attribute = 0
+...     def __init__(self, count):
+...         self.attribute = count
+...
+&gt;&gt;&gt; A.attribute
+0
+&gt;&gt;&gt; a = A(1)
+&gt;&gt;&gt; a.attribute
+1
+&gt;&gt;&gt; A.attribute
+0</code></pre>
+
+<p><strong>Methods</strong> are instance attributes derived from class functions. A method can
+be invoked through <code>Class.function(object, *args)</code> or <code>object.function(*args)</code>.</p>
+
+<pre><code>&gt;&gt;&gt; class A:
+...     def __init__(self, name):
+...         self.name = name
+...     def excite(self, item):
+...         return self.name + &#x27; just won a new &#x27; + item + &#x27;!&#x27;
+...
+&gt;&gt;&gt; a = A(&#x27;John&#x27;)
+&gt;&gt;&gt; A.excite(a, &#x27;laptop&#x27;)
+&#x27;John just won a new laptop!&#x27;
+&gt;&gt;&gt; a.excite(&#x27;car&#x27;)
+&#x27;John just won a new car!&#x27;</code></pre>
+
+<p>Python implements this through an object called a <em>bound method</em> which passes
+in the instance as the first argument.</p>
+
+<pre><code>&gt;&gt;&gt; A.excite
+&lt;function A.excite at 0x...&gt;
+&gt;&gt;&gt; a.excite
+&lt;bound method A.excite of ...&gt;</code></pre>
+
+
+<h1 id="practice-problems">Practice Problems</h1>
+
+
+
+<h2 id="easy">Easy</h2>
+
+
+
+<h3 id="q1-bad-bank-account">Q1: Bad bank account</h3>
+
+
+<p>Implement the class <code>BadBankAccount</code>, which is a subclass of <code>Account</code>.
+<code>BadBankAccount</code> allows the account holder to withdraw more money than they
+have (i.e. overdraw). Once overdrawn, <code>BadBankAccount</code> prevents the account
+holder from withdrawing money again until the account has a positive balance.
+You should also implement the property method <code>overdrawn</code>, which returns
+a boolean that tells whether or not an account is currently locked due to being
+overdrawn.</p>
+
+
+
+<pre><code>class BadBankAccount(Account):
+    &quot;&quot;&quot; A subclass of bank account that allows an account holder to overdraw
+    once, and then prevents them from withdrawing more money. You should also
+    implement the method overdrawn, which allows an account holder to
+    check if they are overdrawn.
+
+    &gt;&gt;&gt; harold_account = BadBankAccount(&#x27;Harold&#x27;)
+    &gt;&gt;&gt; harold_account.deposit(100)   # depositing my paycheck for the week
+    100
+    &gt;&gt;&gt; harold_account.withdraw(101)  # buying dinner
+    &#x2d;1
+    &gt;&gt;&gt; harold_account.overdrawn()
+    True
+    &gt;&gt;&gt; harold_account.withdraw(100000)
+    You have overdrawn, please add more money!
+    &#x2d;1
+    &gt;&gt;&gt; harold_account.deposit(10)
+    9
+    &gt;&gt;&gt; harold_account.overdrawn()
+    False
+    &quot;&quot;&quot;
+
+    def withdraw(self, amount):
+        &quot;&quot;&quot;Decrease the account balance by amount and return the
+        new balance.
+        &quot;&quot;&quot;
+<div class="alt solution-1">        "*** YOUR CODE HERE ***"
+</div><div class="solution solution-1">&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x69;&#x66;&#x20;&#x73;&#x65;&#x6c;&#x66;&#x2e;&#x6f;&#x76;&#x65;&#x72;&#x64;&#x72;&#x61;&#x77;&#x6e;&#x28;&#x29;&#x3a;&#xa;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x70;&#x72;&#x69;&#x6e;&#x74;&#x28;&#x27;&#x59;&#x6f;&#x75;&#x20;&#x68;&#x61;&#x76;&#x65;&#x20;&#x6f;&#x76;&#x65;&#x72;&#x64;&#x72;&#x61;&#x77;&#x6e;&#x2c;&#x20;&#x70;&#x6c;&#x65;&#x61;&#x73;&#x65;&#x20;&#x61;&#x64;&#x64;&#x20;&#x6d;&#x6f;&#x72;&#x65;&#x20;&#x6d;&#x6f;&#x6e;&#x65;&#x79;&#x21;&#x27;&#x29;&#xa;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x72;&#x65;&#x74;&#x75;&#x72;&#x6e;&#x20;&#x73;&#x65;&#x6c;&#x66;&#x2e;&#x62;&#x61;&#x6c;&#x61;&#x6e;&#x63;&#x65;</div>        self.balance = self.balance &#x2d; amount
+        return self.balance
+
+<div class="alt solution-1">    "*** YOUR CODE HERE ***"
+</div><div class="solution solution-1">&#x20;&#x20;&#x20;&#x20;&#x64;&#x65;&#x66;&#x20;&#x6f;&#x76;&#x65;&#x72;&#x64;&#x72;&#x61;&#x77;&#x6e;&#x28;&#x73;&#x65;&#x6c;&#x66;&#x29;&#x3a;&#xa;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x72;&#x65;&#x74;&#x75;&#x72;&#x6e;&#x20;&#x73;&#x65;&#x6c;&#x66;&#x2e;&#x62;&#x61;&#x6c;&#x61;&#x6e;&#x63;&#x65;&#x20;&#x3c;&#x20;&#x30;</div></code></pre>
+
+
+        <button id='solution-1' class='btn btn-outline btn-lg solutiontoggle solution'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+
+<h2 id="medium">Medium</h2>
+
+
+
+<h3 id="q2-i-choose-you">Q2: I Choose You!</h3>
+
+
+<p>Predict the result of evaluating the following calls in the interpreter. Then
+try them out yourself!</p>
+
+<pre><code>&gt;&gt;&gt; class Pokemon:
+...     hp = 100
+...     damage = 25
+...     def __init__(self, name):
+...         self.name = name
+...     def attack(self, other):
+...         other.hp &#x2d;= self.damage
+...     def __repr__(self):
+...         return self.name
+...
+&gt;&gt;&gt; pika = Pokemon(&#x27;Pikachu&#x27;)
+&gt;&gt;&gt; pika.hp
+<div class="alt prompt-1">______</div><div class="solution prompt-1">&#x31;&#x30;&#x30;</div>
+&gt;&gt;&gt; pika.damage
+<div class="alt prompt-1">______</div><div class="solution prompt-1">&#x32;&#x35;</div>
+&gt;&gt;&gt; pika.trainer = &#x27;John&#x27;
+&gt;&gt;&gt; pika.trainer
+<div class="alt prompt-1">______</div><div class="solution prompt-1">&#x27;&#x4a;&#x6f;&#x68;&#x6e;&#x27;</div>
+&gt;&gt;&gt; Pokemon.trainer
+<div class="alt prompt-1">______</div><div class="solution prompt-1">&#x41;&#x74;&#x74;&#x72;&#x69;&#x62;&#x75;&#x74;&#x65;&#x45;&#x72;&#x72;&#x6f;&#x72;&#x3a;&#x20;&#x74;&#x79;&#x70;&#x65;&#x20;&#x6f;&#x62;&#x6a;&#x65;&#x63;&#x74;&#x20;&#x27;&#x50;&#x6f;&#x6b;&#x65;&#x6d;&#x6f;&#x6e;&#x27;&#x20;&#x68;&#x61;&#x73;&#x20;&#x6e;&#x6f;&#x20;&#x61;&#x74;&#x74;&#x72;&#x69;&#x62;&#x75;&#x74;&#x65;&#x20;&#x27;&#x74;&#x72;&#x61;&#x69;&#x6e;&#x65;&#x72;&#x27;</div></code></pre>
+        <button id='prompt-1' class='btn btn-outline btn-lg solutiontoggle prompt'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+<pre><code>&gt;&gt;&gt; bulba = Pokemon(&#x27;Bulbasaur&#x27;)
+&gt;&gt;&gt; bulba.hp &#x2d;= pika.damage
+&gt;&gt;&gt; Pokemon.hp
+<div class="alt prompt-2">______</div><div class="solution prompt-2">&#x31;&#x30;&#x30;</div>
+&gt;&gt;&gt; pika.hp, bulba.hp
+<div class="alt prompt-2">______</div><div class="solution prompt-2">&#x28;&#x31;&#x30;&#x30;&#x2c;&#x20;&#x37;&#x35;&#x29;</div>
+&gt;&gt;&gt; pika.attack(bulba)
+&gt;&gt;&gt; pika.hp, bulba.hp
+<div class="alt prompt-2">______</div><div class="solution prompt-2">&#x28;&#x31;&#x30;&#x30;&#x2c;&#x20;&#x35;&#x30;&#x29;</div>
+&gt;&gt;&gt; Pokemon.attack(pika, bulba)
+&gt;&gt;&gt; pika.hp, bulba.hp
+<div class="alt prompt-2">______</div><div class="solution prompt-2">&#x28;&#x31;&#x30;&#x30;&#x2c;&#x20;&#x32;&#x35;&#x29;</div></code></pre>
+        <button id='prompt-2' class='btn btn-outline btn-lg solutiontoggle prompt'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+<pre><code>&gt;&gt;&gt; pika.make_noise = lambda self: print(&#x27;Pika pika!&#x27;)
+&gt;&gt;&gt; pika.make_noise()
+<div class="alt prompt-3">______</div><div class="solution prompt-3">&#x54;&#x79;&#x70;&#x65;&#x45;&#x72;&#x72;&#x6f;&#x72;&#x3a;&#x20;&#x3c;&#x6c;&#x61;&#x6d;&#x62;&#x64;&#x61;&#x3e;&#x28;&#x29;&#x20;&#x6d;&#x69;&#x73;&#x73;&#x69;&#x6e;&#x67;&#x20;&#x31;&#x20;&#x72;&#x65;&#x71;&#x75;&#x69;&#x72;&#x65;&#x64;&#x20;&#x70;&#x6f;&#x73;&#x69;&#x74;&#x69;&#x6f;&#x6e;&#x61;&#x6c;&#x20;&#x61;&#x72;&#x67;&#x75;&#x6d;&#x65;&#x6e;&#x74;&#x3a;&#x20;&#x27;&#x73;&#x65;&#x6c;&#x66;&#x27;</div>
+&gt;&gt;&gt; pika.make_noise
+<div class="alt prompt-3">______</div><div class="solution prompt-3">&#x3c;&#x66;&#x75;&#x6e;&#x63;&#x74;&#x69;&#x6f;&#x6e;&#x20;&#x3c;&#x6c;&#x61;&#x6d;&#x62;&#x64;&#x61;&#x3e;&#x20;&#x61;&#x74;&#x20;&#x30;&#x78;&#x2e;&#x2e;&#x2e;&#x3e;</div>
+&gt;&gt;&gt; pika.attack
+<div class="alt prompt-3">______</div><div class="solution prompt-3">&#x3c;&#x62;&#x6f;&#x75;&#x6e;&#x64;&#x20;&#x6d;&#x65;&#x74;&#x68;&#x6f;&#x64;&#x20;&#x50;&#x6f;&#x6b;&#x65;&#x6d;&#x6f;&#x6e;&#x2e;&#x61;&#x74;&#x74;&#x61;&#x63;&#x6b;&#x20;&#x6f;&#x66;&#x20;&#x50;&#x69;&#x6b;&#x61;&#x63;&#x68;&#x75;&#x3e;</div>
+&gt;&gt;&gt; pika.make_noise(pika)
+<div class="alt prompt-3">______</div><div class="solution prompt-3">&#x50;&#x69;&#x6b;&#x61;&#x20;&#x70;&#x69;&#x6b;&#x61;&#x21;</div>
+&gt;&gt;&gt; pika.make_noise(&#x27;What?&#x27;)
+<div class="alt prompt-3">______</div><div class="solution prompt-3">&#x50;&#x69;&#x6b;&#x61;&#x20;&#x70;&#x69;&#x6b;&#x61;&#x21;</div></code></pre>
+        <button id='prompt-3' class='btn btn-outline btn-lg solutiontoggle prompt'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+<pre><code>&gt;&gt;&gt; pika.attack = lambda self, other: print(&quot;It doesn&#x27;t affect &quot; + other.name)
+&gt;&gt;&gt; pika.attack(bulba)
+<div class="alt prompt-4">______</div><div class="solution prompt-4">&#x54;&#x79;&#x70;&#x65;&#x45;&#x72;&#x72;&#x6f;&#x72;&#x3a;&#x20;&#x3c;&#x6c;&#x61;&#x6d;&#x62;&#x64;&#x61;&#x3e;&#x28;&#x29;&#x20;&#x6d;&#x69;&#x73;&#x73;&#x69;&#x6e;&#x67;&#x20;&#x31;&#x20;&#x72;&#x65;&#x71;&#x75;&#x69;&#x72;&#x65;&#x64;&#x20;&#x70;&#x6f;&#x73;&#x69;&#x74;&#x69;&#x6f;&#x6e;&#x61;&#x6c;&#x20;&#x61;&#x72;&#x67;&#x75;&#x6d;&#x65;&#x6e;&#x74;&#x3a;&#x20;&#x27;&#x6f;&#x74;&#x68;&#x65;&#x72;&#x27;</div>
+&gt;&gt;&gt; pika.attack(pika, bulba)
+<div class="alt prompt-4">______</div><div class="solution prompt-4">&#x49;&#x74;&#x20;&#x64;&#x6f;&#x65;&#x73;&#x6e;&#x27;&#x74;&#x20;&#x61;&#x66;&#x66;&#x65;&#x63;&#x74;&#x20;&#x42;&#x75;&#x6c;&#x62;&#x61;&#x73;&#x61;&#x75;&#x72;</div>
+&gt;&gt;&gt; pika.attack
+<div class="alt prompt-4">______</div><div class="solution prompt-4">&#x3c;&#x66;&#x75;&#x6e;&#x63;&#x74;&#x69;&#x6f;&#x6e;&#x20;&#x3c;&#x6c;&#x61;&#x6d;&#x62;&#x64;&#x61;&#x3e;&#x20;&#x61;&#x74;&#x20;&#x30;&#x78;&#x2e;&#x2e;&#x2e;&#x3e;</div></code></pre>
+        <button id='prompt-4' class='btn btn-outline btn-lg solutiontoggle prompt'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+<pre><code>&gt;&gt;&gt; pika.attack = bulba.attack
+&gt;&gt;&gt; pika.attack(bulba)
+&gt;&gt;&gt; pika.hp, bulba.hp
+<div class="alt prompt-5">______</div><div class="solution prompt-5">&#x28;&#x31;&#x30;&#x30;&#x2c;&#x20;&#x30;&#x29;</div>
+&gt;&gt;&gt; pika.attack
+<div class="alt prompt-5">______</div><div class="solution prompt-5">&#x3c;&#x62;&#x6f;&#x75;&#x6e;&#x64;&#x20;&#x6d;&#x65;&#x74;&#x68;&#x6f;&#x64;&#x20;&#x50;&#x6f;&#x6b;&#x65;&#x6d;&#x6f;&#x6e;&#x2e;&#x61;&#x74;&#x74;&#x61;&#x63;&#x6b;&#x20;&#x6f;&#x66;&#x20;&#x42;&#x75;&#x6c;&#x62;&#x61;&#x73;&#x61;&#x75;&#x72;&#x3e;</div></code></pre>
+        <button id='prompt-5' class='btn btn-outline btn-lg solutiontoggle prompt'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+  </div>
+
+  <div class='col-md-3 sticky'>
+    <nav class='hidden-print hidden-sm hidden-xs sidebar'>
+      <ul>
+  <li><a href="index.html#guides">Guides</a></li>
+  <ul>
+    <li><a href="index.html#objects">Objects</a></li>
+    <ul>
+      <li><a href="index.html#attributes">Attributes</a></li>
+    </ul>
+  </ul>
+  <li><a href="index.html#practice-problems">Practice Problems</a></li>
+  <ul>
+    <li><a href="index.html#easy">Easy</a></li>
+    <ul>
+      <li><a href="index.html#q1-bad-bank-account">Q1: Bad bank account</a></li>
+    </ul>
+    <li><a href="index.html#medium">Medium</a></li>
+    <ul>
+      <li><a href="index.html#q2-i-choose-you">Q2: I Choose You!</a></li>
+    </ul>
+  </ul>
+</ul>
+    </nav>
+  </div>
+</div>
+
+    </main>
+
+    <footer class="container">
+      <div class="row text-center">
+        <div class="col col-sm-4">
+          <h3><a href="../../index.html">CS 61A</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../weekly.html">Weekly Schedule</a></li>
+            <li><a href="../../office-hours.html">Office Hours</a></li>
+            <li><a href="../../staff.html">Staff</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../../resources.1.html">Resources</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../articles/studying.html">Studying Guide</a></li>
+            <li><a href="../../articles/debugging.html">Debugging Guide</a></li>
+            <li><a href="../../articles/composition.html">Composition Guide</a></li>
+            <li><a href="../../articles/pair-programming.html">Pair Programming</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../../articles/about.html">Policies</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../articles/about.html#assignments">Assignments</a></li>
+            <li><a href="../../articles/about.html#exams">Exams</a></li>
+            <li><a href="../../articles/about.html#grading">Grading</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/loader.min.js"></script>
+  <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/editor/editor.main.min.css">
+  <script>
+      require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs' }});
+      window.MonacoEnvironment = { getWorkerUrl: () => URL.createObjectURL(new Blob([`
+      self.MonacoEnvironment = {
+          baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min'
+      };
+      importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/base/worker/workerMain.min.js');
+  `], { type: 'text/javascript' }))
+  };
+  </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.15.5/js/jsplumb.min.js"></script>
+    <script src="../../assets/js/network_storage.js"></script>
+    <script src="../../assets/js/storable.js"></script>
+    <script src="../../assets/js/editor.js"></script>
+    <script src="../../assets/js/copy-button.js"></script>
+    <script src="../../assets/js/env-diagram.js"></script>
+    
+<script src="../../assets/js/sketchy.js"></script>
+<script>
+  $('.sidebar ul').addClass('nav nav-stacked noselect');
+  $('body').scrollspy({
+    target: '.sidebar',
+    offset: 40
+  });
+
+  function goToId(id) {
+    var target = $(id);
+    target.parent().show();
+    $('html,body').animate({
+      scrollTop: target.offset().top,
+    }, 100);
+    $("body").scrollspy('refresh');
+  }
+
+  if (location.hash) {
+    setTimeout(function() {
+      if (location.hash) {
+        goToId(location.hash);
+      }
+    }, 1);
+  }
+
+  $("a").click(function(event) {
+    var urlBeforeHashRegEx = new RegExp("^"+window.location.href.split("#")[0]);
+    if (/^#/.test(this.hash) && urlBeforeHashRegEx.test(this.href)) {
+      event.preventDefault();
+      goToId(this.hash);
+      document.location.hash = this.hash;
+    }
+  });
+</script>
+
+<script type="text/javascript" src="../../assets/js/config.js"></script>
+<script>
+$(function() {
+    $('.solutiontoggle').css('display', 'inline-block');
+      $('.solutiontoggle').click(function() {
+        var solution_id = $(this).attr('id');
+        $('div.' + solution_id).slideToggle(600);
+    });
+    $('.alwaystoggle').css('display', 'inline-block');
+    $('.alwaystoggle').click(function() {
+      var solution_id = $(this).attr('id');
+      $('div.' + solution_id).slideToggle(600);
+    });
+});
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,839 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="description" content ="CS 61A: Structure and Interpretation of Computer Programs" />
+    <meta name="keywords" content ="CS 61A, Computer Science, CS, 61A, Programming, John DeNero, Berkeley, EECS" />
+    <meta name="author" content ="John DeNero, Hany Farid" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="../assets/js/hl.js"></script>
+    <script src="../assets/js/toggledarkmode.js"></script>
+    <script>
+        // we aren't registering builtins since
+        //      (1) they don't render differently in the current CSS from other names
+        //      (2) it's a mess to list all of them. You can extract from the site but that takes effort
+        // if (1) ceases to be true, (2) might be worth the effort. For now, we're leaving as is
+        hljsRegister({
+            'keyword': "define if cond and or let begin lambda mu quote delay cons-stream set! quasiquote unquote unquote-splicing define-macro"
+        });
+        hljs.initHighlightingOnLoad();
+    </script>
+    <script src="../assets/js/dark-mode.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata|Roboto:300,400,500|Work+Sans:400,700">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/mono-blue.css">
+    <link rel="icon" href="../assets/images/favicon.ico">
+
+    
+
+    <title>
+Syllabus & Course Policies | CS 61A Spring 2023
+</title>
+  </head>
+
+  <body id="index" class="home">
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container noselect">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-section">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../index.html">
+            <img style="max-width:60px; margin-top: -20px;" class="logo" src="../assets/images/logo.png"/>
+          </a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbar-collapse-section">
+          <ul class="nav navbar-nav navbar-right">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="about.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Calendar
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../weekly.html">Weekly Schedule</a></li>
+                <li><a href="../office-hours.html">Office Hours</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="about.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Links
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://sections.cs61a.org">Sections Tool</a></li>
+                <li><a href="https://oh.cs61a.org">Office Hours Queue</a></li>
+                <li><a href="https://go.cs61a.org/regrade-request">Request a Regrade</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="about.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Staff
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../instructor.html">Instructors</a></li>
+                <li><a href="../TAs.html">TAs</a></li>
+                <li><a href="../tutors.html">Tutors</a></li>
+                <li><a href="../academic-interns.html">Academic Interns</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="about.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Resources
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://go.cs61a.org/extensions">Request an Extension</a></li>
+                <li><a href="https://go.cs61a.org/accommodation-appts">Book an Accommodations Appointment</a></li>
+                <li><a href="../resources.1.html">Topical Resources + Past Exams</a></li>
+                <li><a href="https://tutor.cs61a.org/">PythonTutor</a></li>
+                <li><a href="https://code.cs61a.org/">Code</a></li>
+                <li><a href="https://edstem.org/us/courses/34756/discussion/" target="_blank">Ed</a></li>
+                <li><a href="campus-res/index.html">Department/Campus Resources</a></li>
+              </ul>
+            </li>
+            <li><a href="about.html">Syllabus</a></li>
+            <li><a href="../contact.1.html">Contact</a></li>
+            <li>
+              <label class="switch">
+                <input type="checkbox" id="toggle-mode-cb">
+                <span class="slider round"></span>
+              </label>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main id="content" class="container">
+      
+<div class='row'>
+  <div class='col-md-9'>
+    <header>
+      <h1>Syllabus & Course Policies</h1>
+    </header>
+     <h2 id="overview">Overview</h2>
+
+
+<p>The CS 61 series is an introduction to computer science, with particular
+emphasis on software and on machines from a programmer's point of view.</p>
+
+<ol>
+  <li>CS 61A concentrates on the idea of abstraction, allowing the programmer to
+  think in terms appropriate to the problem rather than in low-level
+  operations dictated by the computer hardware.</li>
+  <li>CS 61B deals with the more advanced engineering aspects of software, such as
+  constructing and analyzing large programs.</li>
+  <li>CS 61C focuses on machines and how they execute programs.</li>
+</ol>
+
+<p>In CS 61A, we are interested in teaching you about programming, not about how
+to use one particular programming language. We consider a series of techniques
+for managing program complexity, such as functional programming and
+object-oriented programming.</p>
+
+<p>CS 61A primarily uses the Python 3 programming language. Python is a popular
+language in both industry and academia. It is also particularly well-suited to
+the task of exploring the topics taught in this course. It is an open-source
+language developed by a large volunteer community that prides itself on the
+diversity of its contributors.</p>
+
+<p>Mastery of a particular programming language is a very useful side effect of CS
+61A. However, our goal is not to dictate what language you use in your future
+endeavors. Instead, our hope is that once you have learned the concepts
+involved in programming, you will find that picking up a new programming
+language is but a few days' work. In fact, you will be asked to learn at least
+two other languages, Scheme and SQL, during the course.</p>
+
+<p>A complete list of lecture topics, readings, and assignments appears in the
+<a href="../index.html">lecture schedule</a>.</p>
+
+
+<h3 id="prerequisites">Prerequisites</h3>
+
+
+<p>Math 1A is listed as a corequisite for CS 61A. That is, it may be taken
+concurrently. Math 10A or Math 16A are also fine. It is possible to take CS 61A
+without knowing or learning calculus. Knowledge of calculus concepts will never
+be required to complete any assignments. However, taking calculus is a great
+way to brush up on the arithmetic and algebra that appear regularly in CS 61A.</p>
+
+<p>There is no formal programming-related prerequisite for CS 61A, but taking the
+course without any prior programming experience is typically very challenging.
+Students who take the course without prior programming experience typically
+must work substantially harder to master the material and tend to receive lower
+final grades in the course. Most CS 61A students have had significant prior
+programming experience. A typical background includes at least one course
+equivalent to CS 10 or a score of 3 or above on the AP Computer Science A exam.</p>
+
+<p>If you find it challenging to complete all of the required coursework in the
+first three weeks, we <strong>strongly recommend</strong> that you take another course
+first. You'll likely have a better experience taking 61A later. Taking CS 61A
+one semester later is unlikely to affect your degree progress or otherwise put
+you behind, but continuing to struggle in CS 61A despite this recommendation
+can lead to difficult academic circumstances that can affect your future
+opportunities. It's better to finish CS 61A with strong mastery of the course
+material, even if that means delaying by a semester, than to rush through it.</p>
+
+
+<h3 id="alternative-courses">Alternative Courses</h3>
+
+
+<p>To build programming experience before taking CS 61A, we recommend that you
+first take a class that introduces you to programming.  The most appropriate
+class within the Berkeley CS department is CS 10, described below, but you may
+also find similar classes at Berkeley extension or in online courses. Feel free
+to <a href="../contact.1.html">contact course staff</a> if you are not sure what's best.</p>
+
+
+<h4 id="cs-10">CS 10</h4>
+
+
+<p><a href="http://cs10.org">CS 10: The Beauty and Joy of Computing</a> is an introductory
+computer science course which is similar to CS 61A but moves at a friendlier
+pace. CS 10 covers variables, functions, recursion, algorithmic complexity,
+object-oriented programming, and many other relevant CS 61A topics, with the
+overall content overlap being about 50%. CS 10 starts the semester in Snap!, a
+block-based programming language which allows students to focus on conceptual
+understanding without worrying about unfamiliar syntax. After the midterm, the
+course transitions into Python (the primary language 61A uses), applying the
+same concepts you already learned to the new language, as well as introducing
+new concepts more relevant to Python. CS 10 also covers big ideas and social
+implications that go beyond programming, showing you the beauty and joy of
+computing.</p>
+
+
+<h4 id="data-8">Data 8</h4>
+
+
+<p><a href="http://data8.org/">Data 8: The Foundations of Data Science</a> is an introduction
+to data science designed to be accessible and useful for all Berkeley students.
+This course was built for students without prior programming experience.  It
+teaches students to program in Python 3, but covers a much smaller subset of
+the language than CS 61A. Most of the course focuses on data processing and
+statistical techniques that are central to using computers to answer questions
+about the world. Taking Data 8 before 61A is a good way to gain prior
+programming experience, but taking CS 10 is a better way.</p>
+
+
+<h4 id="data-c88c-formerly-cs-88">Data C88C (formerly CS 88)</h4>
+
+
+<p><a href="https://cs88-website.github.io/">CS 88: Computational Structures in Data
+Science</a> is an introduction to programming and
+computing that has more than 50% concept overlap with CS 61A. It is designed
+for students interested in data science who want to expand their knowledge of
+programming and program structures beyond what is covered in Data 8. Students
+who complete CS 88 can either proceed directly to CS 61B or subsequently take
+CS 61A, a path that offers a substantial amount of review because of the high
+topic overlap between the courses.</p>
+
+
+<h4 id="info-206a">Info 206A</h4>
+
+
+<p><a href="https://www.ischool.berkeley.edu/courses/info/206a">Info 206A: Introduction to Programming and
+Computation</a> is a 2-unit
+introduction to programming that overlaps with many topics in the first eight
+weeks of CS 61A. Professor Hany Farid has placed all of the <a href="https://farid.berkeley.edu/downloads/tutorials/learnPython/">videos and
+exercises for this course
+online</a>, and these
+are an excellent resource to supplement CS 61A.</p>
+
+
+<h2 id="course-format">Course Format</h2>
+
+
+<p>The course includes many events and opportunities for learning: lecture, lab,
+discussion, office hours, and more. Everyone learns differently, so not all of
+these events are required. However, it is recommended that you try everything
+out to figure out what combination of these events works best for you.</p>
+
+
+<h3 id="lecture">Lecture</h3>
+
+
+<p>There are three 50-minute lectures per week in Wheeler Auditorium. Slides and
+videos will be posted before each lecture. A screencast of live lecture will be
+posted soon after each lecture occurs. This course moves fast, and lecture is
+tightly coordinated with section. Please attend or watch each lecture the day
+it is given and before you attend section.</p>
+
+
+<h3 id="section">Section</h3>
+
+
+<p>Weekly sections include a programming-based lab assignment and a discussion
+worksheet.</p>
+
+<p>There are 10 lab points. Receiving credit for any 10 (or more)
+labs will earn a perfect lab score for the course.</p>
+
+<p>There are 10 discussion points. Receiving credit any 10 (or more)
+discussions will earn a perfect discussion score for the course.</p>
+
+<p>This semester, we are offering <strong>two section formats</strong>: 30-40 student <strong>regular
+sections</strong> and an unlimited-size <strong>mega section</strong> (perhaps 200 students).
+Both are designed to help students learn the course material equally well. You
+can choose which format you want. It is possible to change sections (and
+formats) until 11:59pm on Wednesday, Feb 8.</p>
+
+
+<h4 id="regular-section">Regular Section</h4>
+
+
+<p>There are two 80-minute section meetings each week: one lab and one discussion.
+These sections are run by an amazing group of teaching assistants who have been
+carefully selected for their ability, enthusiasm, and dedication to learning.</p>
+
+<p>To receive credit for lab section, you <strong>must attend</strong> and get checked off.
+You will be checked off at the end of the lab period as long as you have
+finished the required questions. The staff will assist you in finishing the
+required questions as long as you work on them and ask questions when you need
+help. You can also be checked off and leave early if you finish the lab
+assignment, including all optional questions. <strong>Update 1/20</strong>: Finally, if
+you finish the lab assignment, including all optional questions, before your
+lab section begins, you may email your TA and they will check you off remotely.</p>
+
+<p>To receive credit for the discussion section, you <strong>must attend</strong> and complete
+the attendance form.</p>
+
+<p>Regular sections will <strong>not</strong> be webcast and are not recorded.</p>
+
+
+<h4 id="mega-section">Mega Section</h4>
+
+
+<p><strong>Mega section does not meet on a weekly basis</strong>. There will be
+videos released each week that cover the same discussion worksheet used in
+regular section. Mega section may meet synchronously at certain points throughout the semester (on Zoom), but attendance will be <strong>optional</strong>.</p>
+
+<p>Students in the mega section must complete and submit the weekly lab assignment
+but do not need to be checked off. You are welcome to ask questions about lab
+assignments during course office hours. If more support is needed, let us know!
+We are happy to support students in receiving full credit on lab assignments.</p>
+
+<p>All students in mega will automatically receive full discussion credit. It is up to the students to keep up with weekly videos/discussion worksheets if they decide to join mega.</p>
+
+<p>Any Zoom-based mega section meetings will be <strong>webcast</strong> and <strong>recorded</strong>.</p>
+
+
+<h4 id="choosing-a-section-format">Choosing a Section Format</h4>
+
+
+<p>First-year students and students with limited prior programming experience are
+strongly encouraged to choose a regular section.  Working on programming-based
+lab assignments with helpful course staff in the room and solving discussion
+questions in small groups are great ways to learn.</p>
+
+<p>Both options are meant to be great. Mega section is designed to appeal to
+students who learn well from watching videos, working independently, and
+coming to drop-in office hours when they need help. But the smaller format of
+regular sections has clear advantages for students who wish to work with others
+and get to know the course staff.</p>
+
+
+<h3 id="office-hours">Office Hours</h3>
+
+
+<p>Office hours are drop-in tutoring sessions in which you can ask questions about
+the material, receive guidance on assignments, and work with peers and course
+staff in a small group setting. See the <a href="../office-hours.html">office hour schedule</a>
+and come by in person or book an appointment online on the <a href="https://oh.cs61a.org/appointments">OH
+Queue</a>.</p>
+
+
+<h2 id="assignments">Assignments</h2>
+
+
+<p>In addition to programming-based lab assignments, there are programming-based
+homework assignments and projects.</p>
+
+
+<h3 id="homework">Homework</h3>
+
+
+<p>Weekly homework assignments let you apply the concepts learned in lecture and
+section to more challenging problems. Homeworks will typically be released on
+Fridays and due the following Thursday.</p>
+
+
+<h4 id="partial-credit">Partial Credit</h4>
+
+
+<p>Homework is scored out of 2 points, and every incorrect question reduces your
+score by 1 point.</p>
+
+
+<h4 id="homework-recovery-policy">Homework Recovery Policy</h4>
+
+
+<p>You can recover one question per homework by attending a homework recovery
+session. Logistics will be released after the first homework assignment is due.</p>
+
+<p>Recovery sessions describe how to approach and solve a past homework problem.
+You are welcome to attend these even if you don't need the recovery credit.</p>
+
+
+<h3 id="projects">Projects</h3>
+
+
+<p>Projects are larger assignments intended to combine ideas from the course in
+interesting ways.</p>
+
+<p>You are allowed and encouraged to <a href="pair-programming.html">pair program</a>
+with a partner. Make sure to alternate roles so that both of you understand the
+complete results. We recommend finding a partner in your section, but course
+staff will also help with partner matching at various points in the semester.
+It is your responsibility to contact and collaborate with your partner. You may
+also work alone on all projects, although partners are recommended.</p>
+
+<p>Projects are graded on correctness, with points earned for each problem
+successfully completed.</p>
+
+
+<h2 id="exams">Exams</h2>
+
+
+<p>There will be three exams:</p>
+
+<ul>
+  <li>Midterm 1 will be held 7pm-9pm Monday 2/6</li>
+  <li>Midterm 2 will be held 7pm-9pm Friday 4/7</li>
+  <li>The final exam will be held 11:30am–2:30pm Tuesday 5/9</li>
+</ul>
+
+<p>Exams will be taken on paper on campus in designated exam rooms. Remote exams
+proctored over Zoom are available in exceptional circumstances.</p>
+
+<p>Students who are enrolled in another course with a conflicting final exam time
+may take the CS 61A final exam in the next final exam slot: 3-6pm on Tuesday 5/9.</p>
+
+
+<h2 id="accommodations-dsp-and-otherwise">Accommodations (DSP and Otherwise)</h2>
+
+
+<p>We will provide appropriate accommodations to all students enrolled in
+Berkeley's <a href="https://dsp.berkeley.edu/">Disabled Students Program (DSP)</a>.
+To ensure that you receive the appropriate accommodations, have your DSP
+specialist submit a letter confirming your status and accommodations. We also
+aim to provide fair and appropriate accommodations to any students who, because
+of extenuating circumstances, may need them. For information on how to
+request accommodations, please see the "Accommodations Appointments" section
+below.</p>
+
+
+<h3 id="assignment-extensions">Assignment Extensions</h3>
+
+
+<p>If you need to request an extension, regardless of your DSP status, fill out
+<a href="https://go.cs61a.org/extensions">this form</a>. Submissions to this form will be
+visible only to the course instructors, and certain Student Support staff members.</p>
+
+<p>Any extension request up to 24 hours will be guaranteed to be approved, so long as
+it is made in good faith. Any extension request up to 3 days made by a student
+with a DSP accommodation for assignment extensions will be approved
+automatically. All other extensions will be handled on a case-by-case basis.</p>
+
+<p>There will <em>never</em> be a penalty for requesting an extension—we understand that
+life happens, and we want to ensure that all students are provided with the
+support and flexibility they need to succeed, regardless of personal
+circumstances.</p>
+
+
+<h3 id="joining-cs-61a-late">Joining CS 61A Late</h3>
+
+
+<p>Students who officially enrolled in the course late MUST, within 24 hours of being
+added to course platforms (e.g. Gradescope),
+<strong>both request an <a href="https://go.cs61a.org/extensions">extension</a> and submit any missed assignments</strong>
+to receive credit. Late add students are expected to have been following along with course
+content and assignments, and as such must also submit any missed assignments within 24 hours
+of being enrolled in the course platforms.</p>
+
+<p>We recommend if you are unable to follow this timeline to drop the course as it moves at a
+very fast pace. The last day to drop a course on CalCentral is <strong>Wednesday 2/8 at 11:59pm</strong>.</p>
+
+
+<h3 id="accommodations-appointments">Accommodations Appointments</h3>
+
+
+<p>If you're not enrolled in DSP, or are in the process of being onboarded by DSP,
+you may still be eligible for accommodations. You may also be eligible for
+accommodations if serious extenuating circumstances should come up during the
+semester.</p>
+
+<p>If you believe you may require accommodations, please visit
+<a href="https://go.cs61a.org/accommodation-appts">this calendar</a> to book a short
+(20-minute) appointment with one of our student support TAs. You can also
+reach us at any time to discuss accommodations by emailing
+<a href="mailto:cs61a@berkeley.edu">cs61a@berkeley.edu</a>.</p>
+
+
+<h3 id="privacy">Privacy</h3>
+
+
+<p>All DSP and accommodations-related materials for this course are kept in a
+repository separate from the rest of the course materials that is visible only
+to the instructors, selected staff, and course managers. Course managers are members
+of department staff, unlike course staff, that help manage situations such as DSP
+accommodations.</p>
+
+<p>For any DSP and accommodations-related communications, please reach out to
+<a href="mailto:cs61a@berkeley.edu">cs61a@berkeley.edu</a>, which will put you in touch
+with our student support team. This inbox is only visible to staff members marked with
+"cs61a@" on the <a href="../TAs.html">TA</a> and <a href="../tutors.html">tutor</a> pages. This inbox will be
+visible to future members of course staff, so if you ever have a communication
+that you wish to remain private, let us know and we can delete the email
+exchange once the conversation is resolved.</p>
+
+<p>If you believe your accommodations may affect the TA who is teaching your
+section, and would like to inform that TA, you may wish to email us, and we can
+inform your section TA on your behalf. You are also welcome to reach out to your
+section TA directly.</p>
+
+
+<h2 id="resources">Resources</h2>
+
+
+
+<h3 id="textbook">Textbook</h3>
+
+
+<p>The online textbook for the course is
+<a href="http://composingprograms.com/">Composing Programs</a>, which was created
+specifically for this course, based on the classic textbook
+<a href="https://mitpress.mit.edu/sites/default/files/sicp/index.html">Structure and Interpretation of Computer Programs</a>.
+Readings for each lecture appear in the course schedule. We recommend that you
+complete the readings before attending lecture.</p>
+
+<p>Lots of additional study materials including past exams appear on the
+<a href="../resources.1.html">Resources</a> page.</p>
+
+
+<h2 id="grading">Grading</h2>
+
+
+<p>Your course grade is computed using a point system with a total of 300 points,
+broken down as follows:</p>
+
+<ul>
+  <li>Midterm 1, worth 40 points</li>
+  <li>Midterm 2, worth 45 points</li>
+  <li>The final exam, worth 75 points</li>
+  <li>Four projects, worth 100 points</li>
+  <li>Homework, worth 20 points</li>
+  <li>Lab, worth 10 points</li>
+  <li>Discussion, worth 10 points</li>
+</ul>
+
+<p>There are 4 extra credit points available to everyone for early submission of
+projects.</p>
+
+<p>Each letter grade for the course corresponds to a range of scores:</p>
+
+<pre><code>             A  ≥ 290    A&#x2d;  ≥ 275
+B+  ≥ 255    B  ≥ 230    B&#x2d;  ≥ 210
+C+  ≥ 190    C  ≥ 180    C&#x2d;  ≥ 175
+D+  ≥ 170    D  ≥ 165    D&#x2d;  ≥ 160</code></pre>
+
+<p>Your final score will be rounded to the nearest integer before being converted
+to a letter grade. 0.5 rounds up to 1, but 0.49 rounds down to 0.</p>
+
+<p>To receive an A+, students must receive at least 295 points and solve at least
+two A+ questions on exams. The A+ questions on exams are not worth any points
+and only serve to qualify students for an A+.</p>
+
+<p>There is no curve; your grade will depend only on how well you do, and not on
+how well everyone else does. Score thresholds are based on how students
+performed in previous semesters. Unlike some previous semesters you may have
+heard about, these thresholds <strong>will not be adjusted</strong> based on student
+performance.</p>
+
+<p>These are the exact thresholds that will be used at the end of the course to
+assign grades. In a typical semester, about 60% of students taking the course
+for a letter grade will receive a B+ or higher.</p>
+
+<p>Incomplete grades will be granted only for medical or personal emergencies that
+cause you to miss the final or last part of the course, only for students who
+have completed the majority of the coursework, and only if work up to the point
+of the emergency has been satisfactory. If you wish to discuss an incomplete
+in the course, please contact <a href="mailto:cs61a@berkeley.edu">cs61a@berkeley.edu</a>.</p>
+
+<p>There are 11 homework assignments (2 points each) but a maximum of 20 homework
+points, so you can miss one homework and still have a perfect homework score.</p>
+
+<p>Many students end the course with perfect homework, project, lab, and discussion
+scores. These parts of the course are not meant to be evaluations, but instead
+learning tools.</p>
+
+
+<h3 id="exam-recovery">Exam Recovery</h3>
+
+
+<p>It is possible to recover lost points on Midterm 1 and Midterm 2 by showing
+improvement on the final. Your score for each midterm (as a percentage of the
+total points) will be <strong>at least 90%</strong> of your score for the part of the final
+exam about Python (as a percentage of the total points). Between 40 and 50 out
+of 75 points on the final exam will be about Python.  For example, a student
+who scored 10/40 on Midterm 1, but scored 25/50 (50%) on the Python portion of
+the final exam would receive an adjusted Midterm 1 score of 50% * 90% = 18/40
+points, and so would recover 8 Midterm 1 points in addition to the 10 Midterm 1
+points already scored.</p>
+
+
+<h3 id="late-policy">Late Policy</h3>
+
+
+<p>If you cannot turn in an assignment on time,
+<a href="about.html#assignment-extensions">you can request an extension</a>—we
+guarantee we will grant 24-hour extensions for any non-extra credit assignment,
+no questions asked, and we will consider all other extension requests on a
+case-by-case basis. In absence of an extension, our policy is:</p>
+
+<ul>
+  <li><strong>Labs</strong>: We rarely accept late lab submissions.</li>
+  <li><strong>Homework</strong>: We rarely accept late homework submissions.</li>
+  <li><strong>Projects</strong>: Submissions within 48 hours after the deadline will receive
+  75% of the earned score. Submissions that are 48 hours or more after the
+  deadline will receive 0 points.</li>
+</ul>
+
+
+<h3 id="citizenship">Citizenship</h3>
+
+
+<p>It is our expectation that all interactions with course staff and other
+students will demonstrate appropriate respect, consideration, and compassion
+for others. Please remember to be friendly and thoughtful; our community draws
+from a wide spectrum of valuable experiences. For further reading, please
+reference the <a href="https://diversity.berkeley.edu/principles-community">Berkeley Principles of Community</a> and <a href="https://sa.berkeley.edu/sites/default/files/Code%20of%20Conduct_January%202016.pdf">Berkeley Campus Code of
+Student Conduct</a>.</p>
+
+<p>For exceptionally rude or disrespectful behavior toward the course staff or
+other students, your final grade will be lowered by up to a full letter grade
+(e.g., from an A- to a B-) at the discretion of the course instructors. You
+don't need to be concerned about this policy if you treat other human beings
+with even a bare minimum of respect and consideration and do not engage in
+behavior that is actively harmful to others.</p>
+
+
+<h2 id="learning-cooperatively">Learning Cooperatively</h2>
+
+
+<p>With the obvious exception of exams, we encourage you to discuss course
+activities with your friends and classmates as you are working on them. You will
+learn more in this class if you work with others than if you do not. Ask
+questions, answer questions, and share ideas liberally.</p>
+
+<p>Learning cooperatively is different from sharing answers. You shouldn't be
+showing your code to other students or looking at others' code, except:</p>
+
+<ul>
+  <li>During lab, you can share all you want as long as you're all learning.</li>
+  <li>For a project that allows partners, you can share anything with your partner.</li>
+  <li>If you've finished a problem already, you can look at others' code to help
+  them finish.</li>
+</ul>
+
+<p>If you are helping another student, don't just tell them the answer; they will
+learn very little and run into trouble on exams. Instead, try to guide them
+toward discovering the solution on their own. Problem solving practice is the
+key to progress in computer science.</p>
+
+<p>Since you're working collaboratively, keep your project partner informed. If
+some medical or personal emergency takes you away from the course for an
+extended period, or if you decide to drop the course for any reason, please
+don't just disappear silently! You should inform your project partner, so that
+nobody is depending on you to do something you can't finish.</p>
+
+
+<h3 id="academic-misconduct">Academic Misconduct</h3>
+
+
+<p>Any students caught collaborating on exams will receive an F in the course.
+Please don't be one of these students.</p>
+
+<p>Reading others' homework or project solution to a problem before you solve that
+problem on your own will incur large point penalties. You are free to discuss
+the problems with others beforehand, but you must write your own solutions. The
+exception to this rule is that you may share code with your project partner.</p>
+
+<p>If you are unsure if what you are doing constitutes academic misconduct, please
+clarify with the instructor or <a href="../contact.1.html">contact course staff</a>. The following
+is a list of things you should NOT do. This list is not exhaustive, but covers
+most of the big offenses:</p>
+
+<ul>
+  <li>Do not copy code from any student who is not your partner.</li>
+  <li>Do not allow any student other than your partner to copy code from you.</li>
+  <li>Do not copy solutions from online sources such as Stack Overflow, Pastebin,
+  and public repositories on GitHub.</li>
+  <li>Do not read others' solutions to an assignment before you have completed the
+  assignment</li>
+  <li>Do not post your solutions publicly during or after the semester.</li>
+</ul>
+
+<p>If you find a solution online, please <a href="https://goo.gl/forms/nL2yOj1Z81HcQYDi2">submit a link to that solution
+anonymously</a>. When we find an online
+solution, we ask the author to remove it. We also record the solution and use it
+to check for copying. By reporting online solutions, you help keep the course
+fair for everyone.</p>
+
+<p>In summary, we expect you to hand in your own work, take your own tests, and
+complete projects with code written only by you and your partner. The
+assignments and evaluations are structured to help you learn, which is why you
+are here.</p>
+
+<p>Rather than copying someone else's work, ask for help. You are not alone in
+this course! The entire staff is here to help you succeed. If you invest the
+time to learn the material and complete the projects, you won't need to copy
+any answers.</p>
+
+
+<h2 id="a-parting-thought">A Parting Thought</h2>
+
+
+<p>Grades and penalties aren't the purpose of this course. We really just want you
+to learn. The entire staff is very excited to be teaching CS 61A this semester
+and we're looking forward to meeting such a large and enthusiastic group of
+students. We want all of you to be successful here. Welcome to CS 61A!</p>
+  </div>
+
+  <div class='col-md-3 sticky'>
+    <nav class='hidden-print hidden-sm hidden-xs sidebar'>
+      <ul>
+  <li><a href="about.html#overview">Overview</a></li>
+  <ul>
+    <li><a href="about.html#prerequisites">Prerequisites</a></li>
+    <li><a href="about.html#alternative-courses">Alternative Courses</a></li>
+    <ul>
+      <li><a href="about.html#cs-10">CS 10</a></li>
+      <li><a href="about.html#data-8">Data 8</a></li>
+      <li><a href="about.html#data-c88c-formerly-cs-88">Data C88C (formerly CS 88)</a></li>
+      <li><a href="about.html#info-206a">Info 206A</a></li>
+    </ul>
+  </ul>
+  <li><a href="about.html#course-format">Course Format</a></li>
+  <ul>
+    <li><a href="about.html#lecture">Lecture</a></li>
+    <li><a href="about.html#section">Section</a></li>
+    <ul>
+      <li><a href="about.html#regular-section">Regular Section</a></li>
+      <li><a href="about.html#mega-section">Mega Section</a></li>
+      <li><a href="about.html#choosing-a-section-format">Choosing a Section Format</a></li>
+    </ul>
+    <li><a href="about.html#office-hours">Office Hours</a></li>
+  </ul>
+  <li><a href="about.html#assignments">Assignments</a></li>
+  <ul>
+    <li><a href="about.html#homework">Homework</a></li>
+    <ul>
+      <li><a href="about.html#partial-credit">Partial Credit</a></li>
+      <li><a href="about.html#homework-recovery-policy">Homework Recovery Policy</a></li>
+    </ul>
+    <li><a href="about.html#projects">Projects</a></li>
+  </ul>
+  <li><a href="about.html#exams">Exams</a></li>
+  <li><a href="about.html#accommodations-dsp-and-otherwise">Accommodations (DSP and Otherwise)</a></li>
+  <ul>
+    <li><a href="about.html#assignment-extensions">Assignment Extensions</a></li>
+    <li><a href="about.html#joining-cs-61a-late">Joining CS 61A Late</a></li>
+    <li><a href="about.html#accommodations-appointments">Accommodations Appointments</a></li>
+    <li><a href="about.html#privacy">Privacy</a></li>
+  </ul>
+  <li><a href="about.html#resources">Resources</a></li>
+  <ul>
+    <li><a href="about.html#textbook">Textbook</a></li>
+  </ul>
+  <li><a href="about.html#grading">Grading</a></li>
+  <ul>
+    <li><a href="about.html#exam-recovery">Exam Recovery</a></li>
+    <li><a href="about.html#late-policy">Late Policy</a></li>
+    <li><a href="about.html#citizenship">Citizenship</a></li>
+  </ul>
+  <li><a href="about.html#learning-cooperatively">Learning Cooperatively</a></li>
+  <ul>
+    <li><a href="about.html#academic-misconduct">Academic Misconduct</a></li>
+  </ul>
+  <li><a href="about.html#a-parting-thought">A Parting Thought</a></li>
+</ul>
+    </nav>
+  </div>
+</div>
+
+    </main>
+
+    <footer class="container">
+      <div class="row text-center">
+        <div class="col col-sm-4">
+          <h3><a href="../index.html">CS 61A</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../weekly.html">Weekly Schedule</a></li>
+            <li><a href="../office-hours.html">Office Hours</a></li>
+            <li><a href="../staff.html">Staff</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../resources.1.html">Resources</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="studying.html">Studying Guide</a></li>
+            <li><a href="debugging.html">Debugging Guide</a></li>
+            <li><a href="composition.html">Composition Guide</a></li>
+            <li><a href="pair-programming.html">Pair Programming</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="about.html">Policies</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="about.html#assignments">Assignments</a></li>
+            <li><a href="about.html#exams">Exams</a></li>
+            <li><a href="about.html#grading">Grading</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/loader.min.js"></script>
+  <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/editor/editor.main.min.css">
+  <script>
+      require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs' }});
+      window.MonacoEnvironment = { getWorkerUrl: () => URL.createObjectURL(new Blob([`
+      self.MonacoEnvironment = {
+          baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min'
+      };
+      importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/base/worker/workerMain.min.js');
+  `], { type: 'text/javascript' }))
+  };
+  </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.15.5/js/jsplumb.min.js"></script>
+    <script src="../assets/js/network_storage.js"></script>
+    <script src="../assets/js/storable.js"></script>
+    <script src="../assets/js/editor.js"></script>
+    <script src="../assets/js/copy-button.js"></script>
+    <script src="../assets/js/env-diagram.js"></script>
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.15.5/js/jsplumb.min.js"></script>
+<script src="../assets/js/storable.js"></script>
+<script src="../assets/js/env-diagram.js"></script>
+<script>
+  $('.sidebar ul').addClass('nav nav-stacked noselect');
+  $('body').scrollspy({
+    target: '.sidebar',
+    offset: 40
+  });
+</script>
+
+  </body>
+</html>

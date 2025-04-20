@@ -1,0 +1,490 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="description" content ="CS 61A: Structure and Interpretation of Computer Programs" />
+    <meta name="keywords" content ="CS 61A, Computer Science, CS, 61A, Programming, John DeNero, Berkeley, EECS" />
+    <meta name="author" content ="John DeNero, Hany Farid" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="../../assets/js/hl.js"></script>
+    <script src="../../assets/js/toggledarkmode.js"></script>
+    <script>
+        // we aren't registering builtins since
+        //      (1) they don't render differently in the current CSS from other names
+        //      (2) it's a mess to list all of them. You can extract from the site but that takes effort
+        // if (1) ceases to be true, (2) might be worth the effort. For now, we're leaving as is
+        hljsRegister({
+            'keyword': "define if cond and or let begin lambda mu quote delay cons-stream set! quasiquote unquote unquote-splicing define-macro"
+        });
+        hljs.initHighlightingOnLoad();
+    </script>
+    <script src="../../assets/js/dark-mode.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata|Roboto:300,400,500|Work+Sans:400,700">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/mono-blue.css">
+    <link rel="icon" href="../../assets/images/favicon.ico">
+
+    
+
+    <title>
+Study Guide: Trees | CS 61A Spring 2023
+</title>
+  </head>
+
+  <body id="index" class="home">
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container noselect">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-section">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../../index.html">
+            <img style="max-width:60px; margin-top: -20px;" class="logo" src="../../assets/images/logo.png"/>
+          </a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbar-collapse-section">
+          <ul class="nav navbar-nav navbar-right">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Calendar
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../../weekly.html">Weekly Schedule</a></li>
+                <li><a href="../../office-hours.html">Office Hours</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Links
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://sections.cs61a.org">Sections Tool</a></li>
+                <li><a href="https://oh.cs61a.org">Office Hours Queue</a></li>
+                <li><a href="https://go.cs61a.org/regrade-request">Request a Regrade</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Staff
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../../instructor.html">Instructors</a></li>
+                <li><a href="../../TAs.html">TAs</a></li>
+                <li><a href="../../tutors.html">Tutors</a></li>
+                <li><a href="../../academic-interns.html">Academic Interns</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Resources
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://go.cs61a.org/extensions">Request an Extension</a></li>
+                <li><a href="https://go.cs61a.org/accommodation-appts">Book an Accommodations Appointment</a></li>
+                <li><a href="../../resources.1.html">Topical Resources + Past Exams</a></li>
+                <li><a href="https://tutor.cs61a.org/">PythonTutor</a></li>
+                <li><a href="https://code.cs61a.org/">Code</a></li>
+                <li><a href="https://edstem.org/us/courses/34756/discussion/" target="_blank">Ed</a></li>
+                <li><a href="../../articles/campus-res/index.html">Department/Campus Resources</a></li>
+              </ul>
+            </li>
+            <li><a href="../../articles/about.html">Syllabus</a></li>
+            <li><a href="../../contact.1.html">Contact</a></li>
+            <li>
+              <label class="switch">
+                <input type="checkbox" id="toggle-mode-cb">
+                <span class="slider round"></span>
+              </label>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main id="content" class="container">
+      
+<div class='row'>
+  <div class='col-md-9'>
+    <header>
+      <h1>
+        
+Study Guide: Trees
+
+        
+        
+        
+      </h1>
+    </header>
+    
+<div class="alert storable-login-status"></div>
+
+<h2>Instructions</h2>
+
+<p>This is a study guide with links to past
+lectures, assignments, and handouts, as well as
+additional practice problems to assist you in learning the concepts.</p>
+
+
+  <p><strong>Assignments</strong></p>
+  <blockquote><p>Important: For solutions to these assignments once they have been released, see <a href="../../index.html">the main website</a></p></blockquote>
+
+<ul>
+  <li><a href="../../hw/hw04.1.html">HW 4</a></li>
+  <li><a href="../../lab/lab05.1.html">Lab 5</a></li>
+</ul>
+
+
+
+  <p><strong>Handouts</strong></p>
+  <ul>
+  <li><a href="https://cs61a.org/disc/disc05.pdf">Discussion 5</a></li>
+</ul>
+
+
+
+  <p><strong>Lectures</strong></p>
+  <ul>
+  <li><a href="https://fa20.cs61a.org/assets/slides/12-Trees_full.pdf">Trees</a></li>
+</ul>
+
+
+
+  <p><strong>Readings</strong></p>
+  <ul>
+  <li><a href="http://composingprograms.com/pages/23-sequences.html">Section 2.3</a></li>
+</ul>
+
+
+
+    
+<h1 id="guides">Guides</h1>
+
+
+
+<h2 id="trees">Trees</h2>
+
+
+<p>A <strong>tree</strong> is an abstract model of a hierarchical structure. It consists of
+nodes with a parent-child relationship. Its name comes from the fact that when
+drawn, it resembles an upside-down tree: the <strong>root</strong> of the tree is at the top
+and the <strong>leaves</strong> are at the bottom.</p>
+
+<p>A tree is a recursive data structure; each <strong>node</strong> of the tree contains a
+<strong>label</strong> value and a list of <strong>branches</strong>, each of which are also trees. The
+label can be <em>any</em> data type, while the branches are represented as a list of
+trees. The lecture slides provide a good overview of tree terminology and a
+visual to help demonstrate.</p>
+
+
+<h3 id="hierarchical-data">Hierarchical Data</h3>
+
+
+<p>We learned in lecture about lists, containers which hold sequences of data.
+These sequences can also be arbitrarily nested to create nested lists.</p>
+
+<pre><code>&gt;&gt;&gt; l = [1, 2, 3]
+&gt;&gt;&gt; [l, [l]]
+[[1, 2, 3], [[1, 2, 3]]]</code></pre>
+
+<p>This results in a hierarchy that lets us model, organize, and represent complex
+systems.</p>
+
+<p>Trees build upon this idea of hierarchy by constraining the structure of the
+tree. We are only allowed to build trees in a certain way, and they take on a
+certain visual representation, but underlying all of the nodes and their labels
+and branches is the same story of a nested, list hierarchy. What the <strong>tree
+data abstraction</strong> allows us to do is think of trees as larger units and not
+worry about manipulating individual lists.</p>
+
+<p>In this class, we have two different views of trees which we often switch
+between depending on the situation.</p>
+
+<ol>
+  <li>We can <strong>view trees as individual nodes</strong>. In Python, our tree data
+  abstraction is compound type. This means that we reference it with a pointer or
+  arrow, just like a list. But this means that, in our list of branches, each
+  tree is pointed to with a pointer too! You can imagine this can get complicated
+  quickly, so when we view trees as individual nodes, we consider what we can do
+  with an individual node of a tree.  Python sees trees this same way: not as a
+  whole, but as an individual node in a larger structure that happens to be
+  connected.</li>
+  <li>We can also <strong>view trees as larger, connected structures</strong>. Just like
+  functional abstraction allows us to reason about the behavior of a program in
+  terms of its domain, range, and behavior, thinking abstractly about tree
+  structures allow us to reason about the behavior of programs at a larger scale.
+  We can say, for example, that calling <code>replace_thor_at_leaf</code> on a branch of a tree will
+  return a branch replacing all of its leaves' label values.</li>
+</ol>
+
+
+<h3 id="tree-traversal">Tree Traversal</h3>
+
+
+<p>Hierarchy and structure helps us organize data, but at the cost of making that
+very same data harder to find. Now that we've organized data into a tree, we'd
+like to be able to use and manipulate that data.</p>
+
+<p><strong>Tree traversal</strong> refers to the process of visiting each node in a tree data
+abstraction, exactly once. Just like how we saw that we needed to come up with
+an organized way to explore the space of possible solutions in tree recursion,
+we also need an organized way to traverse trees to avoid repeating work or
+getting stuck in an infinite loop.</p>
+
+<p>Each node of a tree has a predefined structure: a label value and a list of
+branches. This structure lets us explore tree structures in a very specific
+pattern where we visit each node of the tree one-by-one until we've completed
+the traversal and solved the problem.</p>
+
+<ol>
+  <li><em>Visit</em> the current node and check or otherwise <em>process</em> the node. Our base
+  case often falls under this category: we process the node by checking if the
+  node is a leaf, or some other stopping condition.</li>
+  <li>Iterate across the branches of the tree and recurse down. We often write a
+  <code>for</code> loop or list comprehension to iterate across the branches of the tree and
+  recurse on the branch to explore down the tree.</li>
+  <li>Combine the result obtained from the recursive call to determine the final
+  result. To find the sum of all the label values in a tree, for example, it's
+  not sufficient to stop at making a recursive call: we also need to determine
+  what to do with the number returned from the sum of the values in the branch.</li>
+</ol>
+
+<p>Tree problems tend toward recursive solutions. This also makes it convenient
+for understanding the structure of tree problems by first examining the
+expected behavior by coming up with small example cases. How should our program
+behave when we call it on a leaf, for example? How about if we scale up to a
+larger tree of 2 or 3 nodes? And so forth.</p>
+
+
+<h1 id="practice-problems">Practice Problems</h1>
+
+
+
+<h2 id="easy">Easy</h2>
+
+
+
+<h3 id="q1-tree-map">Q1: Tree Map</h3>
+
+
+<p>Define the function <code>tree_map</code>, which takes in a tree and a
+one-argument function as arguments and returns a new tree which is the
+result of mapping the function over the entries of the input tree.</p>
+
+
+
+<pre><code>def tree_map(fn, t):
+    &quot;&quot;&quot;Maps the function fn over the entries of tree and returns the
+    result in a new tree.
+
+    &gt;&gt;&gt; numbers = tree(1,
+    ...                [tree(2,
+    ...                      [tree(3),
+    ...                       tree(4)]),
+    ...                 tree(5,
+    ...                      [tree(6,
+    ...                            [tree(7)]),
+    ...                       tree(8)])])
+    &gt;&gt;&gt; print_tree(tree_map(lambda x: 2**x, numbers))
+    2
+      4
+        8
+        16
+      32
+        64
+          128
+        256
+    &quot;&quot;&quot;
+<div class="alt solution-1">    "*** YOUR CODE HERE ***"
+</div><div class="solution solution-1">&#x20;&#x20;&#x20;&#x20;&#x69;&#x66;&#x20;&#x62;&#x72;&#x61;&#x6e;&#x63;&#x68;&#x65;&#x73;&#x28;&#x74;&#x29;&#x20;&#x3d;&#x3d;&#x20;&#x5b;&#x5d;&#x3a;&#xa;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x72;&#x65;&#x74;&#x75;&#x72;&#x6e;&#x20;&#x74;&#x72;&#x65;&#x65;&#x28;&#x66;&#x6e;&#x28;&#x6c;&#x61;&#x62;&#x65;&#x6c;&#x28;&#x74;&#x29;&#x29;&#x2c;&#x20;&#x5b;&#x5d;&#x29;&#xa;&#x20;&#x20;&#x20;&#x20;&#x6d;&#x61;&#x70;&#x70;&#x65;&#x64;&#x5f;&#x73;&#x75;&#x62;&#x74;&#x72;&#x65;&#x65;&#x73;&#x20;&#x3d;&#x20;&#x5b;&#x5d;&#xa;&#x20;&#x20;&#x20;&#x20;&#x66;&#x6f;&#x72;&#x20;&#x73;&#x75;&#x62;&#x74;&#x72;&#x65;&#x65;&#x20;&#x69;&#x6e;&#x20;&#x62;&#x72;&#x61;&#x6e;&#x63;&#x68;&#x65;&#x73;&#x28;&#x74;&#x29;&#x3a;&#xa;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x6d;&#x61;&#x70;&#x70;&#x65;&#x64;&#x5f;&#x73;&#x75;&#x62;&#x74;&#x72;&#x65;&#x65;&#x73;&#x20;&#x2b;&#x3d;&#x20;&#x5b;&#x20;&#x74;&#x72;&#x65;&#x65;&#x5f;&#x6d;&#x61;&#x70;&#x28;&#x66;&#x6e;&#x2c;&#x20;&#x73;&#x75;&#x62;&#x74;&#x72;&#x65;&#x65;&#x29;&#x20;&#x5d;&#xa;&#x20;&#x20;&#x20;&#x20;&#x72;&#x65;&#x74;&#x75;&#x72;&#x6e;&#x20;&#x74;&#x72;&#x65;&#x65;&#x28;&#x66;&#x6e;&#x28;&#x6c;&#x61;&#x62;&#x65;&#x6c;&#x28;&#x74;&#x29;&#x29;&#x2c;&#x20;&#x6d;&#x61;&#x70;&#x70;&#x65;&#x64;&#x5f;&#x73;&#x75;&#x62;&#x74;&#x72;&#x65;&#x65;&#x73;&#x29;&#xa;&#xa;&#x23;&#x20;&#x41;&#x6c;&#x74;&#x65;&#x72;&#x6e;&#x61;&#x74;&#x65;&#x20;&#x73;&#x6f;&#x6c;&#x75;&#x74;&#x69;&#x6f;&#x6e;&#xa;&#x64;&#x65;&#x66;&#x20;&#x74;&#x72;&#x65;&#x65;&#x5f;&#x6d;&#x61;&#x70;&#x28;&#x66;&#x6e;&#x2c;&#x20;&#x74;&#x29;&#x3a;&#xa;&#x20;&#x20;&#x20;&#x20;&#x72;&#x65;&#x74;&#x75;&#x72;&#x6e;&#x20;&#x74;&#x72;&#x65;&#x65;&#x28;&#x66;&#x6e;&#x28;&#x6c;&#x61;&#x62;&#x65;&#x6c;&#x28;&#x74;&#x29;&#x29;&#x2c;&#x20;&#x5b;&#x74;&#x72;&#x65;&#x65;&#x5f;&#x6d;&#x61;&#x70;&#x28;&#x66;&#x6e;&#x2c;&#x20;&#x74;&#x29;&#x20;&#x66;&#x6f;&#x72;&#x20;&#x74;&#x20;&#x69;&#x6e;&#x20;&#x62;&#x72;&#x61;&#x6e;&#x63;&#x68;&#x65;&#x73;&#x28;&#x74;&#x29;&#x5d;&#x29;</div></code></pre>
+
+
+        <button id='solution-1' class='btn btn-outline btn-lg solutiontoggle solution'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+
+<h3 id="q2-same-shape">Q2: Same shape</h3>
+
+
+<p>Define a function <code>same_shape</code> that, given two trees, <code>t1</code> and <code>t2</code>,
+returns <code>True</code> if the two trees have the same shape (but not
+necessarily the same data in each node) and <code>False</code> otherwise.</p>
+
+
+
+<pre><code>def same_shape(t1, t2):
+    &quot;&quot;&quot;Return True if t1 is indentical in shape to t2.
+
+    &gt;&gt;&gt; test_tree1 = tree(1, [tree(2), tree(3)])
+    &gt;&gt;&gt; test_tree2 = tree(4, [tree(5), tree(6)])
+    &gt;&gt;&gt; test_tree3 = tree(1,
+    ...                   [tree(2,
+    ...                         [tree(3)])])
+    &gt;&gt;&gt; test_tree4 = tree(4,
+    ...                   [tree(5,
+    ...                         [tree(6)])])
+    &gt;&gt;&gt; same_shape(test_tree1, test_tree2)
+    True
+    &gt;&gt;&gt; same_shape(test_tree3, test_tree4)
+    True
+    &gt;&gt;&gt; same_shape(test_tree2, test_tree4)
+    False
+    &quot;&quot;&quot;
+<div class="alt solution-2">    "*** YOUR CODE HERE ***"
+</div><div class="solution solution-2">&#x20;&#x20;&#x20;&#x20;&#x73;&#x31;&#x2c;&#x20;&#x73;&#x32;&#x20;&#x3d;&#x20;&#x62;&#x72;&#x61;&#x6e;&#x63;&#x68;&#x65;&#x73;&#x28;&#x74;&#x31;&#x29;&#x2c;&#x20;&#x62;&#x72;&#x61;&#x6e;&#x63;&#x68;&#x65;&#x73;&#x28;&#x74;&#x32;&#x29;&#xa;&#x20;&#x20;&#x20;&#x20;&#x69;&#x66;&#x20;&#x6c;&#x65;&#x6e;&#x28;&#x73;&#x31;&#x29;&#x20;&#x21;&#x3d;&#x20;&#x6c;&#x65;&#x6e;&#x28;&#x73;&#x32;&#x29;&#x3a;&#xa;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x72;&#x65;&#x74;&#x75;&#x72;&#x6e;&#x20;&#x46;&#x61;&#x6c;&#x73;&#x65;&#xa;&#x20;&#x20;&#x20;&#x20;&#x66;&#x6f;&#x72;&#x20;&#x69;&#x6e;&#x64;&#x65;&#x78;&#x20;&#x69;&#x6e;&#x20;&#x72;&#x61;&#x6e;&#x67;&#x65;&#x28;&#x6c;&#x65;&#x6e;&#x28;&#x73;&#x31;&#x29;&#x29;&#x3a;&#xa;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x69;&#x66;&#x20;&#x6e;&#x6f;&#x74;&#x20;&#x73;&#x61;&#x6d;&#x65;&#x5f;&#x73;&#x68;&#x61;&#x70;&#x65;&#x28;&#x73;&#x31;&#x5b;&#x69;&#x6e;&#x64;&#x65;&#x78;&#x5d;&#x2c;&#x20;&#x73;&#x32;&#x5b;&#x69;&#x6e;&#x64;&#x65;&#x78;&#x5d;&#x29;&#x3a;&#xa;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x72;&#x65;&#x74;&#x75;&#x72;&#x6e;&#x20;&#x46;&#x61;&#x6c;&#x73;&#x65;&#xa;&#x20;&#x20;&#x20;&#x20;&#x72;&#x65;&#x74;&#x75;&#x72;&#x6e;&#x20;&#x54;&#x72;&#x75;&#x65;&#xa;&#xa;&#x23;&#x20;&#x41;&#x6c;&#x74;&#x65;&#x72;&#x6e;&#x61;&#x74;&#x65;&#x20;&#x73;&#x6f;&#x6c;&#x75;&#x74;&#x69;&#x6f;&#x6e;&#xa;&#x64;&#x65;&#x66;&#x20;&#x73;&#x61;&#x6d;&#x65;&#x5f;&#x73;&#x68;&#x61;&#x70;&#x65;&#x28;&#x74;&#x31;&#x2c;&#x20;&#x74;&#x32;&#x29;&#x3a;&#xa;&#x20;&#x20;&#x20;&#x20;&#x63;&#x68;&#x69;&#x6c;&#x64;&#x72;&#x65;&#x6e;&#x5f;&#x73;&#x61;&#x6d;&#x65;&#x20;&#x3d;&#x20;&#x61;&#x6c;&#x6c;&#x28;&#x6d;&#x61;&#x70;&#x28;&#x73;&#x61;&#x6d;&#x65;&#x5f;&#x73;&#x68;&#x61;&#x70;&#x65;&#x2c;&#x20;&#x62;&#x72;&#x61;&#x6e;&#x63;&#x68;&#x65;&#x73;&#x28;&#x74;&#x31;&#x29;&#x2c;&#x20;&#x62;&#x72;&#x61;&#x6e;&#x63;&#x68;&#x65;&#x73;&#x28;&#x74;&#x32;&#x29;&#x29;&#x29;&#xa;&#x20;&#x20;&#x20;&#x20;&#x72;&#x65;&#x74;&#x75;&#x72;&#x6e;&#x20;&#x6c;&#x65;&#x6e;&#x28;&#x62;&#x72;&#x61;&#x6e;&#x63;&#x68;&#x65;&#x73;&#x28;&#x74;&#x31;&#x29;&#x29;&#x20;&#x3d;&#x3d;&#x20;&#x6c;&#x65;&#x6e;&#x28;&#x62;&#x72;&#x61;&#x6e;&#x63;&#x68;&#x65;&#x73;&#x28;&#x74;&#x32;&#x29;&#x29;&#x20;&#x61;&#x6e;&#x64;&#x20;&#x63;&#x68;&#x69;&#x6c;&#x64;&#x72;&#x65;&#x6e;&#x5f;&#x73;&#x61;&#x6d;&#x65;</div></code></pre>
+
+
+        <button id='solution-2' class='btn btn-outline btn-lg solutiontoggle solution'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+
+
+  </div>
+
+  <div class='col-md-3 sticky'>
+    <nav class='hidden-print hidden-sm hidden-xs sidebar'>
+      <ul>
+  <li><a href="index.html#guides">Guides</a></li>
+  <ul>
+    <li><a href="index.html#trees">Trees</a></li>
+    <ul>
+      <li><a href="index.html#hierarchical-data">Hierarchical Data</a></li>
+      <li><a href="index.html#tree-traversal">Tree Traversal</a></li>
+    </ul>
+  </ul>
+  <li><a href="index.html#practice-problems">Practice Problems</a></li>
+  <ul>
+    <li><a href="index.html#easy">Easy</a></li>
+    <ul>
+      <li><a href="index.html#q1-tree-map">Q1: Tree Map</a></li>
+      <li><a href="index.html#q2-same-shape">Q2: Same shape</a></li>
+    </ul>
+  </ul>
+</ul>
+    </nav>
+  </div>
+</div>
+
+    </main>
+
+    <footer class="container">
+      <div class="row text-center">
+        <div class="col col-sm-4">
+          <h3><a href="../../index.html">CS 61A</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../weekly.html">Weekly Schedule</a></li>
+            <li><a href="../../office-hours.html">Office Hours</a></li>
+            <li><a href="../../staff.html">Staff</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../../resources.1.html">Resources</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../articles/studying.html">Studying Guide</a></li>
+            <li><a href="../../articles/debugging.html">Debugging Guide</a></li>
+            <li><a href="../../articles/composition.html">Composition Guide</a></li>
+            <li><a href="../../articles/pair-programming.html">Pair Programming</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../../articles/about.html">Policies</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../articles/about.html#assignments">Assignments</a></li>
+            <li><a href="../../articles/about.html#exams">Exams</a></li>
+            <li><a href="../../articles/about.html#grading">Grading</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/loader.min.js"></script>
+  <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/editor/editor.main.min.css">
+  <script>
+      require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs' }});
+      window.MonacoEnvironment = { getWorkerUrl: () => URL.createObjectURL(new Blob([`
+      self.MonacoEnvironment = {
+          baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min'
+      };
+      importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/base/worker/workerMain.min.js');
+  `], { type: 'text/javascript' }))
+  };
+  </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.15.5/js/jsplumb.min.js"></script>
+    <script src="../../assets/js/network_storage.js"></script>
+    <script src="../../assets/js/storable.js"></script>
+    <script src="../../assets/js/editor.js"></script>
+    <script src="../../assets/js/copy-button.js"></script>
+    <script src="../../assets/js/env-diagram.js"></script>
+    
+<script src="../../assets/js/sketchy.js"></script>
+<script>
+  $('.sidebar ul').addClass('nav nav-stacked noselect');
+  $('body').scrollspy({
+    target: '.sidebar',
+    offset: 40
+  });
+
+  function goToId(id) {
+    var target = $(id);
+    target.parent().show();
+    $('html,body').animate({
+      scrollTop: target.offset().top,
+    }, 100);
+    $("body").scrollspy('refresh');
+  }
+
+  if (location.hash) {
+    setTimeout(function() {
+      if (location.hash) {
+        goToId(location.hash);
+      }
+    }, 1);
+  }
+
+  $("a").click(function(event) {
+    var urlBeforeHashRegEx = new RegExp("^"+window.location.href.split("#")[0]);
+    if (/^#/.test(this.hash) && urlBeforeHashRegEx.test(this.href)) {
+      event.preventDefault();
+      goToId(this.hash);
+      document.location.hash = this.hash;
+    }
+  });
+</script>
+
+<script type="text/javascript" src="../../assets/js/config.js"></script>
+<script>
+$(function() {
+    $('.solutiontoggle').css('display', 'inline-block');
+      $('.solutiontoggle').click(function() {
+        var solution_id = $(this).attr('id');
+        $('div.' + solution_id).slideToggle(600);
+    });
+    $('.alwaystoggle').css('display', 'inline-block');
+    $('.alwaystoggle').click(function() {
+      var solution_id = $(this).attr('id');
+      $('div.' + solution_id).slideToggle(600);
+    });
+});
+</script>
+
+  </body>
+</html>

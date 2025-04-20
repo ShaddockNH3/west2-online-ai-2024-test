@@ -1,0 +1,7 @@
+'flatten-correct', (0, 70)
+'my_map-correct', (512, 70)
+'my_filter-correct', (1024, 70)
+'my_reduce-correct', (1536, 70)
+'distance-correct', (2048, 70)
+'closer_city-correct', (2560, 70)
+'check_city_abstraction-correct', (3072, 70)

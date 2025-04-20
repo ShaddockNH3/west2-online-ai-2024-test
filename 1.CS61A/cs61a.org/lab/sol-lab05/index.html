@@ -1,0 +1,921 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="description" content ="CS 61A: Structure and Interpretation of Computer Programs" />
+    <meta name="keywords" content ="CS 61A, Computer Science, CS, 61A, Programming, John DeNero, Berkeley, EECS" />
+    <meta name="author" content ="John DeNero, Hany Farid" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="../../assets/js/hl.js"></script>
+    <script src="../../assets/js/toggledarkmode.js"></script>
+    <script>
+        // we aren't registering builtins since
+        //      (1) they don't render differently in the current CSS from other names
+        //      (2) it's a mess to list all of them. You can extract from the site but that takes effort
+        // if (1) ceases to be true, (2) might be worth the effort. For now, we're leaving as is
+        hljsRegister({
+            'keyword': "define if cond and or let begin lambda mu quote delay cons-stream set! quasiquote unquote unquote-splicing define-macro"
+        });
+        hljs.initHighlightingOnLoad();
+    </script>
+    <script src="../../assets/js/dark-mode.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata|Roboto:300,400,500|Work+Sans:400,700">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/mono-blue.css">
+    <link rel="icon" href="../../assets/images/favicon.ico">
+
+    
+
+<link rel="stylesheet" type="text/css" href="../../assets/css/lab.css">
+
+
+    <title>
+Lab 5 Solutions | CS 61A Spring 2023
+</title>
+  </head>
+
+  <body id="index" class="home">
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container noselect">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-section">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../../index.html">
+            <img style="max-width:60px; margin-top: -20px;" class="logo" src="../../assets/images/logo.png"/>
+          </a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbar-collapse-section">
+          <ul class="nav navbar-nav navbar-right">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Calendar
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../../weekly.html">Weekly Schedule</a></li>
+                <li><a href="../../office-hours.html">Office Hours</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Links
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://sections.cs61a.org">Sections Tool</a></li>
+                <li><a href="https://oh.cs61a.org">Office Hours Queue</a></li>
+                <li><a href="https://go.cs61a.org/regrade-request">Request a Regrade</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Staff
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../../instructor.html">Instructors</a></li>
+                <li><a href="../../TAs.html">TAs</a></li>
+                <li><a href="../../tutors.html">Tutors</a></li>
+                <li><a href="../../academic-interns.html">Academic Interns</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Resources
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://go.cs61a.org/extensions">Request an Extension</a></li>
+                <li><a href="https://go.cs61a.org/accommodation-appts">Book an Accommodations Appointment</a></li>
+                <li><a href="../../resources.1.html">Topical Resources + Past Exams</a></li>
+                <li><a href="https://tutor.cs61a.org/">PythonTutor</a></li>
+                <li><a href="https://code.cs61a.org/">Code</a></li>
+                <li><a href="https://edstem.org/us/courses/34756/discussion/" target="_blank">Ed</a></li>
+                <li><a href="../../articles/campus-res/index.html">Department/Campus Resources</a></li>
+              </ul>
+            </li>
+            <li><a href="../../articles/about.html">Syllabus</a></li>
+            <li><a href="../../contact.1.html">Contact</a></li>
+            <li>
+              <label class="switch">
+                <input type="checkbox" id="toggle-mode-cb">
+                <span class="slider round"></span>
+              </label>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main id="content" class="container">
+      
+<div class='row'>
+  <div class='col-md-9'>
+    <header>
+      <h1>
+        
+Lab 5 Solutions
+
+        
+        
+        <ul class="inline-block list-inline">
+          <li><a href="lab05.zip" class="label label-outline">lab05.zip</a></li>
+        </ul>
+        
+        
+      </h1>
+    </header>
+    
+<h2>Solution Files</h2>
+
+
+    
+<h1 id="topics">Topics</h1>
+
+
+<p>Consult this section if you need a refresher on the material for this lab. It's
+okay to skip directly to <a href="index.html#required-questions">the questions</a> and refer back
+here should you get stuck.</p>
+
+<br>
+
+        <button id='toggle-1' class='btn btn-outline btn-lg alwaystoggle toggle'>
+        List Comprehensions<noscript> (enable JavaScript)</noscript>
+        </button>
+        <div class="solution toggle-1">
+
+
+<h2 id="list-comprehensions">List Comprehensions</h2>
+
+
+<p>List comprehensions are a compact and powerful way of creating new lists
+out of sequences.
+The general syntax for a list comprehension is the following:</p>
+
+<pre><code>[&lt;expression&gt; for &lt;element&gt; in &lt;sequence&gt; if &lt;conditional&gt;]</code></pre>
+
+<p>where the <code>if &lt;conditional&gt;</code> section is optional.</p>
+
+<p>The syntax is designed to read like English:
+"Compute the expression for each element in the sequence
+(if the conditional is true for that element)."</p>
+
+<pre><code>&gt;&gt;&gt; [i**2 for i in [1, 2, 3, 4] if i % 2 == 0]
+[4, 16]</code></pre>
+
+<p>This list comprehension will:</p>
+
+<ul>
+  <li>Compute the expression <code>i**2</code></li>
+  <li>For each element <code>i</code> in the sequence <code>[1, 2, 3, 4]</code></li>
+  <li>Where <code>i % 2 == 0</code> (<code>i</code> is an even number),</li>
+</ul>
+
+<p>and then put the resulting values of the expressions into a new list.</p>
+
+<p>In other words, this list comprehension will create a new list that contains
+the square of every even element of the original list <code>[1, 2, 3, 4]</code>.</p>
+
+<p>We can also rewrite a list comprehension as an equivalent <code>for</code> statement,
+such as for the example above:</p>
+
+<pre><code>&gt;&gt;&gt; lst = []
+&gt;&gt;&gt; for i in [1, 2, 3, 4]:
+...     if i % 2 == 0:
+...         lst = lst + [i**2]
+&gt;&gt;&gt; lst
+[4, 16]</code></pre>
+
+</div>
+<br>
+
+<br>
+
+        <button id='toggle-2' class='btn btn-outline btn-lg alwaystoggle toggle'>
+        Sequences<noscript> (enable JavaScript)</noscript>
+        </button>
+        <div class="solution toggle-2">
+
+
+<h2 id="sequences">Sequences</h2>
+
+
+<p>Sequences are ordered collections of values that support
+element-selection and have length.
+We've worked with lists, but other Python types are also sequences,
+including strings.</p>
+
+<p>Let us go through an example of some actions we can do with strings.</p>
+
+<pre><code>&gt;&gt;&gt; x = &#x27;Hello there Oski!&#x27;
+&gt;&gt;&gt; x
+&#x27;Hello there Oski!&#x27;
+&gt;&gt;&gt; len(x)
+17
+&gt;&gt;&gt; x[6:]
+&#x27;there Oski!&#x27;
+&gt;&gt;&gt; x[::&#x2d;1]
+&#x27;!iksO ereht olleH&#x27;</code></pre>
+
+<p>Since strings are sequences, we can do with strings many of the same things that we can do to lists. We can even loop through a string just like we can with a list:</p>
+
+<pre><code>&gt;&gt;&gt; x = &#x27;I am not Oski.&#x27;
+&gt;&gt;&gt; vowel_count = 0
+&gt;&gt;&gt; for i in range(len(x)):
+...     if x[i] in &#x27;aeiou&#x27;:
+...         vowel_count += 1
+&gt;&gt;&gt; vowel_count
+5</code></pre>
+
+</div>
+<br>
+
+<br>
+
+        <button id='toggle-3' class='btn btn-outline btn-lg alwaystoggle toggle'>
+        Data Abstraction<noscript> (enable JavaScript)</noscript>
+        </button>
+        <div class="solution toggle-3">
+
+
+<h2 id="data-abstraction">Data Abstraction</h2>
+
+
+<p>Data abstraction is a powerful concept in computer science that
+allows programmers to treat code as objects.
+For example, using code to represent cars, chairs, people, and so on.
+That way, programmers don't have to worry about <em>how</em> code is implemented;
+they just have to know <em>what</em> it does.</p>
+
+<p>Data abstraction mimics how we think about the world.
+If you want to drive a car, you don't need to know how the
+engine was built or what kind of material the tires are made of to do so.
+You just have to know how to use the car for driving itself,
+such as how to turn the wheel or press the gas pedal.</p>
+
+<p>A data abstraction consists of two types of functions:</p>
+
+<ul>
+  <li><strong>Constructors</strong>: functions that build the abstract data type.</li>
+  <li><strong>Selectors</strong>: functions that retrieve information from the data type.</li>
+</ul>
+
+<p>Programmers design data abstractions to abstract away how information is stored and
+calculated such that the end user does <em>not</em> need to know how constructors and
+selectors are implemented. The nature of <em>abstraction</em> allows whoever uses them to
+assume that the functions have been written correctly and
+work as described.</p>
+
+</div>
+<br>
+
+
+<h1 id="required-questions">Required Questions</h1>
+
+
+<br>
+
+        <button id='toggle-4' class='btn btn-outline btn-lg alwaystoggle toggle'>
+        Getting Started Videos<noscript> (enable JavaScript)</noscript>
+        </button>
+        <div class="solution toggle-4">
+
+<h2 id="getting-started-videos">Getting Started Videos</h2>
+
+
+<p>These videos may provide some helpful direction for tackling the coding
+problems on this assignment.</p>
+
+<blockquote><p>To see these videos, you should be logged into your berkeley.edu email.</p></blockquote>
+
+
+            <iframe width="560" height="315" src="https://youtube.com/embed/videoseries?list=PLx38hZJ5RLZe19i9XITcofS1KtgOOxqMG"
+                frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe><p><a href='https://youtu.be/playlist?list=PLx38hZJ5RLZe19i9XITcofS1KtgOOxqMG'> YouTube link </a></p>
+</div>
+
+
+<h2 id="lists">Lists</h2>
+
+
+
+<h3 id="q1-flatten">Q1: Flatten</h3>
+
+
+<p>Write a function <code>flatten</code> that takes a list and returns a 
+"flattened" version of it. The input list could be a deep list, 
+meaning that there could be a multiple layers of nesting 
+within the list.</p>
+
+<p>Make sure your solution does not mutate the input list.</p>
+
+<p>For example, one use case of <code>flatten</code> could be the following:</p>
+
+<pre><code>&gt;&gt;&gt; lst = [1, [[2], 3], 4, [5, 6]]
+&gt;&gt;&gt; flatten(lst)
+[1, 2, 3, 4, 5, 6]</code></pre>
+
+<blockquote><p><strong>Hint</strong>: you can check if something is a list by using the built-in
+<code>type</code> function. For example:</p>
+
+<pre><code>&gt;&gt;&gt; type(3) == list
+False
+&gt;&gt;&gt; type([1, 2, 3]) == list
+True</code></pre></blockquote>
+
+<solution>
+
+<pre><code>def flatten(s):
+    &quot;&quot;&quot;Returns a flattened version of list s.
+
+    &gt;&gt;&gt; flatten([1, 2, 3])     # normal list
+    [1, 2, 3]
+    &gt;&gt;&gt; x = [1, [2, 3], 4]     # deep list
+    &gt;&gt;&gt; flatten(x)
+    [1, 2, 3, 4]
+    &gt;&gt;&gt; x # Ensure x is not mutated
+    [1, [2, 3], 4]
+    &gt;&gt;&gt; x = [[1, [1, 1]], 1, [1, 1]] # deep list
+    &gt;&gt;&gt; flatten(x)
+    [1, 1, 1, 1, 1, 1]
+    &gt;&gt;&gt; x
+    [[1, [1, 1]], 1, [1, 1]]
+    &gt;&gt;&gt; x = [[1, [2, 3], [4, [5, 6]]]]
+    &gt;&gt;&gt; flatten(x)
+    [1, 2, 3, 4, 5, 6]
+    &gt;&gt;&gt; x
+    [[1, [2, 3], [4, [5, 6]]]]
+    &gt;&gt;&gt; x = [[1, [1, [1, [1, 1, [1, 1, [1]]]], 1]]]
+    &gt;&gt;&gt; flatten(x)
+    [1, 1, 1, 1, 1, 1, 1, 1, 1]
+    &gt;&gt;&gt; x
+    [[1, [1, [1, [1, 1, [1, 1, [1]]]], 1]]]
+    &quot;&quot;&quot;
+<div class="sol-highlight">    lst = []
+    for elem in s:
+        if type(elem) == list:
+            lst += flatten(elem)
+        else:
+            lst += [elem]
+    return lst
+
+# Alternate solution
+    if not s:
+        return []
+    elif type(s[0]) == list:
+        return flatten(s[0]) + flatten(s[1:])
+    else:
+        return [s[0]] + flatten(s[1:])</div></code></pre>
+
+</solution>
+
+<p>Use Ok to test your code:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q flatten<button id="copy-code-python3ok-qflatten" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-qflatten").onclick = () => copyCode('python3 ok -q flatten', "copy-code-python3ok-qflatten");
+        </script>
+        <br/>
+
+
+<h2 id="sequences-2">Sequences</h2>
+
+
+<p>Many languages provide <code>map</code>, <code>filter</code>, <code>reduce</code> functions for sequences.
+Python also provides these functions
+(and we'll formally introduce them later on in the course),
+but to help you better understand how they work,
+you'll be implementing these functions in the following problems.</p>
+
+<blockquote><p>In Python, the <code>map</code> and <code>filter</code> built-ins have slightly different
+behavior than the <code>my_map</code> and <code>my_filter</code> functions we are defining here.</p></blockquote>
+
+
+<h3 id="q2-map">Q2: Map</h3>
+
+<p><code>my_map</code> takes in a one argument function <code>fn</code> and a sequence <code>seq</code> and returns a
+list containing <code>fn</code> applied to each element in <code>seq</code>.</p>
+
+<p><strong>Use only a single line for the body of the function.</strong> (Hint: use a list comprehension.)</p>
+
+<solution>
+
+<pre><code>def my_map(fn, seq):
+    &quot;&quot;&quot;Applies fn onto each element in seq and returns a list.
+    &gt;&gt;&gt; my_map(lambda x: x*x, [1, 2, 3])
+    [1, 4, 9]
+    &gt;&gt;&gt; my_map(lambda x: abs(x), [1, &#x2d;1, 5, 3, 0])
+    [1, 1, 5, 3, 0]
+    &gt;&gt;&gt; my_map(lambda x: print(x), [&#x27;cs61a&#x27;, &#x27;spring&#x27;, &#x27;2023&#x27;])
+    cs61a
+    spring
+    2023
+    [None, None, None]
+    &quot;&quot;&quot;
+<div class="sol-highlight">    return [fn(elem) for elem in seq]</div></code></pre>
+
+</solution>
+
+<p>Use Ok to test your code:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q my_map<button id="copy-code-python3ok-qmy_map" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-qmy_map").onclick = () => copyCode('python3 ok -q my_map', "copy-code-python3ok-qmy_map");
+        </script>
+        <br/>
+
+<p>Use Ok to run the local syntax checker (which checks that you used only a single line for the body of the function):</p>
+
+<pre><code>python3 ok &#x2d;q my_map_syntax_check</code></pre>
+
+
+
+
+<h3 id="q3-filter">Q3: Filter</h3>
+
+
+<p><code>my_filter</code> takes in a predicate function <code>pred</code> and a sequence <code>seq</code> and returns a
+list containing all elements in <code>seq</code> for which <code>pred</code> returns <code>True</code>. (A predicate function
+is a function that takes in an argument and returns either <code>True</code> or <code>False</code>.)</p>
+
+<p><strong>Use only a single line for the body of the function.</strong> (Hint: use a list comprehension.)</p>
+
+<solution>
+
+<pre><code>def my_filter(pred, seq):
+    &quot;&quot;&quot;Keeps elements in seq only if they satisfy pred.
+    &gt;&gt;&gt; my_filter(lambda x: x % 2 == 0, [1, 2, 3, 4])  # new list has only even&#x2d;valued elements
+    [2, 4]
+    &gt;&gt;&gt; my_filter(lambda x: (x + 5) % 3 == 0, [1, 2, 3, 4, 5])
+    [1, 4]
+    &gt;&gt;&gt; my_filter(lambda x: print(x), [1, 2, 3, 4, 5])
+    1
+    2
+    3
+    4
+    5
+    []
+    &gt;&gt;&gt; my_filter(lambda x: max(5, x) == 5, [1, 2, 3, 4, 5, 6, 7])
+    [1, 2, 3, 4, 5]
+    &quot;&quot;&quot;
+<div class="sol-highlight">    return [elem for elem in seq if pred(elem)]</div></code></pre>
+
+</solution>
+
+<p>Use Ok to test your code:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q my_filter<button id="copy-code-python3ok-qmy_filter" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-qmy_filter").onclick = () => copyCode('python3 ok -q my_filter', "copy-code-python3ok-qmy_filter");
+        </script>
+        <br/>
+
+<p>Use Ok to run the local syntax checker (which checks that you used only a single line for the body of the function):</p>
+
+<pre><code>python3 ok &#x2d;q my_filter_syntax_check</code></pre>
+
+
+
+
+<h3 id="q4-reduce">Q4: Reduce</h3>
+
+
+<p><code>my_reduce</code> takes in a two argument function <code>combiner</code> and a non-empty sequence
+<code>seq</code> and combines the elements in <code>seq</code> into one value using <code>combiner</code>.</p>
+
+<solution>
+
+<pre><code>def my_reduce(combiner, seq):
+    &quot;&quot;&quot;Combines elements in seq using combiner.
+    seq will have at least one element.
+    &gt;&gt;&gt; my_reduce(lambda x, y: x + y, [1, 2, 3, 4])  # 1 + 2 + 3 + 4
+    10
+    &gt;&gt;&gt; my_reduce(lambda x, y: x * y, [1, 2, 3, 4])  # 1 * 2 * 3 * 4
+    24
+    &gt;&gt;&gt; my_reduce(lambda x, y: x * y, [4])
+    4
+    &gt;&gt;&gt; my_reduce(lambda x, y: x + 2 * y, [1, 2, 3]) # (1 + 2 * 2) + 2 * 3
+    11
+    &quot;&quot;&quot;
+<div class="sol-highlight">    total = seq[0]
+    for elem in seq[1:]:
+        total = combiner(total, elem)
+    return total
+
+    # Alternate solution
+def my_reduce_alternate(combiner, seq):
+    def helper(curr, seq):
+        if len(seq) == 0:
+            return curr
+        return helper(combiner(curr, seq[0]), seq[1:])
+    return helper(seq[0], seq[1:]) </div></code></pre>
+
+</solution>
+
+<p>Use Ok to test your code:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q my_reduce<button id="copy-code-python3ok-qmy_reduce" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-qmy_reduce").onclick = () => copyCode('python3 ok -q my_reduce', "copy-code-python3ok-qmy_reduce");
+        </script>
+        <br/>
+
+
+<h2 id="data-abstraction-2">Data Abstraction</h2>
+
+
+<p>Say we have an abstract data type for cities. A city has a name, a latitude
+coordinate, and a longitude coordinate.</p>
+
+<p>Our data abstraction has one <strong>constructor</strong>:</p>
+
+<ul>
+  <li><code>make_city(name, lat, lon)</code>: Creates a city object with the given name,
+  latitude, and longitude.</li>
+</ul>
+
+<p>We also have the following <strong>selectors</strong> in order to get the information for
+each city:</p>
+
+<ul>
+  <li><code>get_name(city)</code>: Returns the city's name</li>
+  <li><code>get_lat(city)</code>: Returns the city's latitude</li>
+  <li><code>get_lon(city)</code>: Returns the city's longitude</li>
+</ul>
+
+<p>Here is how we would use the constructor and selectors to create cities and
+extract their information:</p>
+
+<pre><code>&gt;&gt;&gt; berkeley = make_city(&#x27;Berkeley&#x27;, 122, 37)
+&gt;&gt;&gt; get_name(berkeley)
+&#x27;Berkeley&#x27;
+&gt;&gt;&gt; get_lat(berkeley)
+122
+&gt;&gt;&gt; new_york = make_city(&#x27;New York City&#x27;, 74, 40)
+&gt;&gt;&gt; get_lon(new_york)
+40</code></pre>
+
+<p>All of the selector and constructor functions can be found in the lab file,
+if you are curious to see how they are implemented. However, the point of data
+abstraction is that we do not need to know how an abstract data type is
+implemented, but rather just how we can interact with and use the data type.</p>
+
+
+<h3 id="q5-distance">Q5: Distance</h3>
+
+
+<p>We will now implement the function <code>distance</code>, which computes the
+distance between two city objects. Recall that the distance between two
+coordinate pairs <code>(x1, y1)</code> and <code>(x2, y2)</code> can be found by calculating
+the <code>sqrt</code> of <code>(x1 &#x2d; x2)**2 + (y1 &#x2d; y2)**2</code>. We have already imported
+<code>sqrt</code> for your convenience. Use the latitude and longitude of a city as
+its coordinates; you'll need to use the selectors to access this info!</p>
+
+<solution>
+
+<pre><code>from math import sqrt
+def distance(city_a, city_b):
+    &quot;&quot;&quot;
+    &gt;&gt;&gt; city_a = make_city(&#x27;city_a&#x27;, 0, 1)
+    &gt;&gt;&gt; city_b = make_city(&#x27;city_b&#x27;, 0, 2)
+    &gt;&gt;&gt; distance(city_a, city_b)
+    1.0
+    &gt;&gt;&gt; city_c = make_city(&#x27;city_c&#x27;, 6.5, 12)
+    &gt;&gt;&gt; city_d = make_city(&#x27;city_d&#x27;, 2.5, 15)
+    &gt;&gt;&gt; distance(city_c, city_d)
+    5.0
+    &quot;&quot;&quot;
+<div class="sol-highlight">    lat_1, lon_1 = get_lat(city_a), get_lon(city_a)
+    lat_2, lon_2 = get_lat(city_b), get_lon(city_b)
+    return sqrt((lat_1 &#x2d; lat_2)**2 + (lon_1 &#x2d; lon_2)**2)</div></code></pre>
+
+</solution>
+
+<p>Use Ok to test your code:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q distance<button id="copy-code-python3ok-qdistance" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-qdistance").onclick = () => copyCode('python3 ok -q distance', "copy-code-python3ok-qdistance");
+        </script>
+        <br/>
+
+
+<h3 id="q6-closer-city">Q6: Closer city</h3>
+
+
+<p>Next, implement <code>closer_city</code>, a function that takes a latitude,
+longitude, and two cities, and returns the name of the city that is
+relatively closer to the provided latitude and longitude.</p>
+
+<p>You may only use the selectors and constructors introduced above and the
+<code>distance</code> function you just defined for this question.</p>
+
+<blockquote><p><strong>Hint</strong>: How can you use your <code>distance</code> function to find the distance between
+the given location and each of the given cities?</p></blockquote>
+
+<solution>
+
+<pre><code>def closer_city(lat, lon, city_a, city_b):
+    &quot;&quot;&quot;
+    Returns the name of either city_a or city_b, whichever is closest to
+    coordinate (lat, lon). If the two cities are the same distance away
+    from the coordinate, consider city_b to be the closer city.
+
+    &gt;&gt;&gt; berkeley = make_city(&#x27;Berkeley&#x27;, 37.87, 112.26)
+    &gt;&gt;&gt; stanford = make_city(&#x27;Stanford&#x27;, 34.05, 118.25)
+    &gt;&gt;&gt; closer_city(38.33, 121.44, berkeley, stanford)
+    &#x27;Stanford&#x27;
+    &gt;&gt;&gt; bucharest = make_city(&#x27;Bucharest&#x27;, 44.43, 26.10)
+    &gt;&gt;&gt; vienna = make_city(&#x27;Vienna&#x27;, 48.20, 16.37)
+    &gt;&gt;&gt; closer_city(41.29, 174.78, bucharest, vienna)
+    &#x27;Bucharest&#x27;
+    &quot;&quot;&quot;
+<div class="sol-highlight">    new_city = make_city(&#x27;arb&#x27;, lat, lon)
+    dist1 = distance(city_a, new_city)
+    dist2 = distance(city_b, new_city)
+    if dist1 &lt; dist2:
+         return get_name(city_a)
+    return get_name(city_b)</div></code></pre>
+
+</solution>
+
+<p>Use Ok to test your code:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q closer_city<button id="copy-code-python3ok-qcloser_city" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-qcloser_city").onclick = () => copyCode('python3 ok -q closer_city', "copy-code-python3ok-qcloser_city");
+        </script>
+        <br/>
+
+
+<h3 id="q7-don-t-violate-the-abstraction-barrier">Q7: Don't violate the abstraction barrier!</h3>
+
+
+<blockquote><p>Note:
+this question has no code-writing component
+(if you implemented the previous two questions correctly).</p></blockquote>
+
+<p>When writing functions that use an data abstraction, we should use the
+constructor(s) and selector(s) whenever possible instead of assuming the
+data abstraction's implementation.
+Relying on a data abstraction's underlying implementation is known as
+<em>violating the abstraction barrier</em>, and we never want to do this!</p>
+
+<p>It's possible that you passed the doctests for the previous questions
+even if you violated the abstraction barrier. To check whether or not you
+did so, run the following command:</p>
+
+<p>Use Ok to test your code:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q check_city_abstraction<button id="copy-code-python3ok-qcheck_city_abstraction" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-qcheck_city_abstraction").onclick = () => copyCode('python3 ok -q check_city_abstraction', "copy-code-python3ok-qcheck_city_abstraction");
+        </script>
+        <br/>
+
+<p>The <code>check_city_abstraction</code> function exists only for the doctest, which swaps
+out the implementations of the original abstraction with something else, runs
+the tests from the previous two parts, then restores the original abstraction.</p>
+
+<p>The nature of the abstraction barrier guarantees that changing the
+implementation of an data abstraction shouldn't affect the functionality of
+any programs that use that data abstraction, as long as the constructors and
+selectors were used properly.</p>
+
+<p>If you passed the Ok tests for the previous questions but not this one,
+the fix is simple!  Just replace any code that violates the abstraction
+barrier with the appropriate constructor or selector.</p>
+
+<p>Make sure that your functions pass the tests with both the first and the
+second implementations of the data abstraction and that you understand why
+they should work for both before moving on.</p>
+
+
+<h2 id="check-your-score-locally">Check Your Score Locally</h2>
+
+<p>You can locally check your score on each question of this assignment by running</p>
+
+<pre><code>python3 ok &#x2d;&#x2d;score</code></pre>
+
+<p><strong>This does NOT submit the assignment!</strong> When you are satisfied with your score, submit the assignment to Gradescope to receive credit for it.</p>
+
+
+<h2 id="submit">Submit</h2>
+
+<p>Make sure to submit this assignment by uploading any files you've edited <strong>to the appropriate Gradescope assignment.</strong> For a refresher on how to do this, refer to <a href="../lab00.1.html#submit-with-gradescope">Lab 00</a>.</p>
+
+
+<h1 id="optional-questions">Optional Questions</h1>
+
+
+<blockquote><p>These questions are optional, but you must complete them in order
+to be checked off before the end of the lab period. They are also
+useful practice!</p></blockquote>
+
+
+<h3 id="q8-count-palindromes">Q8: Count Palindromes</h3>
+
+
+<p>The Python library defines <code>filter</code>, <code>map</code>, and <code>reduce</code>, which operate
+on Python sequences. Devise a function that counts the number of
+palindromic words (those that read the same backwards as forwards) in a
+tuple of words using only <code>lambda</code>, basic operations on strings, the
+tuple constructor, conditional expressions, and the functions <code>filter</code>,
+<code>map</code>, and <code>reduce</code>. Specifically, do not use recursion or any kind of
+loop:</p>
+
+<solution>
+
+<pre><code>def count_palindromes(L):
+    &quot;&quot;&quot;The number of palindromic words in the sequence of strings
+    L (ignoring case).
+
+    &gt;&gt;&gt; count_palindromes((&quot;Acme&quot;, &quot;Madam&quot;, &quot;Pivot&quot;, &quot;Pip&quot;))
+    2
+    &quot;&quot;&quot;
+<div class="sol-highlight">    return len(list(filter(lambda s: s.lower() == s[::&#x2d;1].lower(), L)))</div></code></pre>
+
+</solution>
+
+<blockquote><p><em>Hint</em>: The easiest way to get the reversed version of a string <code>s</code> is
+to use the Python slicing notation trick <code>s[::&#x2d;1]</code>. Also, the function
+<code>lower</code>, when called on strings, converts all of the characters in the
+string to lowercase. For instance, if the variable <code>s</code> contains the
+string "PyThoN", the expression <code>s.lower()</code> evaluates to "python".</p></blockquote>
+
+<p>Use Ok to test your code:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q count_palindromes<button id="copy-code-python3ok-qcount_palindromes" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-qcount_palindromes").onclick = () => copyCode('python3 ok -q count_palindromes', "copy-code-python3ok-qcount_palindromes");
+        </script>
+        <br/>
+
+
+<h3 id="q9-coordinates">Q9: Coordinates</h3>
+
+
+<p>Implement a function <code>coords</code> that takes a function <code>fn</code>, a sequence <code>seq</code>,
+and a <code>lower</code> and <code>upper</code> bound on the output of the function. <code>coords</code> then
+returns a list of coordinate pairs (lists) such that:</p>
+
+<ul>
+  <li>Each (x, y) pair is represented as <code>[x, fn(x)]</code></li>
+  <li>The x-coordinates are elements in the sequence</li>
+  <li>The result contains only pairs whose y-coordinate is within the upper and
+  lower bounds (inclusive)</li>
+</ul>
+
+<p>See the doctest for examples.</p>
+
+<blockquote><p><em>Note</em>: your answer can only be <em>one line long</em>. You should make use of list
+comprehensions!</p></blockquote>
+
+<solution>
+
+<pre><code>def coords(fn, seq, lower, upper):
+    &quot;&quot;&quot;
+    &gt;&gt;&gt; seq = [&#x2d;4, &#x2d;2, 0, 1, 3]
+    &gt;&gt;&gt; fn = lambda x: x**2
+    &gt;&gt;&gt; coords(fn, seq, 1, 9)
+    [[&#x2d;2, 4], [1, 1], [3, 9]]
+    &quot;&quot;&quot;
+<div class="sol-highlight">    return [[x, fn(x)] for x in seq if lower &lt;= fn(x) &lt;= upper]</div></code></pre>
+
+</solution>
+
+<p>Use Ok to test your code:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q coords<button id="copy-code-python3ok-qcoords" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-qcoords").onclick = () => copyCode('python3 ok -q coords', "copy-code-python3ok-qcoords");
+        </script>
+        <br/>
+
+<blockquote><p>Reflect: What are the drawbacks to the one-line answer, in terms of using computer resources?</p></blockquote>
+
+  </div>
+
+  <div class='col-md-3 sticky'>
+    <nav class='hidden-print hidden-sm hidden-xs sidebar'>
+      <ul>
+  <li><a href="index.html#topics">Topics</a></li>
+  <ul>
+    <li><a href="index.html#list-comprehensions">List Comprehensions</a></li>
+    <li><a href="index.html#sequences">Sequences</a></li>
+    <li><a href="index.html#data-abstraction">Data Abstraction</a></li>
+  </ul>
+  <li><a href="index.html#required-questions">Required Questions</a></li>
+  <ul>
+    <li><a href="index.html#getting-started-videos">Getting Started Videos</a></li>
+    <li><a href="index.html#lists">Lists</a></li>
+    <ul>
+      <li><a href="index.html#q1-flatten">Q1: Flatten</a></li>
+    </ul>
+    <li><a href="index.html#sequences-2">Sequences</a></li>
+    <ul>
+      <li><a href="index.html#q2-map">Q2: Map</a></li>
+      <li><a href="index.html#q3-filter">Q3: Filter</a></li>
+      <li><a href="index.html#q4-reduce">Q4: Reduce</a></li>
+    </ul>
+    <li><a href="index.html#data-abstraction-2">Data Abstraction</a></li>
+    <ul>
+      <li><a href="index.html#q5-distance">Q5: Distance</a></li>
+      <li><a href="index.html#q6-closer-city">Q6: Closer city</a></li>
+      <li><a href="index.html#q7-don-t-violate-the-abstraction-barrier">Q7: Don't violate the abstraction barrier!</a></li>
+    </ul>
+    <li><a href="index.html#check-your-score-locally">Check Your Score Locally</a></li>
+    <li><a href="index.html#submit">Submit</a></li>
+  </ul>
+  <li><a href="index.html#optional-questions">Optional Questions</a></li>
+  <ul>
+    <li><a href="index.html#q8-count-palindromes">Q8: Count Palindromes</a></li>
+    <li><a href="index.html#q9-coordinates">Q9: Coordinates</a></li>
+  </ul>
+</ul>
+    </nav>
+  </div>
+</div>
+
+    </main>
+
+    <footer class="container">
+      <div class="row text-center">
+        <div class="col col-sm-4">
+          <h3><a href="../../index.html">CS 61A</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../weekly.html">Weekly Schedule</a></li>
+            <li><a href="../../office-hours.html">Office Hours</a></li>
+            <li><a href="../../staff.html">Staff</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../../resources.1.html">Resources</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../articles/studying.html">Studying Guide</a></li>
+            <li><a href="../../articles/debugging.html">Debugging Guide</a></li>
+            <li><a href="../../articles/composition.html">Composition Guide</a></li>
+            <li><a href="../../articles/pair-programming.html">Pair Programming</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../../articles/about.html">Policies</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../articles/about.html#assignments">Assignments</a></li>
+            <li><a href="../../articles/about.html#exams">Exams</a></li>
+            <li><a href="../../articles/about.html#grading">Grading</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/loader.min.js"></script>
+  <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/editor/editor.main.min.css">
+  <script>
+      require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs' }});
+      window.MonacoEnvironment = { getWorkerUrl: () => URL.createObjectURL(new Blob([`
+      self.MonacoEnvironment = {
+          baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min'
+      };
+      importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/base/worker/workerMain.min.js');
+  `], { type: 'text/javascript' }))
+  };
+  </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.15.5/js/jsplumb.min.js"></script>
+    <script src="../../assets/js/network_storage.js"></script>
+    <script src="../../assets/js/storable.js"></script>
+    <script src="../../assets/js/editor.js"></script>
+    <script src="../../assets/js/copy-button.js"></script>
+    <script src="../../assets/js/env-diagram.js"></script>
+    
+<script src="../../assets/js/sketchy.js"></script>
+<script>
+  $('.sidebar ul').addClass('nav nav-stacked noselect');
+  $('body').scrollspy({
+    target: '.sidebar',
+    offset: 40
+  });
+
+  function goToId(id) {
+    var target = $(id);
+    target.parent().show();
+    $('html,body').animate({
+      scrollTop: target.offset().top,
+    }, 100);
+    $("body").scrollspy('refresh');
+  }
+
+  if (location.hash) {
+    setTimeout(function() {
+      if (location.hash) {
+        goToId(location.hash);
+      }
+    }, 1);
+  }
+
+  $("a").click(function(event) {
+    var urlBeforeHashRegEx = new RegExp("^"+window.location.href.split("#")[0]);
+    if (/^#/.test(this.hash) && urlBeforeHashRegEx.test(this.href)) {
+      event.preventDefault();
+      goToId(this.hash);
+      document.location.hash = this.hash;
+    }
+  });
+</script>
+
+  </body>
+</html>

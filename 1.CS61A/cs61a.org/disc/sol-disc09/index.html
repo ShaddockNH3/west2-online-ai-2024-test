@@ -1,0 +1,1288 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="description" content ="CS 61A: Structure and Interpretation of Computer Programs" />
+    <meta name="keywords" content ="CS 61A, Computer Science, CS, 61A, Programming, John DeNero, Berkeley, EECS" />
+    <meta name="author" content ="John DeNero, Hany Farid" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="../../assets/js/hl.js"></script>
+    <script src="../../assets/js/toggledarkmode.js"></script>
+    <script>
+        // we aren't registering builtins since
+        //      (1) they don't render differently in the current CSS from other names
+        //      (2) it's a mess to list all of them. You can extract from the site but that takes effort
+        // if (1) ceases to be true, (2) might be worth the effort. For now, we're leaving as is
+        hljsRegister({
+            'keyword': "define if cond and or let begin lambda mu quote delay cons-stream set! quasiquote unquote unquote-splicing define-macro"
+        });
+        hljs.initHighlightingOnLoad();
+    </script>
+    <script src="../../assets/js/dark-mode.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata|Roboto:300,400,500|Work+Sans:400,700">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/mono-blue.css">
+    <link rel="icon" href="../../assets/images/favicon.ico">
+
+    
+
+<link rel="stylesheet" type="text/css" href="../../assets/css/disc.css">
+
+
+    <title>
+Discussion 9 | CS 61A Spring 2023
+</title>
+  </head>
+
+  <body id="index" class="home">
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container noselect">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-section">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../../index.html">
+            <img style="max-width:60px; margin-top: -20px;" class="logo" src="../../assets/images/logo.png"/>
+          </a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbar-collapse-section">
+          <ul class="nav navbar-nav navbar-right">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Calendar
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../../weekly.html">Weekly Schedule</a></li>
+                <li><a href="../../office-hours.html">Office Hours</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Links
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://sections.cs61a.org">Sections Tool</a></li>
+                <li><a href="https://oh.cs61a.org">Office Hours Queue</a></li>
+                <li><a href="https://go.cs61a.org/regrade-request">Request a Regrade</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Staff
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../../instructor.html">Instructors</a></li>
+                <li><a href="../../TAs.html">TAs</a></li>
+                <li><a href="../../tutors.html">Tutors</a></li>
+                <li><a href="../../academic-interns.html">Academic Interns</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Resources
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://go.cs61a.org/extensions">Request an Extension</a></li>
+                <li><a href="https://go.cs61a.org/accommodation-appts">Book an Accommodations Appointment</a></li>
+                <li><a href="../../resources.1.html">Topical Resources + Past Exams</a></li>
+                <li><a href="https://tutor.cs61a.org/">PythonTutor</a></li>
+                <li><a href="https://code.cs61a.org/">Code</a></li>
+                <li><a href="https://edstem.org/us/courses/34756/discussion/" target="_blank">Ed</a></li>
+                <li><a href="../../articles/campus-res/index.html">Department/Campus Resources</a></li>
+              </ul>
+            </li>
+            <li><a href="../../articles/about.html">Syllabus</a></li>
+            <li><a href="../../contact.1.html">Contact</a></li>
+            <li>
+              <label class="switch">
+                <input type="checkbox" id="toggle-mode-cb">
+                <span class="slider round"></span>
+              </label>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main id="content" class="container">
+      
+<div class='row'>
+  <div class='col-md-9'>
+    <header>
+      <h1>
+        
+Discussion 9: Linked Lists, Efficiency, Mutable Trees
+
+        
+        
+        <ul class="inline-block list-inline">
+          <li><a href="disc09.pdf" class="label label-outline">disc09.pdf</a></li>
+        </ul>
+        
+        
+      </h1>
+    </header>
+    
+
+<div class="alert storable-login-status"></div>
+
+This is an online worksheet that you can work on during discussions.
+Your work is not graded and you do not need to submit anything.
+
+
+    
+
+
+
+<h1 id="linked-lists">Linked Lists</h1>
+
+
+<p>There are many different implementations of sequences in Python. Today, we'll
+explore the linked list implementation.</p>
+
+<p>A linked list is either an empty linked list, or a Link object containing a
+<code>first</code> value and the <code>rest</code> of the linked list.</p>
+
+<p>To check if a linked list is an empty linked list, compare it against the class
+attribute <code>Link.empty</code>:</p>
+
+<pre><code>if link is Link.empty:
+    print(&#x27;This linked list is empty!&#x27;)
+else:
+    print(&#x27;This linked list is not empty!&#x27;)</code></pre>
+
+
+
+<p>You can find an implementation of the <code>Link</code> class below:</p>
+
+<pre><code>class Link:
+    &quot;&quot;&quot;A linked list.&quot;&quot;&quot;
+    empty = ()
+
+    def __init__(self, first, rest=empty):
+        assert rest is Link.empty or isinstance(rest, Link)
+        self.first = first
+        self.rest = rest
+
+    def __repr__(self):
+        if self.rest:
+            rest_repr = &#x27;, &#x27; + repr(self.rest)
+        else:
+            rest_repr = &#x27;&#x27;
+        return &#x27;Link(&#x27; + repr(self.first) + rest_repr + &#x27;)&#x27;
+
+    def __str__(self):
+        string = &#x27;&lt;&#x27;
+        while self.rest is not Link.empty:
+            string += str(self.first) + &#x27; &#x27;
+            self = self.rest
+        return string + str(self.first) + &#x27;&gt;&#x27;</code></pre>
+
+
+
+
+
+<div class="page-break"></div>
+
+
+<h3 id="q1-wwpd-linked-lists">Q1: WWPD: Linked Lists</h3>
+
+
+<p>What would Python display?</p>
+
+<blockquote><p>Note: If you get stuck, try drawing out the box-and-pointer diagram for the
+linked list or running examples in 61A Code.</p></blockquote>
+
+<!-- <prompt>
+
+<pre><code>&gt;&gt;&gt; link = Link(1000)
+&gt;&gt;&gt; link.first</code></pre>
+
+</prompt>
+
+
+            <label class="sr-only" for="iter-wwpd-1-input">Your Answer:</label>
+            <input class="form-control storable" id="iter-wwpd-1-input" type="text">
+            <div class="storable-status"></div>
+        
+<div class="sol-highlight"> 1000 </div>
+
+<prompt>
+
+<pre><code>&gt;&gt;&gt; link.rest is Link.empty</code></pre>
+
+</prompt>
+
+
+            <label class="sr-only" for="iter-wwpd-1-input">Your Answer:</label>
+            <input class="form-control storable" id="iter-wwpd-1-input" type="text">
+            <div class="storable-status"></div>
+        
+<div class="sol-highlight"> True </div>
+
+<prompt>
+
+<pre><code> &gt;&gt;&gt; link = Link(1000, 2000)</code></pre>
+
+</prompt>
+
+
+            <label class="sr-only" for="iter-wwpd-1-input">Your Answer:</label>
+            <input class="form-control storable" id="iter-wwpd-1-input" type="text">
+            <div class="storable-status"></div>
+        
+<div class="sol-highlight"> Error </div>
+
+<prompt>
+
+<pre><code>&gt;&gt;&gt; link = Link(1000, Link())</code></pre>
+
+</prompt>
+
+
+            <label class="sr-only" for="iter-wwpd-1-input">Your Answer:</label>
+            <input class="form-control storable" id="iter-wwpd-1-input" type="text">
+            <div class="storable-status"></div>
+        
+<div class="sol-highlight"> Error </div> -->
+
+<pre><code>&gt;&gt;&gt; link = Link(1, Link(2, Link(3)))
+&gt;&gt;&gt; link.first</code></pre>
+
+
+
+
+            <label class="sr-only" for="iter-wwpd-2-input">Your Answer:</label>
+            <input class="form-control storable" id="iter-wwpd-2-input" type="text">
+            <div class="storable-status"></div>
+        
+<div class="sol-highlight"> 1 </div>
+
+<pre><code>&gt;&gt;&gt; link.rest.first</code></pre>
+
+
+
+
+            <label class="sr-only" for="iter-wwpd-2-input">Your Answer:</label>
+            <input class="form-control storable" id="iter-wwpd-2-input" type="text">
+            <div class="storable-status"></div>
+        
+<div class="sol-highlight"> 2 </div>
+
+<pre><code>&gt;&gt;&gt; link.rest.rest.rest is Link.empty</code></pre>
+
+
+
+
+            <label class="sr-only" for="iter-wwpd-2-input">Your Answer:</label>
+            <input class="form-control storable" id="iter-wwpd-2-input" type="text">
+            <div class="storable-status"></div>
+        
+<div class="sol-highlight"> True </div>
+
+<pre><code>&gt;&gt;&gt; link.rest = link.rest.rest
+&gt;&gt;&gt; link.rest.first</code></pre>
+
+
+
+
+            <label class="sr-only" for="iter-wwpd-2-input">Your Answer:</label>
+            <input class="form-control storable" id="iter-wwpd-2-input" type="text">
+            <div class="storable-status"></div>
+        
+<div class="sol-highlight"> 3 </div>
+
+<pre><code>&gt;&gt;&gt; link = Link(1)
+&gt;&gt;&gt; link.rest = link
+&gt;&gt;&gt; link.rest.rest.rest.rest.first</code></pre>
+
+
+
+
+            <label class="sr-only" for="iter-wwpd-2-input">Your Answer:</label>
+            <input class="form-control storable" id="iter-wwpd-2-input" type="text">
+            <div class="storable-status"></div>
+        
+<div class="sol-highlight"> 1 </div>
+
+<pre><code>&gt;&gt;&gt; link = Link(2, Link(3, Link(4)))
+&gt;&gt;&gt; link2 = Link(1, link)
+&gt;&gt;&gt; link2.first</code></pre>
+
+
+
+
+            <label class="sr-only" for="iter-wwpd-2-input">Your Answer:</label>
+            <input class="form-control storable" id="iter-wwpd-2-input" type="text">
+            <div class="storable-status"></div>
+        
+<div class="sol-highlight"> 1 </div>
+
+<pre><code>&gt;&gt;&gt; link2.rest.first</code></pre>
+
+
+
+
+            <label class="sr-only" for="iter-wwpd-2-input">Your Answer:</label>
+            <input class="form-control storable" id="iter-wwpd-2-input" type="text">
+            <div class="storable-status"></div>
+        
+<div class="sol-highlight"> 2 </div>
+
+<pre><code>&gt;&gt;&gt; link = Link(1000, 2000)</code></pre>
+
+
+
+
+            <label class="sr-only" for="iter-wwpd-2-input">Your Answer:</label>
+            <input class="form-control storable" id="iter-wwpd-2-input" type="text">
+            <div class="storable-status"></div>
+        
+<div class="sol-highlight"> Error (second argument of Link constructor must be a Link instance)</div>
+
+<pre><code>&gt;&gt;&gt; link = Link(1000, Link())</code></pre>
+
+
+
+
+            <label class="sr-only" for="iter-wwpd-2-input">Your Answer:</label>
+            <input class="form-control storable" id="iter-wwpd-2-input" type="text">
+            <div class="storable-status"></div>
+        
+<div class="sol-highlight"> Error (first argument of Link constructor must be specified)</div>
+
+<pre><code>&gt;&gt;&gt; link = Link(Link(&quot;Hello&quot;), Link(2))
+&gt;&gt;&gt; link.first</code></pre>
+
+
+
+
+            <label class="sr-only" for="iter-wwpd-1-input">Your Answer:</label>
+            <input class="form-control storable" id="iter-wwpd-1-input" type="text">
+            <div class="storable-status"></div>
+        
+<div class="sol-highlight"> Link('Hello') </div>
+
+<pre><code>&gt;&gt;&gt; link = Link(Link(&quot;Hello&quot;), Link(2))
+&gt;&gt;&gt; link.first.rest is Link.Empty</code></pre>
+
+
+
+
+            <label class="sr-only" for="iter-wwpd-1-input">Your Answer:</label>
+            <input class="form-control storable" id="iter-wwpd-1-input" type="text">
+            <div class="storable-status"></div>
+        
+<div class="sol-highlight"> True </div>
+
+<pre><code>&gt;&gt;&gt; link = Link(Link(&quot;Hello&quot;), Link(2))
+&gt;&gt;&gt; link.rest is Link.Empty</code></pre>
+
+
+
+
+            <label class="sr-only" for="iter-wwpd-1-input">Your Answer:</label>
+            <input class="form-control storable" id="iter-wwpd-1-input" type="text">
+            <div class="storable-status"></div>
+        
+<div class="sol-highlight"> False </div>
+
+
+<h3 id="q2-convert-link">Q2: Convert Link</h3>
+
+
+<p>Write a function <code>convert_link</code> that takes in a linked list and returns the
+sequence as a Python list. You may assume that the input list is shallow; that is none of the elements is another linked list.</p>
+
+<p>Try to find both an iterative and recursive solution for this problem!</p>
+
+<blockquote><p>Challenge: You may NOT assume that the input list is shallow, and we still want to return a flattened Python list as our output. Challenge Hint: Use the <code>type</code> built-in.</p></blockquote>
+
+
+            
+            <b>Your Answer</b>
+            
+            <div class="monaco-storable" id="link_to_list-input" style="height:594px;"></div>
+            <a href="javascript:void" id="modal-link-link_to_list-input">Run in 61A Code</a>
+            <div class="modal fade" id="modal-link_to_list-input" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content" style="padding-bottom: -5px">
+                    <iframe
+                        id="code-iframe-link_to_list-input"
+                        width="100%"
+                        height="700px"
+                        style="border: none; display:block;"
+                    ></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="storable-status"></div>
+            <script>
+                $(() => activateEditor('def convert_link(link):\n    &quot;&quot;&quot;Takes a linked list and returns a Python list with the same elements.\n\n    &gt;&gt;&gt; link = Link(1, Link(2, Link(3, Link(4))))\n    &gt;&gt;&gt; convert_link(link)\n    [1, 2, 3, 4]\n    &gt;&gt;&gt; convert_link(Link.empty)\n    []\n    &quot;&quot;&quot;\n    "*** YOUR CODE HERE ***"\n\n', "python", "link_to_list-input"));
+            </script>
+        
+            <div class="sol-highlight">
+                <b>Solution</b>
+                
+<pre><code>def convert_link(link):
+    &quot;&quot;&quot;Takes a linked list and returns a Python list with the same elements.
+
+    &gt;&gt;&gt; link = Link(1, Link(2, Link(3, Link(4))))
+    &gt;&gt;&gt; convert_link(link)
+    [1, 2, 3, 4]
+    &gt;&gt;&gt; convert_link(Link.empty)
+    []
+    &quot;&quot;&quot;
+    # Recursive solution
+    if link is Link.empty:
+        return []
+    return [link.first] + convert_link(link.rest)
+
+# Iterative solution
+def convert_link_iterative(link):
+    result = []
+    while link is not Link.empty:
+        result.append(link.first)
+        link = link.rest
+    return result
+
+# Challenge solution
+def convert_link_challenge(link):
+    if link is Link.empty:
+        return []
+    if type(link.first) == Link:
+        return [convert_link_challenge(link.first)] + convert_link_challenge(link.rest)
+    return [link.first] + convert_link_challenge(link.rest)
+
+</code></pre>
+
+            </div>
+        
+
+<div class="page-break"></div>
+
+
+<h3 id="q3-duplicate-link">Q3: Duplicate Link</h3>
+
+
+<p>Write a function <code>duplicate_link</code> that takes in a linked list <code>link</code> and a <code>value</code>. <code>duplicate_link</code> will mutate <code>link</code> such that if there is a linked list node that has a <code>first</code> equal to <code>value</code>, that node will be duplicated. <strong>Note that</strong> you should be mutating the original link list <code>link</code>; you will need to create new <code>Link</code>s, but you should not be returning a new linked list.</p>
+
+<blockquote><p><strong>Note</strong>: In order to insert a link into a linked list, you need to modify the <code>.rest</code> of certain links. We encourage you to draw out a doctest to visualize!</p></blockquote>
+
+
+            
+            <b>Your Answer</b>
+            
+            <div class="monaco-storable" id="duplicate_link-input" style="height:540px;"></div>
+            <a href="javascript:void" id="modal-link-duplicate_link-input">Run in 61A Code</a>
+            <div class="modal fade" id="modal-duplicate_link-input" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content" style="padding-bottom: -5px">
+                    <iframe
+                        id="code-iframe-duplicate_link-input"
+                        width="100%"
+                        height="700px"
+                        style="border: none; display:block;"
+                    ></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="storable-status"></div>
+            <script>
+                $(() => activateEditor('def duplicate_link(link, val):\n    &quot;&quot;&quot;Mutates `link` such that if there is a linked list\n    node that has a first equal to value, that node will\n    be duplicated. Note that you should be mutating the\n    original link list.\n\n    &gt;&gt;&gt; x = Link(5, Link(4, Link(3)))\n    &gt;&gt;&gt; duplicate_link(x, 5)\n    &gt;&gt;&gt; x\n    Link(5, Link(5, Link(4, Link(3))))\n    &gt;&gt;&gt; y = Link(2, Link(4, Link(6, Link(8))))\n    &gt;&gt;&gt; duplicate_link(y, 10)\n    &gt;&gt;&gt; y\n    Link(2, Link(4, Link(6, Link(8))))\n    &gt;&gt;&gt; z = Link(1, Link(2, (Link(2, Link(3)))))\n    &gt;&gt;&gt; duplicate_link(z, 2) #ensures that back to back links with val are both duplicated\n    &gt;&gt;&gt; z\n    Link(1, Link(2, Link(2, Link(2, Link(2, Link(3))))))\n    &quot;&quot;&quot;\n    "*** YOUR CODE HERE ***"\n\n', "python", "duplicate_link-input"));
+            </script>
+        
+            <div class="sol-highlight">
+                <b>Solution</b>
+                
+<pre><code>def duplicate_link(link, val):
+    &quot;&quot;&quot;Mutates `link` such that if there is a linked list
+    node that has a first equal to value, that node will
+    be duplicated. Note that you should be mutating the
+    original link list.
+
+    &gt;&gt;&gt; x = Link(5, Link(4, Link(3)))
+    &gt;&gt;&gt; duplicate_link(x, 5)
+    &gt;&gt;&gt; x
+    Link(5, Link(5, Link(4, Link(3))))
+    &gt;&gt;&gt; y = Link(2, Link(4, Link(6, Link(8))))
+    &gt;&gt;&gt; duplicate_link(y, 10)
+    &gt;&gt;&gt; y
+    Link(2, Link(4, Link(6, Link(8))))
+    &gt;&gt;&gt; z = Link(1, Link(2, (Link(2, Link(3)))))
+    &gt;&gt;&gt; duplicate_link(z, 2) #ensures that back to back links with val are both duplicated
+    &gt;&gt;&gt; z
+    Link(1, Link(2, Link(2, Link(2, Link(2, Link(3))))))
+    &quot;&quot;&quot;
+    if link is Link.empty:
+        return
+    elif link.first == val:
+        remaining = link.rest
+        link.rest = Link(val, remaining)
+        duplicate_link(remaining, val)
+    else:
+        duplicate_link(link.rest, val)
+</code></pre>
+
+            </div>
+        
+
+<div class="page-break"></div>
+
+
+<h3 id="q4-multiply-links">Q4: Multiply Links</h3>
+
+
+<p>Write a function that takes in a Python list of linked lists and
+multiplies them element-wise. It should return a new linked list.</p>
+
+<p>If not all of the <code>Link</code> objects are of equal length, return a
+linked list whose length is that of the shortest linked list given. You
+may assume the <code>Link</code> objects are shallow linked lists, and that
+<code>lst_of_lnks</code> contains at least one linked list.</p>
+
+
+            
+            <b>Your Answer</b>
+            
+            <div class="monaco-storable" id="multiply-lnks-input" style="height:432px;"></div>
+            <a href="javascript:void" id="modal-link-multiply-lnks-input">Run in 61A Code</a>
+            <div class="modal fade" id="modal-multiply-lnks-input" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content" style="padding-bottom: -5px">
+                    <iframe
+                        id="code-iframe-multiply-lnks-input"
+                        width="100%"
+                        height="700px"
+                        style="border: none; display:block;"
+                    ></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="storable-status"></div>
+            <script>
+                $(() => activateEditor('def multiply_lnks(lst_of_lnks):\n    &quot;&quot;&quot;\n    &gt;&gt;&gt; a = Link(2, Link(3, Link(5)))\n    &gt;&gt;&gt; b = Link(6, Link(4, Link(2)))\n    &gt;&gt;&gt; c = Link(4, Link(1, Link(0, Link(2))))\n    &gt;&gt;&gt; p = multiply_lnks([a, b, c])\n    &gt;&gt;&gt; p.first\n    48\n    &gt;&gt;&gt; p.rest.first\n    12\n    &gt;&gt;&gt; p.rest.rest.rest is Link.empty\n    True\n    &quot;&quot;&quot;\n    # Implementation Note: you might not need all lines in this skeleton code\n    ___________________ = ___________\n    for _______________________________________:\n        if __________________________________________:\n            _________________________________\n        ___________________\n\t________________________________________________________\n    ________________________________________________________\n\n', "python", "multiply-lnks-input"));
+            </script>
+        
+            <div class="sol-highlight">
+                <b>Solution</b>
+                
+<pre><code>def multiply_lnks(lst_of_lnks):
+    &quot;&quot;&quot;
+    &gt;&gt;&gt; a = Link(2, Link(3, Link(5)))
+    &gt;&gt;&gt; b = Link(6, Link(4, Link(2)))
+    &gt;&gt;&gt; c = Link(4, Link(1, Link(0, Link(2))))
+    &gt;&gt;&gt; p = multiply_lnks([a, b, c])
+    &gt;&gt;&gt; p.first
+    48
+    &gt;&gt;&gt; p.rest.first
+    12
+    &gt;&gt;&gt; p.rest.rest.rest is Link.empty
+    True
+    &quot;&quot;&quot;
+    # Implementation Note: you might not need all lines in this skeleton code
+    product = 1
+    for lnk in lst_of_lnks:
+        if lnk is Link.empty:
+            return Link.empty
+        product *= lnk.first
+    lst_of_lnks_rests = [lnk.rest for lnk in lst_of_lnks]
+    return Link(product, multiply_lnks(lst_of_lnks_rests))
+</code></pre>
+
+            </div>
+        
+
+<div class="sol-highlight">
+For our base case, if we detect that any of the lists in the list of
+<code>Link</code>s is empty, we can return the empty linked list as we're not going
+to multiply anything.
+
+<p>Otherwise, we compute the product of all the firsts in our list of
+<code>Link</code>s. Then, the subproblem we use here is the rest of all the linked
+lists in our list of Links. Remember that the result of calling
+<code>multiply_lnks</code> will be a linked list! We'll use the product we've
+built so far as the first item in the returned <code>Link</code>, and then the
+result of the recursive call as the rest of that <code>Link</code>.</p>
+
+<p>Next, we have the iterative solution:</p>
+
+<solution>
+
+<pre><code>def multiply_lnks(lst_of_lnks):
+    &quot;&quot;&quot;
+    &gt;&gt;&gt; a = Link(2, Link(3, Link(5)))
+    &gt;&gt;&gt; b = Link(6, Link(4, Link(2)))
+    &gt;&gt;&gt; c = Link(4, Link(1, Link(0, Link(2))))
+    &gt;&gt;&gt; p = multiply_lnks([a, b, c])
+    &gt;&gt;&gt; p.first
+    48
+    &gt;&gt;&gt; p.rest.first
+    12
+    &gt;&gt;&gt; p.rest.rest.rest is Link.empty
+    True
+    &quot;&quot;&quot;
+    # Alternate iterative approach
+    import operator
+    from functools import reduce
+    def prod(factors):
+         return reduce(operator.mul, factors, 1)
+
+    head = Link.empty
+    tail = head
+    while Link.empty not in lst_of_lnks:
+        all_prod = prod([l.first for l in lst_of_lnks])
+        if head is Link.empty:
+            head = Link(all_prod)
+            tail = head
+        else:
+            tail.rest = Link(all_prod)
+            tail = tail.rest
+        lst_of_lnks = [l.rest for l in lst_of_lnks]
+    return head</code></pre>
+
+
+<solution>
+
+<p>The iterative solution is a bit more involved than the recursive solution.
+Instead of building the list <strong>backwards</strong> as in the recursive solution (because of the order that the recursive calls result in, the last item in our list will be finished first), we'll build the resulting linked list as we go along.</p>
+
+<p>We use<code>head</code> and <code>tail</code> to track the front and end of the new
+linked list we're creating. Our stopping condition for the loop is if any of the
+<code>Link</code>s in our list of <code>Link</code>s runs out of items.</p>
+
+<p>Finally, there's some special handling for the first item. We need to update
+both head and tail in that case. Otherwise, we just append to the end of our
+list using tail, and update tail.</p>
+
+</div>
+
+<div class="page-break"></div>
+
+
+<h3 id="q5-flip-two">Q5: Flip Two</h3>
+
+<p>Write a recursive function <code>flip_two</code> that takes as input a
+linked list <code>s</code> and mutates <code>s</code> so that every pair
+is flipped.</p>
+
+
+            
+            <b>Your Answer</b>
+            
+            <div class="monaco-storable" id="flip-two-input" style="height:486px;"></div>
+            <a href="javascript:void" id="modal-link-flip-two-input">Run in 61A Code</a>
+            <div class="modal fade" id="modal-flip-two-input" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content" style="padding-bottom: -5px">
+                    <iframe
+                        id="code-iframe-flip-two-input"
+                        width="100%"
+                        height="700px"
+                        style="border: none; display:block;"
+                    ></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="storable-status"></div>
+            <script>
+                $(() => activateEditor('def flip_two(s):\n    &quot;&quot;&quot;\n    &gt;&gt;&gt; one_lnk = Link(1)\n    &gt;&gt;&gt; flip_two(one_lnk)\n    &gt;&gt;&gt; one_lnk\n    Link(1)\n    &gt;&gt;&gt; lnk = Link(1, Link(2, Link(3, Link(4, Link(5)))))\n    &gt;&gt;&gt; flip_two(lnk)\n    &gt;&gt;&gt; lnk\n    Link(2, Link(1, Link(4, Link(3, Link(5)))))\n    &quot;&quot;&quot;\n    "*** YOUR CODE HERE ***"\n\n    # For an extra challenge, try writing out an iterative approach as well below!\n    "*** YOUR CODE HERE ***"\n\n', "python", "flip-two-input"));
+            </script>
+        
+            <div class="sol-highlight">
+                <b>Solution</b>
+                
+<pre><code>def flip_two(s):
+    &quot;&quot;&quot;
+    &gt;&gt;&gt; one_lnk = Link(1)
+    &gt;&gt;&gt; flip_two(one_lnk)
+    &gt;&gt;&gt; one_lnk
+    Link(1)
+    &gt;&gt;&gt; lnk = Link(1, Link(2, Link(3, Link(4, Link(5)))))
+    &gt;&gt;&gt; flip_two(lnk)
+    &gt;&gt;&gt; lnk
+    Link(2, Link(1, Link(4, Link(3, Link(5)))))
+    &quot;&quot;&quot;
+    # Recursive solution:
+    if s is Link.empty or s.rest is Link.empty:
+        return
+    s.first, s.rest.first = s.rest.first, s.first
+    flip_two(s.rest.rest)
+
+    # For an extra challenge, try writing out an iterative approach as well below!
+    return # separating recursive and iterative implementations
+
+    # Iterative approach
+    while s is not Link.empty and s.rest is not Link.empty:
+        s.first, s.rest.first = s.rest.first, s.first
+        s = s.rest.rest
+</code></pre>
+
+            </div>
+        
+
+<div class="sol-highlight">
+If there's only a single item (or no item) to flip, then we're done.
+
+<p>Otherwise, we swap the contents of the first and second items in the list. Since
+we've handled the first two items, we then need to recurse on <code>s.rest.rest</code>.</p>
+
+<p>Although the question explicitly asks for a recursive solution, there is also a
+fairly similar iterative solution (see python solution).</p>
+
+<p>We will advance <code>s</code> until we see there are no more items or there is
+only one more Link object to process. Processing each <code>Link</code> involves
+swapping the contents of the first and second items in the list (same as the
+recursive solution).
+</div></p>
+
+<div class="page-break"></div>
+
+
+<h1 id="efficiency">Efficiency</h1>
+
+
+
+
+<p>When we talk about the efficiency of a function, we are often interested in the
+following: as the size of the input grows, how does the runtime of the function
+change? And what do we mean by <em>runtime</em>?</p>
+
+<p><strong>Example 1:</strong> <code>square(1)</code> requires one primitive operation: multiplication.
+<code>square(100)</code> also requires one. No matter what input <code>n</code> we pass into <code>square</code>, it always takes a <em>constant</em> number of operations (1). In other words, this function has a runtime complexity of Θ(1).</p>
+
+<p>As an illustration, check out the table below:</p>
+
+
+
+
+        <div class="table-responsive">
+          <table class="table table-bordered">
+          
+  <tr>
+    <th>input</th>
+    <th>function call</th>
+    <th>return value</th>
+    <th>operations</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td><code>square(1)</code></td>
+    <td>1*1</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td><code>square(2)</code></td>
+    <td>2*2</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>...</td>
+    <td>...</td>
+    <td>...</td>
+    <td>...</td>
+  </tr>
+  <tr>
+    <td>100</td>
+    <td><code>square(100)</code></td>
+    <td>100*100</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>...</td>
+    <td>...</td>
+    <td>...</td>
+    <td>...</td>
+  </tr>
+  <tr>
+    <td>n</td>
+    <td><code>square(n)</code></td>
+    <td>n*n</td>
+    <td>1</td>
+  </tr>
+
+          </table>
+        </div>
+        
+
+
+
+<p><strong>Example 2:</strong> <code>factorial(1)</code> requires one multiplication, but <code>factorial(100)</code> requires 100 multiplications. As we increase the input size of n, the runtime (number of operations) increases <strong>linearly</strong> proportional to the input. In other words, this function has a runtime complexity of Θ(<code>n</code>).</p>
+
+<p>As an illustration, check out the table below:</p>
+
+
+
+
+        <div class="table-responsive">
+          <table class="table table-bordered">
+          
+  <tr>
+    <th>input</th>
+    <th>function call</th>
+    <th>return value</th>
+    <th>operations</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td><code>factorial(1)</code></td>
+    <td>1*1</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td><code>factorial(2)</code></td>
+    <td>2*1*1</td>
+    <td>2</td>
+  </tr>
+  <tr>
+    <td>...</td>
+    <td>...</td>
+    <td>...</td>
+    <td>...</td>
+  </tr>
+  <tr>
+    <td>100</td>
+    <td><code>factorial(100)</code></td>
+    <td>100*99*...*1*1</td>
+    <td>100</td>
+  </tr>
+  <tr>
+    <td>...</td>
+    <td>...</td>
+    <td>...</td>
+    <td>...</td>
+  </tr>
+  <tr>
+    <td>n</td>
+    <td><code>factorial(n)</code></td>
+    <td>n*(n-1)*...*1*1</td>
+    <td>n</td>
+  </tr>
+
+          </table>
+        </div>
+        
+
+
+
+<p><strong>Example 3:</strong> Consider the following function:</p>
+
+<pre><code>def bar(n):
+    for a in range(n):
+        for b in range(n):
+            print(a,b)</code></pre>
+
+<p><code>bar(1)</code> requires 1 print statements, while <code>bar(100)</code> requires <code>100*100 = 10000</code> print statements (each time <code>a</code> increments, we have 100 print statements due to the inner for loop). Thus, the runtime increases <strong>quadratically</strong> proportional to the input. In other words, this function has a runtime complexity of Θ(<code>n^2</code>).</p>
+
+
+
+
+        <div class="table-responsive">
+          <table class="table table-bordered">
+          
+  <tr>
+    <th>input</th>
+    <th>function call</th>
+    <th>operations (prints)</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td><code>bar(1)</code></td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td><code>bar(2)</code></td>
+    <td>4</td>
+  </tr>
+  <tr>
+    <td>...</td>
+    <td>...</td>
+    <td>...</td>
+  </tr>
+  <tr>
+    <td>100</td>
+    <td><code>bar(100)</code></td>
+    <td>10000</td>
+  </tr>
+  <tr>
+    <td>...</td>
+    <td>...</td>
+    <td>...</td>
+  </tr>
+  <tr>
+    <td>n</td>
+    <td><code>bar(n)</code></td>
+    <td>n^2</td>
+  </tr>
+
+          </table>
+        </div>
+        
+
+
+
+<p><strong>Example 4:</strong> Consder the following function:</p>
+
+<pre><code>def rec(n):
+    if n == 0:
+        return 1
+    else:
+        return rec(n &#x2d; 1) + rec(n &#x2d; 1)</code></pre>
+
+<p><code>rec(1)</code> requires one addition, as it returns <code>rec(0) + rec(0)</code>, and <code>rec(0)</code> hits the base case and requires no further additions. but <code>rec(4)</code> requires <code>2^4 &#x2d; 1</code> = 15 additions. To further understand the intuition, we can take a look at the recurisve tree below. To get <code>rec(4)</code>, we need one addition. We have two calls to <code>rec(3)</code>, which each require one addition, so this level needs two additions. Then we have four calls to <code>rec(2)</code>, so this level requires four additions, and so on down the tree. In total, this adds up to 1 + 2 + 4 + 8 = 15 additions.</p>
+
+<p><img class="img-responsive center-block" src="assets/rec.png" alt="Recursive Call Tree" title="Rec Tree" width="" height=""></p>
+
+<p>As we increase the input size of n, the runtime (number of operations) increases <strong>exponentially</strong> proportional to the input. In other words, this function has a runtime complexity of Θ(<code>2^n</code>).</p>
+
+<p>As an illustration, check out the table below:</p>
+
+
+
+
+        <div class="table-responsive">
+          <table class="table table-bordered">
+          
+  <tr>
+    <th>input</th>
+    <th>function call</th>
+    <th>return value</th>
+    <th>operations</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td><code>rec(1)</code></td>
+    <td>2</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td><code>rec(2)</code></td>
+    <td>4</td>
+    <td>3</td>
+  </tr>
+  <tr>
+    <td>...</td>
+    <td>...</td>
+    <td>...</td>
+    <td>...</td>
+  </tr>
+  <tr>
+    <td>10</td>
+    <td><code>rec(10)</code></td>
+    <td>1024</td>
+    <td>1023</td>
+  </tr>
+  <tr>
+    <td>...</td>
+    <td>...</td>
+    <td>...</td>
+    <td>...</td>
+  </tr>
+  <tr>
+    <td>n</td>
+    <td><code>rec(n)</code></td>
+    <td><code>2^n</code></td>
+    <td><code>2^n</code></td>
+  </tr>
+
+          </table>
+        </div>
+        
+
+
+
+<p>Here are some general guidelines for finding the order of growth for the
+runtime of a function:</p>
+
+<ul>
+  <li><p>If the function is recursive or iterative, you can subdivide the problem
+  as seen above:</p>
+
+  <ul>
+    <li>Count the number of recursive calls/iterations that will be made in terms of input size <code>n</code>.</li>
+    <li>Find how much work is done per recursive call or iteration in terms of input size <code>n</code>.</li>
+    <li>The answer is usually the product of the above two, but be sure to pay
+    attention to control flow!</li>
+  </ul></li>
+  <li>If the function calls helper functions that are not constant-time, you need to take the runtime of the helper functions into consideration.</li>
+  <li>We can ignore constant factors. For example <code>1000000n</code> and <code>n</code> steps are both linear.</li>
+  <li>We can also ignore smaller factors. For example if <code>h</code> calls <code>f</code> and <code>g</code>, and <code>f</code> is Quadratic while <code>g</code> is linear, then <code>h</code> is Quadratic.</li>
+  <li><p>For the purposes of this class, we take a fairly coarse view of efficiency. All the problems we cover in this course can be grouped as one of the following:</p>
+
+  <ul>
+    <li>Constant: the amount of time does not change based on the input size. Rule: <code>n &#x2d;&#x2d;&gt; 2n</code> means <code>t &#x2d;&#x2d;&gt; t</code>.</li>
+    <li>Logarithmic: the amount of time changes based on the logarithm of the input size. Rule: <code>n &#x2d;&#x2d;&gt; 2n</code> means <code>t &#x2d;&#x2d;&gt; t + k</code>.</li>
+    <li>Linear: the amount of time changes with direct proportion to the size of the input. Rule: <code>n &#x2d;&#x2d;&gt; 2n</code> means <code>t &#x2d;&#x2d;&gt; 2t</code>.</li>
+    <li>Quadratic: the amount of time changes based on the square of the input size. Rule: <code>n &#x2d;&#x2d;&gt; 2n</code> means <code>t &#x2d;&#x2d;&gt; 4t</code>.</li>
+    <li>Exponential: the amount of time changes with a power of the input size. Rule: <code>n &#x2d;&#x2d;&gt; n + 1</code> means <code>t &#x2d;&#x2d;&gt; 2t</code>.</li>
+  </ul></li>
+</ul>
+
+<div class="page-break"></div>
+
+
+<h3 id="q6-the-first-order-of-growth">Q6: The First Order...of Growth</h3>
+
+
+<p>What is the efficiency of <code>rey</code>?</p>
+
+<pre><code>def rey(finn):
+    poe = 0
+    while finn &gt;= 2:
+        poe += finn
+        finn = finn / 2
+    return</code></pre>
+
+
+
+<p>Choose one of:</p>
+
+<ul>
+  <li>Constant</li>
+  <li>Logarithmic</li>
+  <li>Linear</li>
+  <li>Quadratic</li>
+  <li>Exponential</li>
+  <li>None of these</li>
+</ul>
+
+
+            <label class="sr-only" for="wwpd-growth-1-input">Your Answer:</label>
+            <input class="form-control storable" id="wwpd-growth-1-input" type="text">
+            <div class="storable-status"></div>
+        
+
+<div class="sol-highlight">
+  Logarithmic, because our while loop iterates at most log(<code>finn</code>) times,
+  due to <code>finn</code> being halved in every iteration. This is commonly known as Θ(log(<code>finn</code>)) runtime. Another way of looking at this if you
+  duplicate the input, we only add a single iteration to the time, which also indicates logarithmic.
+</div>
+
+<p>What is the efficiency of <code>mod_7</code>?</p>
+
+<pre><code>def mod_7(n):
+    if n % 7 == 0:
+        return 0
+    else:
+        return 1 + mod_7(n &#x2d; 1)</code></pre>
+
+
+
+<p>Choose one of:</p>
+
+<ul>
+  <li>Constant</li>
+  <li>Logarithmic</li>
+  <li>Linear</li>
+  <li>Quadratic</li>
+  <li>Exponential</li>
+  <li>None of these</li>
+</ul>
+
+
+            <label class="sr-only" for="wwpd-growth-2-input">Your Answer:</label>
+            <input class="form-control storable" id="wwpd-growth-2-input" type="text">
+            <div class="storable-status"></div>
+        
+
+<div class="sol-highlight">
+Constant, since in the worst case scenario our function <code>mod_7</code> will require 6 recursive calls to reach the base case. Consider the worst case where we have an input <code>n</code> such that our first call to <code>mod_7</code> evaluates <code>n % 7</code> as <code>6</code>. Each recursive call will decrement <code>n</code> by <code>1</code>, allowing us to eventually reach the base case of returning <code>0</code> in 6 recursive calls (<code>n</code> will range from 0 to 6). Since the growth of the computation is independent of the input, we say this is constant, which is commonly known as a Θ(<code>1</code>) runtime.
+</div>
+
+<div class="page-break"></div>
+
+
+<h1 id="additional-practice-trees">Additional Practice: Trees</h1>
+
+
+
+<h3 id="q7-find-paths">Q7: Find Paths</h3>
+
+
+<blockquote><p><strong>Hint</strong>: This question is similar to <a href="../sol-disc05/index.html#q4-find-path"><code>find_path</code> on Discussion 05</a>.</p></blockquote>
+
+<p>Define the procedure <code>find_paths</code> that, given a Tree <code>t</code> and an <code>entry</code>, returns a list of lists containing the nodes along each path from the root of <code>t</code> to <code>entry</code>. You may return the paths in any order.</p>
+
+<p>For instance, for the following tree <code>tree_ex</code>, <code>find_paths</code> should behave as specified in the function doctests.
+<img class="img-responsive center-block" src="assets/tree_ex.png" alt="Example Tree" width="" height=""></p>
+
+
+            
+            <b>Your Answer</b>
+            
+            <div class="monaco-storable" id="find-paths-input" style="height:342px;"></div>
+            <a href="javascript:void" id="modal-link-find-paths-input">Run in 61A Code</a>
+            <div class="modal fade" id="modal-find-paths-input" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content" style="padding-bottom: -5px">
+                    <iframe
+                        id="code-iframe-find-paths-input"
+                        width="100%"
+                        height="700px"
+                        style="border: none; display:block;"
+                    ></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="storable-status"></div>
+            <script>
+                $(() => activateEditor('def find_paths(t, entry):\n    &quot;&quot;&quot;\n    &gt;&gt;&gt; tree_ex = Tree(2, [Tree(7, [Tree(3), Tree(6, [Tree(5), Tree(11)])]), Tree(1, [Tree(5)])])\n    &gt;&gt;&gt; find_paths(tree_ex, 5)\n    [[2, 7, 6, 5], [2, 1, 5]]\n    &gt;&gt;&gt; find_paths(tree_ex, 12)\n    []\n    &quot;&quot;&quot;\n\n    paths = []\n    if _____________________________:\n        _________________________________\n    for __________________________________:\n        _________________________:\n            ___________________________________________\n    ______________________\n\n', "python", "find-paths-input"));
+            </script>
+        
+            <div class="sol-highlight">
+                <b>Solution</b>
+                
+<pre><code>def find_paths(t, entry):
+    &quot;&quot;&quot;
+    &gt;&gt;&gt; tree_ex = Tree(2, [Tree(7, [Tree(3), Tree(6, [Tree(5), Tree(11)])]), Tree(1, [Tree(5)])])
+    &gt;&gt;&gt; find_paths(tree_ex, 5)
+    [[2, 7, 6, 5], [2, 1, 5]]
+    &gt;&gt;&gt; find_paths(tree_ex, 12)
+    []
+    &quot;&quot;&quot;
+
+    paths = []
+    if t.label == entry:
+        paths.append([t.label])
+    for b in t.branches:
+        for path in find_paths(b, entry):
+            paths.append([t.label] + path)
+    return paths
+</code></pre>
+
+            </div>
+        
+
+  </div>
+
+  <div class='col-md-3 sticky'>
+    <nav class='hidden-print hidden-sm hidden-xs sidebar'>
+      <ul>
+  <li><a href="index.html#linked-lists">Linked Lists</a></li>
+  <ul>
+    <li><a href="index.html#q1-wwpd-linked-lists">Q1: WWPD: Linked Lists</a></li>
+    <li><a href="index.html#q2-convert-link">Q2: Convert Link</a></li>
+    <li><a href="index.html#q3-duplicate-link">Q3: Duplicate Link</a></li>
+    <li><a href="index.html#q4-multiply-links">Q4: Multiply Links</a></li>
+    <li><a href="index.html#q5-flip-two">Q5: Flip Two</a></li>
+  </ul>
+  <li><a href="index.html#efficiency">Efficiency</a></li>
+  <ul>
+    <li><a href="index.html#q6-the-first-order-of-growth">Q6: The First Order...of Growth</a></li>
+  </ul>
+  <li><a href="index.html#additional-practice-trees">Additional Practice: Trees</a></li>
+  <ul>
+    <li><a href="index.html#q7-find-paths">Q7: Find Paths</a></li>
+  </ul>
+</ul>
+    </nav>
+  </div>
+</div>
+
+    </main>
+
+    <footer class="container">
+      <div class="row text-center">
+        <div class="col col-sm-4">
+          <h3><a href="../../index.html">CS 61A</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../weekly.html">Weekly Schedule</a></li>
+            <li><a href="../../office-hours.html">Office Hours</a></li>
+            <li><a href="../../staff.html">Staff</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../../resources.1.html">Resources</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../articles/studying.html">Studying Guide</a></li>
+            <li><a href="../../articles/debugging.html">Debugging Guide</a></li>
+            <li><a href="../../articles/composition.html">Composition Guide</a></li>
+            <li><a href="../../articles/pair-programming.html">Pair Programming</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../../articles/about.html">Policies</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../articles/about.html#assignments">Assignments</a></li>
+            <li><a href="../../articles/about.html#exams">Exams</a></li>
+            <li><a href="../../articles/about.html#grading">Grading</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/loader.min.js"></script>
+  <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/editor/editor.main.min.css">
+  <script>
+      require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs' }});
+      window.MonacoEnvironment = { getWorkerUrl: () => URL.createObjectURL(new Blob([`
+      self.MonacoEnvironment = {
+          baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min'
+      };
+      importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/base/worker/workerMain.min.js');
+  `], { type: 'text/javascript' }))
+  };
+  </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.15.5/js/jsplumb.min.js"></script>
+    <script src="../../assets/js/network_storage.js"></script>
+    <script src="../../assets/js/storable.js"></script>
+    <script src="../../assets/js/editor.js"></script>
+    <script src="../../assets/js/copy-button.js"></script>
+    <script src="../../assets/js/env-diagram.js"></script>
+    
+<script src="../../assets/js/sketchy.js"></script>
+<script>
+  $('.sidebar ul').addClass('nav nav-stacked noselect');
+  $('body').scrollspy({
+    target: '.sidebar',
+    offset: 40
+  });
+
+  function goToId(id) {
+    var target = $(id);
+    target.parent().show();
+    $('html,body').animate({
+      scrollTop: target.offset().top,
+    }, 100);
+    $("body").scrollspy('refresh');
+  }
+
+  if (location.hash) {
+    setTimeout(function() {
+      if (location.hash) {
+        goToId(location.hash);
+      }
+    }, 1);
+  }
+
+  $("a").click(function(event) {
+    var urlBeforeHashRegEx = new RegExp("^"+window.location.href.split("#")[0]);
+    if (/^#/.test(this.hash) && urlBeforeHashRegEx.test(this.href)) {
+      event.preventDefault();
+      goToId(this.hash);
+      document.location.hash = this.hash;
+    }
+  });
+</script>
+
+  </body>
+</html>

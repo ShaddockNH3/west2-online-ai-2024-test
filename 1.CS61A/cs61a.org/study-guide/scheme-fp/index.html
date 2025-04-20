@@ -1,0 +1,517 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="description" content ="CS 61A: Structure and Interpretation of Computer Programs" />
+    <meta name="keywords" content ="CS 61A, Computer Science, CS, 61A, Programming, John DeNero, Berkeley, EECS" />
+    <meta name="author" content ="John DeNero, Hany Farid" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="../../assets/js/hl.js"></script>
+    <script src="../../assets/js/toggledarkmode.js"></script>
+    <script>
+        // we aren't registering builtins since
+        //      (1) they don't render differently in the current CSS from other names
+        //      (2) it's a mess to list all of them. You can extract from the site but that takes effort
+        // if (1) ceases to be true, (2) might be worth the effort. For now, we're leaving as is
+        hljsRegister({
+            'keyword': "define if cond and or let begin lambda mu quote delay cons-stream set! quasiquote unquote unquote-splicing define-macro"
+        });
+        hljs.initHighlightingOnLoad();
+    </script>
+    <script src="../../assets/js/dark-mode.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata|Roboto:300,400,500|Work+Sans:400,700">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/mono-blue.css">
+    <link rel="icon" href="../../assets/images/favicon.ico">
+
+    
+
+    <title>
+Study Guide: Scheme | CS 61A Spring 2023
+</title>
+  </head>
+
+  <body id="index" class="home">
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container noselect">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-section">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../../index.html">
+            <img style="max-width:60px; margin-top: -20px;" class="logo" src="../../assets/images/logo.png"/>
+          </a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbar-collapse-section">
+          <ul class="nav navbar-nav navbar-right">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Calendar
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../../weekly.html">Weekly Schedule</a></li>
+                <li><a href="../../office-hours.html">Office Hours</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Links
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://sections.cs61a.org">Sections Tool</a></li>
+                <li><a href="https://oh.cs61a.org">Office Hours Queue</a></li>
+                <li><a href="https://go.cs61a.org/regrade-request">Request a Regrade</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Staff
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../../instructor.html">Instructors</a></li>
+                <li><a href="../../TAs.html">TAs</a></li>
+                <li><a href="../../tutors.html">Tutors</a></li>
+                <li><a href="../../academic-interns.html">Academic Interns</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Resources
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://go.cs61a.org/extensions">Request an Extension</a></li>
+                <li><a href="https://go.cs61a.org/accommodation-appts">Book an Accommodations Appointment</a></li>
+                <li><a href="../../resources.1.html">Topical Resources + Past Exams</a></li>
+                <li><a href="https://tutor.cs61a.org/">PythonTutor</a></li>
+                <li><a href="https://code.cs61a.org/">Code</a></li>
+                <li><a href="https://edstem.org/us/courses/34756/discussion/" target="_blank">Ed</a></li>
+                <li><a href="../../articles/campus-res/index.html">Department/Campus Resources</a></li>
+              </ul>
+            </li>
+            <li><a href="../../articles/about.html">Syllabus</a></li>
+            <li><a href="../../contact.1.html">Contact</a></li>
+            <li>
+              <label class="switch">
+                <input type="checkbox" id="toggle-mode-cb">
+                <span class="slider round"></span>
+              </label>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main id="content" class="container">
+      
+<div class='row'>
+  <div class='col-md-9'>
+    <header>
+      <h1>
+        
+Study Guide: Scheme
+
+        
+        
+        
+      </h1>
+    </header>
+    
+<div class="alert storable-login-status"></div>
+
+<h2>Instructions</h2>
+
+<p>This is a study guide with links to past
+lectures, assignments, and handouts, as well as
+additional practice problems to assist you in learning the concepts.</p>
+
+
+  <p><strong>Assignments</strong></p>
+  <blockquote><p>Important: For solutions to these assignments once they have been released, see <a href="../../index.html">the main website</a></p></blockquote>
+
+<ul>
+  <li><a href="../../lab/lab10.1.html">Lab 10</a></li>
+  <li><a href="../../hw/hw06.1.html">HW 6</a></li>
+  <li><a href="https://cs61a.org/hw/hw7">HW 7</a></li>
+</ul>
+
+
+
+  <p><strong>Handouts</strong></p>
+  <ul>
+  <li><a href="https://cs61a.org/disc/disc09.pdf">Discussion 9</a></li>
+</ul>
+
+
+
+  <p><strong>Lectures</strong></p>
+  <ul>
+  <li><a href="https://fa20.cs61a.org/assets/slides/27-Scheme_full.pdf">Scheme</a></li>
+</ul>
+
+
+
+  <p><strong>Readings</strong></p>
+  <ul>
+  <li><a href="http://composingprograms.com/pages/31-introduction.html">Section 3.1</a></li>
+  <li><a href="http://composingprograms.com/pages/32-functional-programming.html">Section 3.2</a></li>
+</ul>
+
+
+
+    
+<h1 id="guides">Guides</h1>
+
+
+<p>Computer science is not just about writing programs, but also understanding how
+they behave. We learned in the first week of class about the Python programming
+language and its expressive syntax. We saw how we could pose questions to the
+Python interpreter and how we could define functions that teach Python how to
+solve more and more complex problems.</p>
+
+<p>Underlying all of the evaluation rules, we also learned about several different
+programming paradigms in Python by composing functions together, creating
+compound values and data abstractions with lists and dictionaries, and modeling
+those data abstractions using object-oriented programming.</p>
+
+<p>But these aren't the only programming paradigms that exist and Python isn't the
+only language that we use to solve problems. We learn about Scheme to help
+answer both of these questions: what are the ways of thinking that transfer
+between languages, and how a computer understands programs.</p>
+
+
+<h2 id="scheme">Scheme</h2>
+
+
+<p>Scheme is like Python in some ways and unlike it in others. Like Python, Scheme
+is an interpreted language so we can always ask questions in the interpreter.</p>
+
+<pre><code class="scheme">scm&gt; 1
+1
+scm&gt; #t
+#t
+scm&gt; &#x27;symbol
+symbol</code></pre>
+
+
+
+<p>Like Python, Scheme has a similar set of familiar data types like numbers,
+booleans, strings, and an unfamiliar type, <em>symbols</em>. There are also call
+expressions, which evaluate using the same evaluation procedure as in Python.</p>
+
+<pre><code class="scheme">scm&gt; (+ 1 2)
+3
+scm&gt; (not #t)
+#f</code></pre>
+
+
+
+<p>An expression enclosed in parentheses is called a <em>combination</em>, but not all
+combinations are call expressions!</p>
+
+<pre><code class="scheme">scm&gt; (if (= 1 2)
+         (/ 1 0)
+         #f)
+#f</code></pre>
+
+
+
+<p>Some combinations, like the <code>if</code> special form, look like call expressions, but
+have very unique logic. If <code>if</code> were a call expression, we would the operator
+and each operand, which isn't what happens here. Instead, the <code>if</code> special form
+follows its own set of evaluation rules by first evaluating the condition and
+then chooses the corresponding consequent based on the truth value of the
+condition.</p>
+
+
+<h3 id="problem-solving">Problem-Solving</h3>
+
+
+<p>Code-writing in Scheme follows the same overarching problem-solving strategy
+we've been honing all semester long, just with additional rules. Scheme
+encourages us to write programs in a <em>functional style</em> by composing together
+several small programs, each solving a single problem, but which combine to
+solve a larger problem. Think of this as yet another form of <em>abstraction</em>,
+except now at the scale of how we organize programs as a whole!</p>
+
+<p>Practically-speaking, there are a couple of restrictions we need to be
+cognizant of when writing Scheme programs as they'll require us to change the
+way we solve problems.</p>
+
+<p>One part will require us to grapple with how we come up with <em>algorithms</em>, or
+step-by-step solutions.</p>
+
+<ul>
+  <li>Scheme data types are (mostly) immutable. The values of compound data types
+  like pairs can't be easily changed.</li>
+  <li>Scheme does not support iteration. We use recursion and helper procedures
+  instead.</li>
+</ul>
+
+<p>The other will affect how we convert the algorithm or idea into code.</p>
+
+<ul>
+  <li>Scheme prefers a composition of function calls. Scheme syntax is all
+  expressions, which means that even special forms like <code>if</code> can be nested and
+  composed in useful ways. (Remember that in Python, we can't drop an <code>if</code>
+  block statement in the middle of a function call!)</li>
+</ul>
+
+<pre><code class="scheme">scm&gt; (define x 1)
+x
+scm&gt; (+ 1 (if (= x 1) 1 2))
+2</code></pre>
+
+
+
+<p>We'll usually define several small procedures. The procedures we define tend
+to have a well-defined domain and range, and their behavior can be explained in
+simple words.</p>
+
+<p>We might, for example, want to remove all the duplicate values in a list. Based
+on the algorithm restrictions, we know we can't mutate the original list, so
+our only other option is to return a new list containing the unique values. We
+can use recursion to traverse down the list, checking each item to see whether
+or not it's a unique value. From here, the idea can vary in two directions
+depending on whether we want to filter the remaining values, or check backwards
+and add to our growing list of unique values if it's not already there.</p>
+
+
+<h1 id="practice-problems">Practice Problems</h1>
+
+
+
+<h2 id="easy">Easy</h2>
+
+
+
+<h3 id="q1-all-satisfies">Q1: All Satisfies</h3>
+
+
+<p>Implement a function <code>(all&#x2d;satisfies lst pred)</code> that returns <code>True</code> if all of
+the elements in <code>lst</code> satisfy <code>pred</code>.</p>
+
+
+            <div class="monaco-storable" id="all-satisfies-input" style="height:252px;"></div>
+            <a href="javascript:void" id="modal-link-all-satisfies-input">Run in 61A Code</a>
+            <div class="modal fade" id="modal-all-satisfies-input" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content" style="padding-bottom: -5px">
+                    <iframe
+                        id="code-iframe-all-satisfies-input"
+                        width="100%"
+                        height="700px"
+                        style="border: none; display:block;"
+                    ></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="storable-status"></div>
+            <script>
+                $(() => activateEditor("(define (all&#x2d;satisfies lst pred)\n  'YOUR-CODE-HERE\n)\n\n;;; Tests\n(expect (all&#x2d;satisfies nil even?) #t)\n(expect (all&#x2d;satisfies &#x27;(2 4 6) even?) #t)\n(expect (all&#x2d;satisfies &#x27;(2 3 6) even?) #f)\n(expect (all&#x2d;satisfies &#x27;((1 2) (3 4 5) (6)) pair?) #t)\n", "scheme", "all-satisfies-input"));
+            </script>
+        
+
+
+<h2 id="medium">Medium</h2>
+
+
+
+<h3 id="q2-matching">Q2: Matching</h3>
+
+
+<p>Implement <code>num&#x2d;adjacent&#x2d;matches</code>, which takes as input a list of
+numbers <code>s</code> and returns the number of adjacent elements that are equal.</p>
+
+
+
+<pre><code class="scheme">(define (num&#x2d;adjacent&#x2d;matches s)
+<div class="alt solution-1">   'YOUR-CODE-HERE
+</div><div class="solution solution-1">&#x20;&#x20;&#x20;&#x28;&#x69;&#x66;&#x20;&#x28;&#x6f;&#x72;&#x20;&#x28;&#x6e;&#x75;&#x6c;&#x6c;&#x3f;&#x20;&#x73;&#x29;&#x20;&#x28;&#x6e;&#x75;&#x6c;&#x6c;&#x3f;&#x20;&#x28;&#x63;&#x64;&#x72;&#x20;&#x73;&#x29;&#x29;&#x29;&#xa;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x30;&#xa;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x28;&#x2b;&#x20;&#x28;&#x6e;&#x75;&#x6d;&#x2d;&#x61;&#x64;&#x6a;&#x61;&#x63;&#x65;&#x6e;&#x74;&#x2d;&#x6d;&#x61;&#x74;&#x63;&#x68;&#x65;&#x73;&#x20;&#x28;&#x63;&#x64;&#x72;&#x20;&#x73;&#x29;&#x29;&#xa;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x28;&#x69;&#x66;&#x20;&#x28;&#x3d;&#x20;&#x28;&#x63;&#x61;&#x72;&#x20;&#x73;&#x29;&#x28;&#x63;&#x61;&#x72;&#x20;&#x28;&#x63;&#x64;&#x72;&#x20;&#x73;&#x29;&#x29;&#x29;&#x20;&#x31;&#x20;&#x30;&#x29;&#x29;&#x29;</div>)
+
+;;; Tests
+
+; no pairs
+(expect (num&#x2d;adjacent&#x2d;matches &#x27;(1 2 3 4)) 0)
+
+; one pair of 1&#x27;s
+(expect (num&#x2d;adjacent&#x2d;matches &#x27;(1 1 2 3)) 1)
+
+; one pair of 1&#x27;s, one pair of 2&#x27;s
+(expect (num&#x2d;adjacent&#x2d;matches &#x27;(1 1 2 2)) 2)
+
+; three pairs of 1&#x27;s
+(expect (num&#x2d;adjacent&#x2d;matches &#x27;(1 1 1 1)) 3)
+
+(expect (num&#x2d;adjacent&#x2d;matches &#x27;(6 6 6 1 6 1)) 2)
+(expect (num&#x2d;adjacent&#x2d;matches &#x27;(6)) 0)
+(expect (num&#x2d;adjacent&#x2d;matches &#x27;(6 1)) 0)
+(expect (num&#x2d;adjacent&#x2d;matches &#x27;(6 1 6 1 6 1)) 0)
+(expect (num&#x2d;adjacent&#x2d;matches &#x27;(6 6)) 1)
+(expect (num&#x2d;adjacent&#x2d;matches &#x27;(6 6 6 1 6 1)) 2)
+(expect (num&#x2d;adjacent&#x2d;matches &#x27;(0 1 6 6 6 1)) 2)
+(expect (num&#x2d;adjacent&#x2d;matches &#x27;(4 4 3 3 2 2 1 1)) 4)</code></pre>
+
+
+
+        <button id='solution-1' class='btn btn-outline btn-lg solutiontoggle solution'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+<explanation>
+
+<p>Our base cases are when our input list <code>s</code> is too short to have any adjacent
+matches. We call <code>num&#x2d;adjacent&#x2d;matches</code> recursively on <code>(cdr s)</code> to count the
+adjacent matches in the rest of the list <code>s</code>, then add 0 or 1 depending on
+whether the first and second elements of <code>s</code> are equal.</p>
+
+</explanation>
+
+  </div>
+
+  <div class='col-md-3 sticky'>
+    <nav class='hidden-print hidden-sm hidden-xs sidebar'>
+      <ul>
+  <li><a href="index.html#guides">Guides</a></li>
+  <ul>
+    <li><a href="index.html#scheme">Scheme</a></li>
+    <ul>
+      <li><a href="index.html#problem-solving">Problem-Solving</a></li>
+    </ul>
+  </ul>
+  <li><a href="index.html#practice-problems">Practice Problems</a></li>
+  <ul>
+    <li><a href="index.html#easy">Easy</a></li>
+    <ul>
+      <li><a href="index.html#q1-all-satisfies">Q1: All Satisfies</a></li>
+    </ul>
+    <li><a href="index.html#medium">Medium</a></li>
+    <ul>
+      <li><a href="index.html#q2-matching">Q2: Matching</a></li>
+    </ul>
+  </ul>
+</ul>
+    </nav>
+  </div>
+</div>
+
+    </main>
+
+    <footer class="container">
+      <div class="row text-center">
+        <div class="col col-sm-4">
+          <h3><a href="../../index.html">CS 61A</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../weekly.html">Weekly Schedule</a></li>
+            <li><a href="../../office-hours.html">Office Hours</a></li>
+            <li><a href="../../staff.html">Staff</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../../resources.1.html">Resources</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../articles/studying.html">Studying Guide</a></li>
+            <li><a href="../../articles/debugging.html">Debugging Guide</a></li>
+            <li><a href="../../articles/composition.html">Composition Guide</a></li>
+            <li><a href="../../articles/pair-programming.html">Pair Programming</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../../articles/about.html">Policies</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../articles/about.html#assignments">Assignments</a></li>
+            <li><a href="../../articles/about.html#exams">Exams</a></li>
+            <li><a href="../../articles/about.html#grading">Grading</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/loader.min.js"></script>
+  <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/editor/editor.main.min.css">
+  <script>
+      require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs' }});
+      window.MonacoEnvironment = { getWorkerUrl: () => URL.createObjectURL(new Blob([`
+      self.MonacoEnvironment = {
+          baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min'
+      };
+      importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/base/worker/workerMain.min.js');
+  `], { type: 'text/javascript' }))
+  };
+  </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.15.5/js/jsplumb.min.js"></script>
+    <script src="../../assets/js/network_storage.js"></script>
+    <script src="../../assets/js/storable.js"></script>
+    <script src="../../assets/js/editor.js"></script>
+    <script src="../../assets/js/copy-button.js"></script>
+    <script src="../../assets/js/env-diagram.js"></script>
+    
+<script src="../../assets/js/sketchy.js"></script>
+<script>
+  $('.sidebar ul').addClass('nav nav-stacked noselect');
+  $('body').scrollspy({
+    target: '.sidebar',
+    offset: 40
+  });
+
+  function goToId(id) {
+    var target = $(id);
+    target.parent().show();
+    $('html,body').animate({
+      scrollTop: target.offset().top,
+    }, 100);
+    $("body").scrollspy('refresh');
+  }
+
+  if (location.hash) {
+    setTimeout(function() {
+      if (location.hash) {
+        goToId(location.hash);
+      }
+    }, 1);
+  }
+
+  $("a").click(function(event) {
+    var urlBeforeHashRegEx = new RegExp("^"+window.location.href.split("#")[0]);
+    if (/^#/.test(this.hash) && urlBeforeHashRegEx.test(this.href)) {
+      event.preventDefault();
+      goToId(this.hash);
+      document.location.hash = this.hash;
+    }
+  });
+</script>
+
+<script type="text/javascript" src="../../assets/js/config.js"></script>
+<script>
+$(function() {
+    $('.solutiontoggle').css('display', 'inline-block');
+      $('.solutiontoggle').click(function() {
+        var solution_id = $(this).attr('id');
+        $('div.' + solution_id).slideToggle(600);
+    });
+    $('.alwaystoggle').css('display', 'inline-block');
+    $('.alwaystoggle').click(function() {
+      var solution_id = $(this).attr('id');
+      $('div.' + solution_id).slideToggle(600);
+    });
+});
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,896 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="description" content ="CS 61A: Structure and Interpretation of Computer Programs" />
+    <meta name="keywords" content ="CS 61A, Computer Science, CS, 61A, Programming, John DeNero, Berkeley, EECS" />
+    <meta name="author" content ="John DeNero, Hany Farid" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="../../assets/js/hl.js"></script>
+    <script src="../../assets/js/toggledarkmode.js"></script>
+    <script>
+        // we aren't registering builtins since
+        //      (1) they don't render differently in the current CSS from other names
+        //      (2) it's a mess to list all of them. You can extract from the site but that takes effort
+        // if (1) ceases to be true, (2) might be worth the effort. For now, we're leaving as is
+        hljsRegister({
+            'keyword': "define if cond and or let begin lambda mu quote delay cons-stream set! quasiquote unquote unquote-splicing define-macro"
+        });
+        hljs.initHighlightingOnLoad();
+    </script>
+    <script src="../../assets/js/dark-mode.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata|Roboto:300,400,500|Work+Sans:400,700">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/mono-blue.css">
+    <link rel="icon" href="../../assets/images/favicon.ico">
+
+    
+
+<link rel="stylesheet" type="text/css" href="../../assets/css/disc.css">
+
+
+    <title>
+Discussion 8 | CS 61A Spring 2023
+</title>
+  </head>
+
+  <body id="index" class="home">
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container noselect">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-section">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../../index.html">
+            <img style="max-width:60px; margin-top: -20px;" class="logo" src="../../assets/images/logo.png"/>
+          </a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbar-collapse-section">
+          <ul class="nav navbar-nav navbar-right">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Calendar
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../../weekly.html">Weekly Schedule</a></li>
+                <li><a href="../../office-hours.html">Office Hours</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Links
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://sections.cs61a.org">Sections Tool</a></li>
+                <li><a href="https://oh.cs61a.org">Office Hours Queue</a></li>
+                <li><a href="https://go.cs61a.org/regrade-request">Request a Regrade</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Staff
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../../instructor.html">Instructors</a></li>
+                <li><a href="../../TAs.html">TAs</a></li>
+                <li><a href="../../tutors.html">Tutors</a></li>
+                <li><a href="../../academic-interns.html">Academic Interns</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Resources
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://go.cs61a.org/extensions">Request an Extension</a></li>
+                <li><a href="https://go.cs61a.org/accommodation-appts">Book an Accommodations Appointment</a></li>
+                <li><a href="../../resources.1.html">Topical Resources + Past Exams</a></li>
+                <li><a href="https://tutor.cs61a.org/">PythonTutor</a></li>
+                <li><a href="https://code.cs61a.org/">Code</a></li>
+                <li><a href="https://edstem.org/us/courses/34756/discussion/" target="_blank">Ed</a></li>
+                <li><a href="../../articles/campus-res/index.html">Department/Campus Resources</a></li>
+              </ul>
+            </li>
+            <li><a href="../../articles/about.html">Syllabus</a></li>
+            <li><a href="../../contact.1.html">Contact</a></li>
+            <li>
+              <label class="switch">
+                <input type="checkbox" id="toggle-mode-cb">
+                <span class="slider round"></span>
+              </label>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main id="content" class="container">
+      
+<div class='row'>
+  <div class='col-md-9'>
+    <header>
+      <h1>
+        
+Discussion 8: OOP, Inheritance, String Representation
+
+        
+        
+        <ul class="inline-block list-inline">
+          <li><a href="disc08.pdf" class="label label-outline">disc08.pdf</a></li>
+        </ul>
+        
+        
+      </h1>
+    </header>
+    
+
+<div class="alert storable-login-status"></div>
+
+This is an online worksheet that you can work on during discussions.
+Your work is not graded and you do not need to submit anything.
+
+
+    
+
+
+
+<h1 id="inheritance">Inheritance</h1>
+
+
+<!-- This is the short version of inheritance introduction.
+A longer version can be found in inheritance-introduction.md -->
+
+<p>To avoid redefining attributes and methods for similar classes,
+we can write a single <strong>base class</strong> from which the similar classes <strong>inherit</strong>.
+For example, we can write a class called <strong>Pet</strong>
+and define <strong>Dog</strong> as a <strong>subclass</strong> of <strong>Pet</strong>:</p>
+
+<pre><code>class Pet:
+
+    def __init__(self, name, owner):
+        self.is_alive = True    # It&#x27;s alive!!!
+        self.name = name
+        self.owner = owner
+
+    def eat(self, thing):
+        print(self.name + &quot; ate a &quot; + str(thing) + &quot;!&quot;)
+
+    def talk(self):
+        print(self.name)
+
+class Dog(Pet):
+
+    def talk(self):
+        super().talk()
+        print(&#x27;This Dog says woof!&#x27;)</code></pre>
+
+
+
+<p>Inheritance represents a hierarchical relationship between two or more
+classes where one class <strong>is a</strong> more specific version of the other:
+a dog <strong>is a</strong> pet
+(We use <strong>is a</strong> to describe this sort of relationship in OOP languages,
+and not to refer to the Python <code>is</code> operator).</p>
+
+<p>Since <code>Dog</code> inherits from <code>Pet</code>, the <code>Dog</code> class will also inherit the
+<code>Pet</code> class's methods, so we don't have to redefine <code>__init__</code> or <code>eat</code>.
+We do want each <code>Dog</code> to <code>talk</code> in a <code>Dog</code>-specific way,
+so we can <strong>override</strong> the <code>talk</code> method.</p>
+
+<p>We can use <code>super()</code> to refer to the superclass of <code>self</code>,
+and access any superclass methods as if we were an instance of the superclass.
+For example, <code>super().talk()</code> in the <code>Dog</code> class will call the <code>talk()</code>
+method from the <code>Pet</code> class, but passing the <code>Dog</code> instance as the <code>self</code>.</p>
+
+<p>This is a little bit of a simplification,
+and if you're interested you can read more
+in the
+<a href="https://docs.python.org/3/library/functions.html#super">Python documentation</a>
+on <code>super</code>.</p>
+
+<div class="page-break"></div>
+
+
+<h3 id="q1-that-s-inheritance-init">Q1: That's inheritance, <strong>init</strong>?</h3>
+
+
+<p>Let's say we want to create a class <code>Monarch</code> that inherits from another class, <code>Butterfly</code>. We've partially written an <code>__init__</code> method for <code>Monarch</code>. For each of the following options, state whether it would correctly complete the method so that every instance of <code>Monarch</code> has all of the instance attributes of a <code>Butterfly</code> instance. You may assume that a monarch butterfly has the default value of 2 wings.</p>
+
+<pre><code>class Butterfly():
+    def __init__(self, wings=2):
+        self.wings = wings
+
+class Monarch(Butterfly):
+    def __init__(self):
+        _________________________________________
+        self.colors = [&#x27;orange&#x27;, &#x27;black&#x27;, &#x27;white&#x27;]</code></pre>
+
+
+
+<pre><code>super.__init__()</code></pre>
+
+
+
+            <label class="sr-only" for="butterfly-1-input">Your Answer:</label>
+            <input class="form-control storable" id="butterfly-1-input" type="text">
+            <div class="storable-status"></div>
+        
+<div class="sol-highlight">
+No, because the <code>super</code> function must be called with parentheses.
+</div>
+
+<pre><code>super().__init__()</code></pre>
+
+
+
+            <label class="sr-only" for="butterfly-2-input">Your Answer:</label>
+            <input class="form-control storable" id="butterfly-2-input" type="text">
+            <div class="storable-status"></div>
+        
+<div class="sol-highlight">
+Yes.
+</div>
+
+<pre><code>Butterfly.__init__()</code></pre>
+
+
+
+            <label class="sr-only" for="butterfly-3-input">Your Answer:</label>
+            <input class="form-control storable" id="butterfly-3-input" type="text">
+            <div class="storable-status"></div>
+        
+<div class="sol-highlight">
+No, because we must explicitly pass in <code>self</code> as an argument.
+</div>
+
+<pre><code>Butterfly.__init__(self)</code></pre>
+
+
+
+            <label class="sr-only" for="butterfly-4-input">Your Answer:</label>
+            <input class="form-control storable" id="butterfly-4-input" type="text">
+            <div class="storable-status"></div>
+        
+<div class="sol-highlight">
+Yes.
+</div>
+
+<p>Some butterflies like the <a href="https://en.wikipedia.org/wiki/Owl_butterfly">Owl Butterfly</a> have adaptations that allow them to mimic other animals with their wing patterns. Let's write a class for these <code>MimicButterflies</code>. In addition to all of the instance variables of a regular <code>Butterfly</code> instance, these should also have an instance variable <code>mimic_animal</code> describing the name of the animal they mimic. Fill in the blanks in the lines below to create this class.</p>
+
+<pre><code>class MimicButterfly(______________):
+    def __init__(self, mimic_animal):
+        _______________.__init__()
+        ______________ = mimic_animal</code></pre>
+
+
+
+<p>What expression completes the first blank?
+
+            <label class="sr-only" for="butterfly-5-input">Your Answer:</label>
+            <input class="form-control storable" id="butterfly-5-input" type="text">
+            <div class="storable-status"></div>
+        
+<div class="sol-highlight">
+<code>Butterfly</code>
+</div></p>
+
+<p>What expression completes the second blank?
+
+            <label class="sr-only" for="butterfly-6-input">Your Answer:</label>
+            <input class="form-control storable" id="butterfly-6-input" type="text">
+            <div class="storable-status"></div>
+        
+<div class="sol-highlight">
+<code>super()</code>
+</div></p>
+
+<p>What expression completes the third blank?
+
+            <label class="sr-only" for="butterfly-7s-input">Your Answer:</label>
+            <input class="form-control storable" id="butterfly-7s-input" type="text">
+            <div class="storable-status"></div>
+        
+<div class="sol-highlight">
+<code>self.mimic_animal</code>
+</div></p>
+
+<div class="page-break"></div>
+
+
+<h3 id="q2-shapes">Q2: Shapes</h3>
+
+
+<p>Fill out the skeleton below for a set of classes used to describe geometric shapes. Each class has an <code>area</code> and a <code>perimeter</code> method, but the implementation of those methods is slightly different. Please override the base <code>Shape</code> class's methods where necessary so that we can accurately calculate the perimeters and areas of our shapes with ease.</p>
+
+
+
+
+            
+            <b>Your Answer</b>
+            
+            <div class="monaco-storable" id="shapes-input" style="height:1098px;"></div>
+            <a href="javascript:void" id="modal-link-shapes-input">Run in 61A Code</a>
+            <div class="modal fade" id="modal-shapes-input" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content" style="padding-bottom: -5px">
+                    <iframe
+                        id="code-iframe-shapes-input"
+                        width="100%"
+                        height="700px"
+                        style="border: none; display:block;"
+                    ></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="storable-status"></div>
+            <script>
+                $(() => activateEditor('import math\npi = math.pi\n\nclass Shape:\n    &quot;&quot;&quot;All geometric shapes will inherit from this Shape class.&quot;&quot;&quot;\n    def __init__(self, name):\n        self.name = name\n\n    def area(self):\n        &quot;&quot;&quot;Returns the area of a shape&quot;&quot;&quot;\n        print(&quot;Override this method in &quot;, type(self))\n\n    def perimeter(self):\n        &quot;&quot;&quot;Returns the perimeter of a shape&quot;&quot;&quot;\n        print(&quot;Override this function in &quot;, type(self))\n\nclass Circle(Shape):\n    &quot;&quot;&quot;A circle is characterized by its radii&quot;&quot;&quot;\n    def __init__(self, name, radius):\n        "*** YOUR CODE HERE ***"\n\n    def perimeter(self):\n        &quot;&quot;&quot;Returns the perimeter of a circle (2πr)&quot;&quot;&quot;\n        "*** YOUR CODE HERE ***"\n\n    def area(self):\n        &quot;&quot;&quot;Returns the area of a circle (πr^2)&quot;&quot;&quot;\n        "*** YOUR CODE HERE ***"\n\nclass RegPolygon(Shape):\n    &quot;&quot;&quot;A regular polygon is defined as a shape whose angles and side lengths are all the same.\n    This means the perimeter is easy to calculate. The area can also be done, but it&#x27;s more inconvenient.&quot;&quot;&quot;\n    def __init__(self, name, num_sides, side_length):\n        "*** YOUR CODE HERE ***"\n\n    def perimeter(self):\n        &quot;&quot;&quot;Returns the perimeter of a regular polygon (the number of sides multiplied by side length)&quot;&quot;&quot;\n        "*** YOUR CODE HERE ***"\nclass Square(RegPolygon):\n    def __init__(self, name, side_length):\n        "*** YOUR CODE HERE ***"\n\n    def area(self):\n        &quot;&quot;&quot;Returns the area of a square (squared side length)&quot;&quot;&quot;\n        "*** YOUR CODE HERE ***"\n\nclass Triangle(RegPolygon):\n    &quot;&quot;&quot;An equilateral triangle&quot;&quot;&quot;\n    def __init__(self, name, side_length):\n        "*** YOUR CODE HERE ***"\n\n    def area(self):\n        &quot;&quot;&quot;Returns the area of an equilateral triangle is (squared side length multiplied by the provided constant&quot;&quot;&quot;\n        constant = math.sqrt(3)/4\n        "*** YOUR CODE HERE ***"\n\n', "python", "shapes-input"));
+            </script>
+        
+            <div class="sol-highlight">
+                <b>Solution</b>
+                
+<pre><code>import math
+pi = math.pi
+
+class Shape:
+    &quot;&quot;&quot;All geometric shapes will inherit from this Shape class.&quot;&quot;&quot;
+    def __init__(self, name):
+        self.name = name
+
+    def area(self):
+        &quot;&quot;&quot;Returns the area of a shape&quot;&quot;&quot;
+        print(&quot;Override this method in &quot;, type(self))
+
+    def perimeter(self):
+        &quot;&quot;&quot;Returns the perimeter of a shape&quot;&quot;&quot;
+        print(&quot;Override this function in &quot;, type(self))
+
+class Circle(Shape):
+    &quot;&quot;&quot;A circle is characterized by its radii&quot;&quot;&quot;
+    def __init__(self, name, radius):
+        super().__init__(name)
+        self.radius = radius
+
+    def perimeter(self):
+        &quot;&quot;&quot;Returns the perimeter of a circle (2πr)&quot;&quot;&quot;
+        return 2*pi*self.radius
+
+    def area(self):
+        &quot;&quot;&quot;Returns the area of a circle (πr^2)&quot;&quot;&quot;
+        return pi*self.radius**2
+
+class RegPolygon(Shape):
+    &quot;&quot;&quot;A regular polygon is defined as a shape whose angles and side lengths are all the same.
+    This means the perimeter is easy to calculate. The area can also be done, but it&#x27;s more inconvenient.&quot;&quot;&quot;
+    def __init__(self, name, num_sides, side_length):
+        super().__init__(name)
+        self.num_sides = num_sides
+        self.side_length = side_length
+
+    def perimeter(self):
+        &quot;&quot;&quot;Returns the perimeter of a regular polygon (the number of sides multiplied by side length)&quot;&quot;&quot;
+        return self.num_sides*self.side_length
+class Square(RegPolygon):
+    def __init__(self, name, side_length):
+        super().__init__(name, 4, side_length)
+
+    def area(self):
+        &quot;&quot;&quot;Returns the area of a square (squared side length)&quot;&quot;&quot;
+        return self.side_length**2
+
+class Triangle(RegPolygon):
+    &quot;&quot;&quot;An equilateral triangle&quot;&quot;&quot;
+    def __init__(self, name, side_length):
+        super().__init__(name, 3, side_length)
+
+    def area(self):
+        &quot;&quot;&quot;Returns the area of an equilateral triangle is (squared side length multiplied by the provided constant&quot;&quot;&quot;
+        constant = math.sqrt(3)/4
+        return constant*self.side_length**2
+</code></pre>
+
+            </div>
+        
+
+<div class="page-break"></div>
+
+
+<h3 id="q3-cat">Q3: Cat</h3>
+
+
+<p>Below is a skeleton for the <code>Cat</code> class, which inherits from
+the <code>Pet</code> class we saw in the Inheritance introduction. To complete the implementation, override the
+<code>__init__</code> and <code>talk</code> methods and add a new
+<code>lose_life</code> method.</p>
+
+<blockquote><p>Hint: You can call the <code>__init__</code> method of <code>Pet</code>
+(the superclass of <code>Cat</code>)
+to set a cat's <code>name</code> and <code>owner</code>.</p>
+
+<p>Hint: The <code>__init__</code> method is not a real constructor, and can be called like any other method.</p></blockquote>
+
+
+
+
+            
+            <b>Your Answer</b>
+            
+            <div class="monaco-storable" id="cat-input" style="height:666px;"></div>
+            <a href="javascript:void" id="modal-link-cat-input">Run in 61A Code</a>
+            <div class="modal fade" id="modal-cat-input" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content" style="padding-bottom: -5px">
+                    <iframe
+                        id="code-iframe-cat-input"
+                        width="100%"
+                        height="700px"
+                        style="border: none; display:block;"
+                    ></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="storable-status"></div>
+            <script>
+                $(() => activateEditor('class Cat(Pet):\n\n    def __init__(self, name, owner, lives=9):\n        "*** YOUR CODE HERE ***"\n\n    def talk(self):\n        &quot;&quot;&quot;Print out a cat&#x27;s greeting.\n\n        &gt;&gt;&gt; Cat(&#x27;Thomas&#x27;, &#x27;Tammy&#x27;).talk()\n        Thomas says meow!\n        &quot;&quot;&quot;\n        "*** YOUR CODE HERE ***"\n    def lose_life(self):\n        &quot;&quot;&quot;Decrements a cat&#x27;s life by 1. When lives reaches zero,\n        is_alive becomes False. If this is called after lives has\n        reached zero, print &#x27;This cat has no more lives to lose.&#x27;\n        &quot;&quot;&quot;\n        "*** YOUR CODE HERE ***"\n    def revive(self):\n        &quot;&quot;&quot;Revives a cat from the dead. The cat should now have \n        9 lives and is_alive should be true. Can only be called\n        on a cat that is dead. If the cat isn&#x27;t dead, print \n        &#x27;This cat still has lives to lose.&#x27;\n        &quot;&quot;&quot;\n        if not self.is_alive:\n            ____________________________\n        else:\n            ____________________________\n\n', "python", "cat-input"));
+            </script>
+        
+            <div class="sol-highlight">
+                <b>Solution</b>
+                
+<pre><code>class Cat(Pet):
+
+    def __init__(self, name, owner, lives=9):
+        super().__init__(name, owner)
+        self.lives = lives
+
+    def talk(self):
+        &quot;&quot;&quot;Print out a cat&#x27;s greeting.
+
+        &gt;&gt;&gt; Cat(&#x27;Thomas&#x27;, &#x27;Tammy&#x27;).talk()
+        Thomas says meow!
+        &quot;&quot;&quot;
+        print(self.name + &#x27; says meow!&#x27;)
+    def lose_life(self):
+        &quot;&quot;&quot;Decrements a cat&#x27;s life by 1. When lives reaches zero,
+        is_alive becomes False. If this is called after lives has
+        reached zero, print &#x27;This cat has no more lives to lose.&#x27;
+        &quot;&quot;&quot;
+        if self.lives &gt; 0:
+            self.lives &#x2d;= 1
+            if self.lives == 0:
+                self.is_alive = False
+        else:
+            print(&quot;This cat has no more lives to lose.&quot;)
+    def revive(self):
+        &quot;&quot;&quot;Revives a cat from the dead. The cat should now have 
+        9 lives and is_alive should be true. Can only be called
+        on a cat that is dead. If the cat isn&#x27;t dead, print 
+        &#x27;This cat still has lives to lose.&#x27;
+        &quot;&quot;&quot;
+        if not self.is_alive:
+            self.__init__(self.name, self.owner)
+        else:
+            print(&#x27;This cat still has lives to lose.&#x27;)
+</code></pre>
+
+            </div>
+        
+
+
+<h3 id="q4-noisycat">Q4: NoisyCat</h3>
+
+<p>More cats! Fill in this implementation of a class called
+<code>NoisyCat</code>, which is just like a normal <code>Cat</code>. However,
+<code>NoisyCat</code> talks a lot: in fact, it talks twice as much as a regular <code>Cat</code>!
+If you'd like to test your code, feel free to copy over your solution to the <code>Cat</code> class above.</p>
+
+
+            
+            <b>Your Answer</b>
+            
+            <div class="monaco-storable" id="noisycat-input" style="height:324px;"></div>
+            <a href="javascript:void" id="modal-link-noisycat-input">Run in 61A Code</a>
+            <div class="modal fade" id="modal-noisycat-input" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content" style="padding-bottom: -5px">
+                    <iframe
+                        id="code-iframe-noisycat-input"
+                        width="100%"
+                        height="700px"
+                        style="border: none; display:block;"
+                    ></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="storable-status"></div>
+            <script>
+                $(() => activateEditor('class __________ # Fill me in!\n    &quot;&quot;&quot;A Cat that repeats things twice.&quot;&quot;&quot;\n    def __init__(self, name, owner, lives=9):\n        # Is this method necessary? Why or why not?\n        "*** YOUR CODE HERE ***"\n\n    def talk(self):\n        &quot;&quot;&quot;Talks twice as much as a regular cat.\n        &gt;&gt;&gt; NoisyCat(&#x27;Magic&#x27;, &#x27;James&#x27;).talk()\n        Magic says meow!\n        Magic says meow!\n        &quot;&quot;&quot;\n        "*** YOUR CODE HERE ***"\n\n', "python", "noisycat-input"));
+            </script>
+        
+            <div class="sol-highlight">
+                <b>Solution</b>
+                
+<pre><code>class NoisyCat(Cat): # Fill me in!
+    &quot;&quot;&quot;A Cat that repeats things twice.&quot;&quot;&quot;
+    def __init__(self, name, owner, lives=9):
+        # Is this method necessary? Why or why not?
+        super().__init__(name, owner, lives)
+        # No, this method is not necessary because NoisyCat already inherits Cat&#x27;s __init__ method
+
+    def talk(self):
+        &quot;&quot;&quot;Talks twice as much as a regular cat.
+        &gt;&gt;&gt; NoisyCat(&#x27;Magic&#x27;, &#x27;James&#x27;).talk()
+        Magic says meow!
+        Magic says meow!
+        &quot;&quot;&quot;
+        super().talk()
+        super().talk()
+</code></pre>
+
+            </div>
+        
+
+<!-- <div class="sol-highlight">
+<a href="https://www.youtube.com/watch?v=BatqjYa7WZ8&list=PLx38hZJ5RLZfel-Gi9pjaUbfQDCZIsWMU&vq=hd1080&t=38m10s">walkthrough video</a>
+</div> -->
+
+<div class="page-break"></div>
+
+
+<h1 id="representation-repr-str">Representation: Repr, Str</h1>
+
+
+
+
+<p>There are two main ways to produce the "string" of an object in Python:
+<code>str()</code> and <code>repr()</code>. While the two are similar, they are
+used for different purposes.</p>
+
+<p><code>str()</code> is used to describe
+the object to the end user in a "Human-readable" form,
+while <code>repr()</code> can be thought of as a "Computer-readable"
+form mainly used for debugging and development.</p>
+
+<p>When we define a class in Python, <code>__str__</code> and <code>__repr__</code> are
+both built-in methods for the class.</p>
+
+<p>We can call those methods using the
+global built-in functions <code>str(obj)</code> or <code>repr(obj)</code> instead of
+dot notation,
+<code>obj.__repr__()</code> or <code>obj.__str__()</code>.</p>
+
+<p>In addition, the <code>print()</code> function calls the <code>__str__</code> method of the object
+and displays the returned string <strong>with the quotations removed</strong>,
+while simply calling the object in interactive mode in the interpreter calls the <code>_repr__</code> method
+and displays the returned string <strong>with the quotations removed</strong>.</p>
+
+<p>Here are some examples:</p>
+
+<pre><code>class Rational:
+
+    def __init__(self, numerator, denominator):
+        self.numerator = numerator
+        self.denominator = denominator
+
+    def __str__(self):
+        return f&#x27;{self.numerator}/{self.denominator}&#x27;
+
+    def __repr__(self):
+        return f&#x27;Rational({self.numerator},{self.denominator})&#x27;
+
+&gt;&gt;&gt; a = Rational(1, 2)
+&gt;&gt;&gt; str(a)
+&#x27;1/2&#x27;
+&gt;&gt;&gt; repr(a)
+&#x27;Rational(1,2)&#x27;
+&gt;&gt;&gt; print(a)
+1/2
+&gt;&gt;&gt; a
+Rational(1,2)</code></pre>
+
+
+
+<pre><code>&gt;&gt;&gt; s = &quot;hello&quot; # Python String objects also have __repr__ and __str__ methods!
+&gt;&gt;&gt; repr(s)
+&quot;&#x27;hello&#x27;&quot;
+&gt;&gt;&gt; s
+&#x27;hello&#x27; # displays the repr string with the outer layer of quotations removed
+&gt;&gt;&gt; print(repr(s))
+&#x27;hello&#x27; # printing the repr string removes the outer layer of quotations
+&gt;&gt;&gt; str(s)
+&#x27;hello&#x27;
+&gt;&gt;&gt; print(s)
+hello # displays the str string with quotations removed</code></pre>
+
+
+
+
+<h3 id="q5-wwpd-repr-esentation">Q5: WWPD: Repr-esentation</h3>
+
+
+<blockquote><p>Note:
+This is not the typical way <code>repr</code> is used,
+nor is this way of writing <code>repr</code> recommended,
+this problem is mainly just to make sure you understand
+how <code>repr</code> and <code>str</code> work.</p></blockquote>
+
+
+
+<pre><code>class A:
+    def __init__(self, x):
+        self.x = x
+
+    def __repr__(self):
+         return self.x
+
+    def __str__(self):
+         return self.x * 2
+
+class B:
+    def __init__(self):
+         print(&#x27;boo!&#x27;)
+         self.a = []
+
+    def add_a(self, a):
+         self.a.append(a)
+
+    def __repr__(self):
+         print(len(self.a))
+         ret = &#x27;&#x27;
+         for a in self.a:
+             ret += str(a)
+         return ret</code></pre>
+
+
+
+<p>Given the above class definitions,
+what will the following lines output?</p>
+
+<pre><code>&gt;&gt;&gt; A(&#x27;one&#x27;)</code></pre>
+
+
+
+            <label class="sr-only" for="repr-wwpd-1-input">Your Answer:</label>
+            <input class="form-control storable" id="repr-wwpd-1-input" type="text">
+            <div class="storable-status"></div>
+        
+<div class="sol-highlight">
+one
+</div>
+
+<pre><code>&gt;&gt;&gt; print(A(&#x27;one&#x27;))</code></pre>
+
+
+
+            <label class="sr-only" for="repr-wwpd 2-input">Your Answer:</label>
+            <input class="form-control storable" id="repr-wwpd 2-input" type="text">
+            <div class="storable-status"></div>
+        
+<div class="sol-highlight">
+oneone
+</div>
+
+<pre><code>&gt;&gt;&gt; repr(A(&#x27;two&#x27;))</code></pre>
+
+
+
+            <label class="sr-only" for="repr-wwpd 3-input">Your Answer:</label>
+            <input class="form-control storable" id="repr-wwpd 3-input" type="text">
+            <div class="storable-status"></div>
+        
+<div class="sol-highlight">
+'two'
+</div>
+
+<pre><code>&gt;&gt;&gt; b = B()</code></pre>
+
+
+
+            <label class="sr-only" for="repr-wwpd 4-input">Your Answer:</label>
+            <input class="form-control storable" id="repr-wwpd 4-input" type="text">
+            <div class="storable-status"></div>
+        
+<div class="sol-highlight">
+boo!
+</div>
+
+<pre><code>&gt;&gt;&gt; b.add_a(A(&#x27;a&#x27;))
+&gt;&gt;&gt; b.add_a(A(&#x27;b&#x27;))
+&gt;&gt;&gt; b</code></pre>
+
+
+
+            <label class="sr-only" for="repr-wwpd 5-input">Your Answer:</label>
+            <input class="form-control storable" id="repr-wwpd 5-input" type="text">
+            <div class="storable-status"></div>
+        
+<div class="sol-highlight">
+2
+</div>
+
+            <label class="sr-only" for="repr-wwpd 6-input">Your Answer:</label>
+            <input class="form-control storable" id="repr-wwpd 6-input" type="text">
+            <div class="storable-status"></div>
+        
+<div class="sol-highlight">
+aabb
+</div>
+
+
+<h3 id="q6-cat-representation">Q6: Cat Representation</h3>
+
+
+<p>Now let's implement the <code>__str__</code> and <code>__repr__</code> methods for the <code>Cat</code> class from earlier so that they exhibit the following behavior:</p>
+
+<pre><code>&gt;&gt;&gt; cat = Cat(&quot;Felix&quot;, &quot;Kevin&quot;)
+&gt;&gt;&gt; cat
+Felix, 9 lives
+&gt;&gt;&gt; cat.lose_life()
+&gt;&gt;&gt; cat
+Felix, 8 lives
+&gt;&gt;&gt; print(cat)
+Felix</code></pre>
+
+
+
+            
+            <b>Your Answer</b>
+            
+            <div class="monaco-storable" id="cat-repr-input" style="height:144px;"></div>
+            <a href="javascript:void" id="modal-link-cat-repr-input">Run in 61A Code</a>
+            <div class="modal fade" id="modal-cat-repr-input" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content" style="padding-bottom: -5px">
+                    <iframe
+                        id="code-iframe-cat-repr-input"
+                        width="100%"
+                        height="700px"
+                        style="border: none; display:block;"
+                    ></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="storable-status"></div>
+            <script>
+                $(() => activateEditor('# (The rest of the Cat class is omitted here, but assume all methods from the Cat class above are implemented)\n    def __repr__(self):\n        "*** YOUR CODE HERE ***"\n    def __str__(self):\n        "*** YOUR CODE HERE ***"\n\n', "python", "cat-repr-input"));
+            </script>
+        
+            <div class="sol-highlight">
+                <b>Solution</b>
+                
+<pre><code># (The rest of the Cat class is omitted here, but assume all methods from the Cat class above are implemented)
+    def __repr__(self):
+        return self.name + &quot;, &quot; + str(self.lives) + &quot; lives&quot;
+    def __str__(self):
+        return self.name
+</code></pre>
+
+            </div>
+        
+
+  </div>
+
+  <div class='col-md-3 sticky'>
+    <nav class='hidden-print hidden-sm hidden-xs sidebar'>
+      <ul>
+  <li><a href="index.html#inheritance">Inheritance</a></li>
+  <ul>
+    <li><a href="index.html#q1-that-s-inheritance-init">Q1: That's inheritance, <strong>init</strong>?</a></li>
+    <li><a href="index.html#q2-shapes">Q2: Shapes</a></li>
+    <li><a href="index.html#q3-cat">Q3: Cat</a></li>
+    <li><a href="index.html#q4-noisycat">Q4: NoisyCat</a></li>
+  </ul>
+  <li><a href="index.html#representation-repr-str">Representation: Repr, Str</a></li>
+  <ul>
+    <li><a href="index.html#q5-wwpd-repr-esentation">Q5: WWPD: Repr-esentation</a></li>
+    <li><a href="index.html#q6-cat-representation">Q6: Cat Representation</a></li>
+  </ul>
+</ul>
+    </nav>
+  </div>
+</div>
+
+    </main>
+
+    <footer class="container">
+      <div class="row text-center">
+        <div class="col col-sm-4">
+          <h3><a href="../../index.html">CS 61A</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../weekly.html">Weekly Schedule</a></li>
+            <li><a href="../../office-hours.html">Office Hours</a></li>
+            <li><a href="../../staff.html">Staff</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../../resources.1.html">Resources</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../articles/studying.html">Studying Guide</a></li>
+            <li><a href="../../articles/debugging.html">Debugging Guide</a></li>
+            <li><a href="../../articles/composition.html">Composition Guide</a></li>
+            <li><a href="../../articles/pair-programming.html">Pair Programming</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../../articles/about.html">Policies</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../articles/about.html#assignments">Assignments</a></li>
+            <li><a href="../../articles/about.html#exams">Exams</a></li>
+            <li><a href="../../articles/about.html#grading">Grading</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/loader.min.js"></script>
+  <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/editor/editor.main.min.css">
+  <script>
+      require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs' }});
+      window.MonacoEnvironment = { getWorkerUrl: () => URL.createObjectURL(new Blob([`
+      self.MonacoEnvironment = {
+          baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min'
+      };
+      importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/base/worker/workerMain.min.js');
+  `], { type: 'text/javascript' }))
+  };
+  </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.15.5/js/jsplumb.min.js"></script>
+    <script src="../../assets/js/network_storage.js"></script>
+    <script src="../../assets/js/storable.js"></script>
+    <script src="../../assets/js/editor.js"></script>
+    <script src="../../assets/js/copy-button.js"></script>
+    <script src="../../assets/js/env-diagram.js"></script>
+    
+<script src="../../assets/js/sketchy.js"></script>
+<script>
+  $('.sidebar ul').addClass('nav nav-stacked noselect');
+  $('body').scrollspy({
+    target: '.sidebar',
+    offset: 40
+  });
+
+  function goToId(id) {
+    var target = $(id);
+    target.parent().show();
+    $('html,body').animate({
+      scrollTop: target.offset().top,
+    }, 100);
+    $("body").scrollspy('refresh');
+  }
+
+  if (location.hash) {
+    setTimeout(function() {
+      if (location.hash) {
+        goToId(location.hash);
+      }
+    }, 1);
+  }
+
+  $("a").click(function(event) {
+    var urlBeforeHashRegEx = new RegExp("^"+window.location.href.split("#")[0]);
+    if (/^#/.test(this.hash) && urlBeforeHashRegEx.test(this.href)) {
+      event.preventDefault();
+      goToId(this.hash);
+      document.location.hash = this.hash;
+    }
+  });
+</script>
+
+  </body>
+</html>

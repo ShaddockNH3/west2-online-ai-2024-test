@@ -1,0 +1,613 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="description" content ="CS 61A: Structure and Interpretation of Computer Programs" />
+    <meta name="keywords" content ="CS 61A, Computer Science, CS, 61A, Programming, John DeNero, Berkeley, EECS" />
+    <meta name="author" content ="John DeNero, Hany Farid" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="../../assets/js/hl.js"></script>
+    <script src="../../assets/js/toggledarkmode.js"></script>
+    <script>
+        // we aren't registering builtins since
+        //      (1) they don't render differently in the current CSS from other names
+        //      (2) it's a mess to list all of them. You can extract from the site but that takes effort
+        // if (1) ceases to be true, (2) might be worth the effort. For now, we're leaving as is
+        hljsRegister({
+            'keyword': "define if cond and or let begin lambda mu quote delay cons-stream set! quasiquote unquote unquote-splicing define-macro"
+        });
+        hljs.initHighlightingOnLoad();
+    </script>
+    <script src="../../assets/js/dark-mode.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata|Roboto:300,400,500|Work+Sans:400,700">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/mono-blue.css">
+    <link rel="icon" href="../../assets/images/favicon.ico">
+
+    
+
+    <title>
+Study Guide: SQL | CS 61A Spring 2023
+</title>
+  </head>
+
+  <body id="index" class="home">
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container noselect">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-section">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../../index.html">
+            <img style="max-width:60px; margin-top: -20px;" class="logo" src="../../assets/images/logo.png"/>
+          </a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbar-collapse-section">
+          <ul class="nav navbar-nav navbar-right">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Calendar
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../../weekly.html">Weekly Schedule</a></li>
+                <li><a href="../../office-hours.html">Office Hours</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Links
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://sections.cs61a.org">Sections Tool</a></li>
+                <li><a href="https://oh.cs61a.org">Office Hours Queue</a></li>
+                <li><a href="https://go.cs61a.org/regrade-request">Request a Regrade</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Staff
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../../instructor.html">Instructors</a></li>
+                <li><a href="../../TAs.html">TAs</a></li>
+                <li><a href="../../tutors.html">Tutors</a></li>
+                <li><a href="../../academic-interns.html">Academic Interns</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Resources
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://go.cs61a.org/extensions">Request an Extension</a></li>
+                <li><a href="https://go.cs61a.org/accommodation-appts">Book an Accommodations Appointment</a></li>
+                <li><a href="../../resources.1.html">Topical Resources + Past Exams</a></li>
+                <li><a href="https://tutor.cs61a.org/">PythonTutor</a></li>
+                <li><a href="https://code.cs61a.org/">Code</a></li>
+                <li><a href="https://edstem.org/us/courses/34756/discussion/" target="_blank">Ed</a></li>
+                <li><a href="../../articles/campus-res/index.html">Department/Campus Resources</a></li>
+              </ul>
+            </li>
+            <li><a href="../../articles/about.html">Syllabus</a></li>
+            <li><a href="../../contact.1.html">Contact</a></li>
+            <li>
+              <label class="switch">
+                <input type="checkbox" id="toggle-mode-cb">
+                <span class="slider round"></span>
+              </label>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main id="content" class="container">
+      
+<div class='row'>
+  <div class='col-md-9'>
+    <header>
+      <h1>
+        
+Study Guide: SQL
+
+        
+        
+        
+      </h1>
+    </header>
+    
+<div class="alert storable-login-status"></div>
+
+<h2>Instructions</h2>
+
+<p>This is a study guide with links to past
+lectures, assignments, and handouts, as well as
+additional practice problems to assist you in learning the concepts.</p>
+
+
+  <p><strong>Assignments</strong></p>
+  <blockquote><p>Important: For solutions to these assignments once they have been released, see <a href="../../index.html">the main website</a></p></blockquote>
+
+<ul>
+  <li><a href="../../lab/lab13.1.html">Lab 13</a></li>
+  <li><a href="../../hw/hw09.1.html">HW 9</a></li>
+</ul>
+
+
+
+  <p><strong>Handouts</strong></p>
+  <ul>
+  <li><a href="https://cs61a.org/disc/disc12.pdf">Discussion 12</a></li>
+</ul>
+
+
+
+  <p><strong>Lectures</strong></p>
+  <ul>
+  <li><a href="https://fa20.cs61a.org/assets/slides/31-Declarative_Programming_full.pdf">Declarative Programming</a></li>
+  <li><a href="https://fa20.cs61a.org/assets/slides/32-Tables_full.pdf">Tables</a></li>
+  <li><a href="https://fa20.cs61a.org/assets/slides/33-Aggregation_full.pdf">Aggregation</a></li>
+</ul>
+
+
+
+  <p><strong>Readings</strong></p>
+  <ul>
+  <li><a href="http://composingprograms.com/pages/43-declarative-programming.html">Section 4.3</a></li>
+</ul>
+
+
+
+    
+<h1 id="guides">Guides</h1>
+
+
+
+<h2 id="sql">SQL</h2>
+
+
+<p><strong>SQL</strong> is a declarative programming language. Unlike Python or Scheme where
+we write programs which provide the exact sequence of steps needed to solve a
+problem, SQL accepts instructions which express the desired result of the
+computation.</p>
+
+<p>The challenge with writing SQL statements then is in determining how to compose
+the desired result! SQL has a strict syntax and a structured method of
+computation, so even though we write statements which express the desired
+result, we must still keep in mind the steps that SQL will follow to compute
+the result.</p>
+
+<p>SQL operates on <em>tables</em> of data, which contains a number of fixed <em>columns</em>.
+Each row of a table represents an individual data point, with values for each
+column. SQL statements then operate on these tables by iterating over each row,
+determining if it should be included in the output relation (filtering), and
+then computing the resulting value which should appear in the table.</p>
+
+<p>We can also describe SQL's implementation using the following code as an
+example. Imagine the <code>SELECT</code>, <code>FROM</code>, <code>WHERE</code>, and <code>ORDER BY</code> clauses are
+implemented as functions which act on rows. Here's a simplified view of how SQL
+might work, if implemented in simple Python.</p>
+
+<pre><code>output_table = []
+for row in FROM(*input_tables):
+    if WHERE(row):
+        output_table += [SELECT(row)]
+if ORDER_BY:
+    output_table = ORDER_BY(output_table)
+if LIMIT:
+    output_table = output_table[:LIMIT]</code></pre>
+
+<p>Note that the <code>ORDER BY</code> and <code>LIMIT</code> clauses are applied only at the end after
+all the rows in the output table have been determined.</p>
+
+<p>One of the important things to remember about SQL is that we always return to
+this very simple model of computation: looping, filtering, applying a function,
+and then ordering and limiting the final output.</p>
+
+<p>The simple Python example above helps expose a limitation of SQL: we currently
+can't create output tables with more rows than in the input! There are a few
+methods for creating novel combinations of existing data: <strong>joins</strong> and SQL
+<strong>recursion</strong>. <strong>Aggregation</strong> allows us to find patterns and consider multiple
+rows together as a single unit, or group.</p>
+
+
+<h3 id="joins">Joins</h3>
+
+
+<p>Joins create novel combinations of data by combining data from more than one
+source. Given multiple input tables, we can combine them in a join. Following
+the Python metaphor, the join is like creating nested <code>for</code> loops.</p>
+
+<pre><code>def FROM(table_1, table_2):
+    for row_1 in table1:
+        for row_2 in table2:
+            yield row_1 + row_2</code></pre>
+
+<p>Given each row in <code>table_1</code> and each row in <code>table_2</code>, the join iterates over
+each possible combination of rows and treats them as the input table. The same
+idea extends to more than two tables as well.</p>
+
+<p>The SQL lab also has a great visual demonstrating this exact result as well.</p>
+
+<p>Joins are particularly useful when we want to combine data on a single column.
+For example, say we have a table, <code>dogs</code>, containing the <code>name</code> and <code>size</code> of
+each dog, and a different table, <code>parents</code>, containing the <code>name</code> and <code>parent</code>
+of each dog. We might want to ask, "What's the difference in size between each
+dog and their parent?" by joining together the tables in a SQL statement.</p>
+
+<p>The first question we should ask ourselves is, "Which data tables do we need to
+reference to assemble all the data we need?" We'll definitely need the table of
+<code>parents</code> to determine the name of each dog and their parent. From their names,
+we still need a way to get the size of each dog. That information is provided
+by the <code>dogs</code> table.</p>
+
+<pre><code>SELECT d.name, d.size, p.parent FROM dogs as d, parents as p WHERE d.name = p.name;</code></pre>
+
+<p>But referencing the <code>dogs</code> table only once will leave us in a tricky situation.
+We can find either the size of the dog or their parent, but not both!</p>
+
+<pre><code>SELECT d1.name, d1.size, d2.name, d2.size
+  FROM dogs as d1, dogs as d2, parents as p
+ WHERE d1.name = p.name AND p.parent = d2.name;</code></pre>
+
+<p>Joining the <code>dogs</code> table twice provides the necessary information to solve the
+problem.</p>
+
+<!-- ### Recursion
+
+Joins allowed us to create new *combinations* of data, but we needed to define
+the exact tables we wanted to join. Let's say we wanted to define a table
+containing all the natural numbers from 1 to 5. We could solve the problem by
+joining a table with itself, then building up a new table, and then joining
+that table with itself, and so forth.
+
+<pre><code>CREATE TABLE n1 AS
+  SELECT 1 as n;
+CREATE TABLE n2 AS
+  SELECT n FROM n1 UNION
+  SELECT n + 1 FROM n1;
+CREATE TABLE n3 AS
+  SELECT n FROM n2 UNION
+  SELECT n + 1 FROM n2;
+CREATE TABLE n4 AS
+  SELECT n FROM n3 UNION
+  SELECT n + 1 FROM n3;
+CREATE TABLE n5 AS
+  SELECT n FROM n4 UNION
+  SELECT n + 1 FROM n4;</code></pre>
+
+The table <code>n5</code> then contains all the values 1 through 5.
+
+<pre><code>&gt; SELECT * FROM n5;
+1
+2
+3
+4
+5</code></pre>
+
+We'd like to come up with a method of creating these new values from scratch
+without computing intermediate joins. SQL recursion allows us to define
+recursive helper tables which automatically join on themselves until a stopping
+condition is reached with the <code>WHERE</code> clause.
+
+We can express the exact same <code>n5</code> table using the following recursive query.
+
+<pre><code>CREATE TABLE n5 AS
+  WITH ints(n) AS (
+    SELECT 1 UNION
+    SELECT n + 1 FROM ints WHERE n &lt; 5
+  )
+  SELECT * FROM ints;</code></pre>
+
+Unlike recursion in Python or Scheme, recursion in SQL works by building a
+result up from the starting condition. Oftentimes, we'll compose a recursive
+helper table, and then join the result of the helper table with another table
+to answer a larger question.
+
+Note that recursive queries like this are only allowed within a <code>WITH</code> clause,
+and only a single recursive case is allowed. -->
+
+
+<h3 id="aggregation">Aggregation</h3>
+
+
+<p>We saw joins as a method for creating novel combinations of data, and recursion
+as an extension of joins. These methods combine data by extending the number of
+columns we have available to us and help us identify the patterns in data.</p>
+
+<p><strong>Aggregation functions</strong> allow us to operate on data in a different way by
+combining results across <em>multiple rows</em>. Common aggregation functions to be
+familiar with include <code>COUNT</code>, <code>MIN</code>, <code>MAX</code>, <code>SUM</code>, and <code>AVG</code>.</p>
+
+<p>Applying an aggregation function to an input relation results in a single row
+containing the aggregate result.</p>
+
+<pre><code>&gt; SELECT AVG(n) FROM n5;
+3.0</code></pre>
+
+<p>But oftentimes, we'd like to condition the groups and compute aggregate results
+for smaller portions of the input relation. We can use <code>GROUP BY</code> and <code>HAVING</code>
+to split the rows into groups and select only a subset of the groups.</p>
+
+<pre><code>output_table = []
+for input_group in GROUP_BY(FROM(*input_tables)):
+    output_group = []
+    for row in input_group:
+        if WHERE(row):
+            output_group += [row]
+    if HAVING(output_group):
+        output_table += [SELECT(output_group)]
+if ORDER_BY:
+    output_table = ORDER_BY(output_table)
+if LIMIT:
+    output_table = output_table[:LIMIT]</code></pre>
+
+<p>We take the results from the input tables, whether it's just a single table or
+a join, and then apply the same row-by-row processing <em>within a group</em>. Before
+adding the result of the group to the output table, we check to see if the
+values of the group reflect the condition in the <code>HAVING</code> clause which serves
+as a filter on the groups, much like how <code>WHERE</code> is a filter on the rows.</p>
+
+
+<h1 id="practice-problems">Practice Problems</h1>
+
+
+
+<h2 id="medium">Medium</h2>
+
+
+<p>Suppose that we have a table of positive integers up to 100, as in lecture:</p>
+
+<pre><code>CREATE TABLE ints AS
+  WITH i(n) AS (
+      SELECT 1 UNION
+      SELECT n+1 FROM i LIMIT 100
+  )
+  SELECT n FROM i;</code></pre>
+
+
+<h3 id="q1-divisors">Q1: Divisors</h3>
+
+<p>Define a table <code>divisors</code> in which each row describes the number of unique
+divisors for an integer up to 100. For example, the number 16 has 5 unique
+divisors: 1, 2, 4, 8, and 16.</p>
+
+<p></p>
+
+<pre><code>CREATE TABLE divisors AS
+<div class="alt solution-1">  SELECT "REPLACE THIS LINE WITH YOUR SOLUTION";
+</div><div class="solution solution-1">&#x20;&#x20;&#x53;&#x45;&#x4c;&#x45;&#x43;&#x54;&#x20;&#x61;&#x2e;&#x6e;&#x20;&#x2a;&#x20;&#x62;&#x2e;&#x6e;&#x20;&#x41;&#x53;&#x20;&#x6e;&#x2c;&#x20;&#x63;&#x6f;&#x75;&#x6e;&#x74;&#x28;&#x2a;&#x29;&#x20;&#x41;&#x53;&#x20;&#x64;&#x69;&#x76;&#x69;&#x73;&#x6f;&#x72;&#x73;&#xa;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x46;&#x52;&#x4f;&#x4d;&#x20;&#x69;&#x6e;&#x74;&#x73;&#x20;&#x41;&#x53;&#x20;&#x61;&#x2c;&#x20;&#x69;&#x6e;&#x74;&#x73;&#x20;&#x41;&#x53;&#x20;&#x62;&#xa;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x57;&#x48;&#x45;&#x52;&#x45;&#x20;&#x61;&#x2e;&#x6e;&#x20;&#x2a;&#x20;&#x62;&#x2e;&#x6e;&#x20;&#x3c;&#x3d;&#x20;&#x31;&#x30;&#x30;&#xa;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x47;&#x52;&#x4f;&#x55;&#x50;&#x20;&#x42;&#x59;&#x20;&#x61;&#x2e;&#x6e;&#x20;&#x2a;&#x20;&#x62;&#x2e;&#x6e;&#x3b;</div></code></pre>
+
+<p>
+        <button id='solution-1' class='btn btn-outline btn-lg solutiontoggle solution'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        </p>
+
+<p>Here's an (incomplete) example of what the <code>divisors</code> table should look like.</p>
+
+<pre><code>&#x2d;&#x2d; Example:
+SELECT * FROM divisors LIMIT 20;
+&#x2d;&#x2d; Expected output:
+&#x2d;&#x2d;   1|1
+&#x2d;&#x2d;   2|2
+&#x2d;&#x2d;   3|2
+&#x2d;&#x2d;   4|3
+&#x2d;&#x2d;   5|2
+&#x2d;&#x2d;   6|4
+&#x2d;&#x2d;   7|2
+&#x2d;&#x2d;   8|4
+&#x2d;&#x2d;   9|3
+&#x2d;&#x2d;   10|4
+&#x2d;&#x2d;   11|2
+&#x2d;&#x2d;   12|6
+&#x2d;&#x2d;   13|2
+&#x2d;&#x2d;   14|4
+&#x2d;&#x2d;   15|4
+&#x2d;&#x2d;   16|5
+&#x2d;&#x2d;   17|2
+&#x2d;&#x2d;   18|6
+&#x2d;&#x2d;   19|2
+&#x2d;&#x2d;   20|6</code></pre>
+
+</question>
+
+
+<h3 id="q2-primes">Q2: Primes</h3>
+
+<p>Define a table <code>primes</code> that has a single column containing all prime numbers up
+to 100.</p>
+
+<p></p>
+
+<pre><code>CREATE TABLE primes AS
+<div class="alt solution-2">  SELECT "REPLACE THIS LINE WITH YOUR SOLUTION";
+</div><div class="solution solution-2">&#x20;&#x20;&#x53;&#x45;&#x4c;&#x45;&#x43;&#x54;&#x20;&#x6e;&#x20;&#x46;&#x52;&#x4f;&#x4d;&#x20;&#x64;&#x69;&#x76;&#x69;&#x73;&#x6f;&#x72;&#x73;&#x20;&#x57;&#x48;&#x45;&#x52;&#x45;&#x20;&#x64;&#x69;&#x76;&#x69;&#x73;&#x6f;&#x72;&#x73;&#x20;&#x3d;&#x20;&#x32;&#x3b;</div></code></pre>
+
+<p>
+        <button id='solution-2' class='btn btn-outline btn-lg solutiontoggle solution'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        </p>
+
+<p>Here's what your output should look like.</p>
+
+<pre><code>&#x2d;&#x2d; Example:
+SELECT * FROM primes;
+&#x2d;&#x2d; Expected output:
+&#x2d;&#x2d;   2
+&#x2d;&#x2d;   3
+&#x2d;&#x2d;   5
+&#x2d;&#x2d;   7
+&#x2d;&#x2d;   11
+&#x2d;&#x2d;   13
+&#x2d;&#x2d;   17
+&#x2d;&#x2d;   19
+&#x2d;&#x2d;   23
+&#x2d;&#x2d;   29
+&#x2d;&#x2d;   31
+&#x2d;&#x2d;   37
+&#x2d;&#x2d;   41
+&#x2d;&#x2d;   43
+&#x2d;&#x2d;   47
+&#x2d;&#x2d;   53
+&#x2d;&#x2d;   59
+&#x2d;&#x2d;   61
+&#x2d;&#x2d;   67
+&#x2d;&#x2d;   71
+&#x2d;&#x2d;   73
+&#x2d;&#x2d;   79
+&#x2d;&#x2d;   83
+&#x2d;&#x2d;   89
+&#x2d;&#x2d;   97</code></pre>
+
+<blockquote><p><strong>Hint</strong>: You may want to use your <code>divisors</code> table to solve this problem.</p></blockquote>
+
+</question>
+
+  </div>
+
+  <div class='col-md-3 sticky'>
+    <nav class='hidden-print hidden-sm hidden-xs sidebar'>
+      <ul>
+  <li><a href="index.html#guides">Guides</a></li>
+  <ul>
+    <li><a href="index.html#sql">SQL</a></li>
+    <ul>
+      <li><a href="index.html#joins">Joins</a></li>
+      <li><a href="index.html#aggregation">Aggregation</a></li>
+    </ul>
+  </ul>
+  <li><a href="index.html#practice-problems">Practice Problems</a></li>
+  <ul>
+    <li><a href="index.html#medium">Medium</a></li>
+    <ul>
+      <li><a href="index.html#q1-divisors">Q1: Divisors</a></li>
+      <li><a href="index.html#q2-primes">Q2: Primes</a></li>
+    </ul>
+  </ul>
+</ul>
+    </nav>
+  </div>
+</div>
+
+    </main>
+
+    <footer class="container">
+      <div class="row text-center">
+        <div class="col col-sm-4">
+          <h3><a href="../../index.html">CS 61A</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../weekly.html">Weekly Schedule</a></li>
+            <li><a href="../../office-hours.html">Office Hours</a></li>
+            <li><a href="../../staff.html">Staff</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../../resources.1.html">Resources</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../articles/studying.html">Studying Guide</a></li>
+            <li><a href="../../articles/debugging.html">Debugging Guide</a></li>
+            <li><a href="../../articles/composition.html">Composition Guide</a></li>
+            <li><a href="../../articles/pair-programming.html">Pair Programming</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../../articles/about.html">Policies</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../articles/about.html#assignments">Assignments</a></li>
+            <li><a href="../../articles/about.html#exams">Exams</a></li>
+            <li><a href="../../articles/about.html#grading">Grading</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/loader.min.js"></script>
+  <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/editor/editor.main.min.css">
+  <script>
+      require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs' }});
+      window.MonacoEnvironment = { getWorkerUrl: () => URL.createObjectURL(new Blob([`
+      self.MonacoEnvironment = {
+          baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min'
+      };
+      importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/base/worker/workerMain.min.js');
+  `], { type: 'text/javascript' }))
+  };
+  </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.15.5/js/jsplumb.min.js"></script>
+    <script src="../../assets/js/network_storage.js"></script>
+    <script src="../../assets/js/storable.js"></script>
+    <script src="../../assets/js/editor.js"></script>
+    <script src="../../assets/js/copy-button.js"></script>
+    <script src="../../assets/js/env-diagram.js"></script>
+    
+<script src="../../assets/js/sketchy.js"></script>
+<script>
+  $('.sidebar ul').addClass('nav nav-stacked noselect');
+  $('body').scrollspy({
+    target: '.sidebar',
+    offset: 40
+  });
+
+  function goToId(id) {
+    var target = $(id);
+    target.parent().show();
+    $('html,body').animate({
+      scrollTop: target.offset().top,
+    }, 100);
+    $("body").scrollspy('refresh');
+  }
+
+  if (location.hash) {
+    setTimeout(function() {
+      if (location.hash) {
+        goToId(location.hash);
+      }
+    }, 1);
+  }
+
+  $("a").click(function(event) {
+    var urlBeforeHashRegEx = new RegExp("^"+window.location.href.split("#")[0]);
+    if (/^#/.test(this.hash) && urlBeforeHashRegEx.test(this.href)) {
+      event.preventDefault();
+      goToId(this.hash);
+      document.location.hash = this.hash;
+    }
+  });
+</script>
+
+<script type="text/javascript" src="../../assets/js/config.js"></script>
+<script>
+$(function() {
+    $('.solutiontoggle').css('display', 'inline-block');
+      $('.solutiontoggle').click(function() {
+        var solution_id = $(this).attr('id');
+        $('div.' + solution_id).slideToggle(600);
+    });
+    $('.alwaystoggle').css('display', 'inline-block');
+    $('.alwaystoggle').click(function() {
+      var solution_id = $(this).attr('id');
+      $('div.' + solution_id).slideToggle(600);
+    });
+});
+</script>
+
+  </body>
+</html>

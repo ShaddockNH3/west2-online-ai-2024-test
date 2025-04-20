@@ -1,0 +1,1014 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="description" content ="CS 61A: Structure and Interpretation of Computer Programs" />
+    <meta name="keywords" content ="CS 61A, Computer Science, CS, 61A, Programming, John DeNero, Berkeley, EECS" />
+    <meta name="author" content ="John DeNero, Hany Farid" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="../../assets/js/hl.js"></script>
+    <script src="../../assets/js/toggledarkmode.js"></script>
+    <script>
+        // we aren't registering builtins since
+        //      (1) they don't render differently in the current CSS from other names
+        //      (2) it's a mess to list all of them. You can extract from the site but that takes effort
+        // if (1) ceases to be true, (2) might be worth the effort. For now, we're leaving as is
+        hljsRegister({
+            'keyword': "define if cond and or let begin lambda mu quote delay cons-stream set! quasiquote unquote unquote-splicing define-macro"
+        });
+        hljs.initHighlightingOnLoad();
+    </script>
+    <script src="../../assets/js/dark-mode.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata|Roboto:300,400,500|Work+Sans:400,700">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/mono-blue.css">
+    <link rel="icon" href="../../assets/images/favicon.ico">
+
+    
+
+<link rel="stylesheet" type="text/css" href="../../assets/css/lab.css">
+
+
+    <title>
+Lab 12 Solutions | CS 61A Spring 2023
+</title>
+  </head>
+
+  <body id="index" class="home">
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container noselect">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-section">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../../index.html">
+            <img style="max-width:60px; margin-top: -20px;" class="logo" src="../../assets/images/logo.png"/>
+          </a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbar-collapse-section">
+          <ul class="nav navbar-nav navbar-right">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Calendar
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../../weekly.html">Weekly Schedule</a></li>
+                <li><a href="../../office-hours.html">Office Hours</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Links
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://sections.cs61a.org">Sections Tool</a></li>
+                <li><a href="https://oh.cs61a.org">Office Hours Queue</a></li>
+                <li><a href="https://go.cs61a.org/regrade-request">Request a Regrade</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Staff
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../../instructor.html">Instructors</a></li>
+                <li><a href="../../TAs.html">TAs</a></li>
+                <li><a href="../../tutors.html">Tutors</a></li>
+                <li><a href="../../academic-interns.html">Academic Interns</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Resources
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://go.cs61a.org/extensions">Request an Extension</a></li>
+                <li><a href="https://go.cs61a.org/accommodation-appts">Book an Accommodations Appointment</a></li>
+                <li><a href="../../resources.1.html">Topical Resources + Past Exams</a></li>
+                <li><a href="https://tutor.cs61a.org/">PythonTutor</a></li>
+                <li><a href="https://code.cs61a.org/">Code</a></li>
+                <li><a href="https://edstem.org/us/courses/34756/discussion/" target="_blank">Ed</a></li>
+                <li><a href="../../articles/campus-res/index.html">Department/Campus Resources</a></li>
+              </ul>
+            </li>
+            <li><a href="../../articles/about.html">Syllabus</a></li>
+            <li><a href="../../contact.1.html">Contact</a></li>
+            <li>
+              <label class="switch">
+                <input type="checkbox" id="toggle-mode-cb">
+                <span class="slider round"></span>
+              </label>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main id="content" class="container">
+      
+<div class='row'>
+  <div class='col-md-9'>
+    <header>
+      <h1>
+        
+Lab 12 Solutions
+
+        
+        
+        <ul class="inline-block list-inline">
+          <li><a href="lab12.zip" class="label label-outline">lab12.zip</a></li>
+        </ul>
+        
+        
+      </h1>
+    </header>
+    
+<h2>Solution Files</h2>
+
+
+    
+<h1 id="topics">Topics</h1>
+
+
+<p>Consult this section if you need a refresher on the material for this lab. It's
+okay to skip directly to <a href="index.html#required-questions">the questions</a> and refer back
+here should you get stuck.</p>
+
+<br>
+
+        <button id='toggle-1' class='btn btn-outline btn-lg alwaystoggle toggle'>
+        Scheme Lists<noscript> (enable JavaScript)</noscript>
+        </button>
+        <div class="solution toggle-1">
+
+<h2 id="scheme-lists">Scheme Lists</h2>
+
+
+<blockquote><p>As you read through this section, it may be difficult to understand the
+differences between the various representations of Scheme containers. We
+recommend that you use <a href="http://scheme.cs61a.org">our online Scheme interpreter</a>
+to see the box-and-pointer diagrams of pairs and lists that you're having a
+hard time visualizing! (Use the command <code>(autodraw)</code> to toggle the automatic
+drawing of diagrams.)</p></blockquote>
+
+
+<h3 id="lists">Lists</h3>
+
+
+<p>Scheme lists are very similar to the linked lists we've been working with in
+Python. Just like how a linked list is constructed of a series of <code>Link</code>
+objects, a Scheme list is constructed with a series of pairs, which are created
+with the constructor <code>cons</code>.</p>
+
+<p>Scheme lists require that the <code>cdr</code> is either another list or <code>nil</code>, an empty list.
+A list is displayed in the interpreter as a sequence of values (similar to the
+<code>__str__</code> representation of a <code>Link</code> object). For example,</p>
+
+<pre><code class="scheme">scm&gt; (cons 1 (cons 2 (cons 3 nil)))
+(1 2 3)</code></pre>
+
+
+
+<p>Here, we've ensured that the second argument of each <code>cons</code> expression is
+another <code>cons</code> expression or <code>nil</code>.</p>
+
+<p><img class="img-responsive center-block" src="assets/list1.png" alt="list" width="" height=""></p>
+
+<p>We can retrieve values from our list with the <code>car</code> and <code>cdr</code> procedures, which
+now work similarly to the Python <code>Link</code>'s <code>first</code> and <code>rest</code> attributes.
+(Curious about where these weird names come from?  <a href="https://en.wikipedia.org/wiki/CAR_and_CDR">Check out their
+etymology.</a>)</p>
+
+<pre><code class="scheme">scm&gt; (define a (cons 1 (cons 2 (cons 3 nil))))  ; Assign the list to the name a
+a
+scm&gt; a
+(1 2 3)
+scm&gt; (car a)
+1
+scm&gt; (cdr a)
+(2 3)
+scm&gt; (car (cdr (cdr a)))
+3</code></pre>
+
+
+
+<p>If you do not pass in a pair or nil as the second argument to <code>cons</code>, it will
+error:</p>
+
+<pre><code class="scheme">scm&gt; (cons 1 2)
+Error</code></pre>
+
+
+
+
+<h3 id="list-procedure"><code>list</code> Procedure</h3>
+
+
+<p>There are a few other ways to create lists. The <code>list</code> procedure takes in an
+arbitrary number of arguments and constructs a list with the values of these
+arguments:</p>
+
+<pre><code class="scheme">scm&gt; (list 1 2 3)
+(1 2 3)
+scm&gt; (list 1 (list 2 3) 4)
+(1 (2 3) 4)
+scm&gt; (list (cons 1 (cons 2 nil)) 3 4)
+((1 2) 3 4)</code></pre>
+
+
+
+<p>Note that all of the operands in this expression are evaluated before being put
+into the resulting list.</p>
+
+
+<h3 id="quote-form">Quote Form</h3>
+
+
+<p>We can also use the quote form to create a list, which will construct the exact
+list that is given. Unlike with the <code>list</code> procedure, the argument to <code>&#x27;</code> is
+<em>not</em> evaluated.</p>
+
+<pre><code class="scheme">scm&gt; &#x27;(1 2 3)
+(1 2 3)
+scm&gt; &#x27;(cons 1 2)           ; Argument to quote is not evaluated
+(cons 1 2)
+scm&gt; &#x27;(1 (2 3 4))
+(1 (2 3 4))</code></pre>
+
+
+
+
+<h3 id="built-in-procedures-for-lists">Built-In Procedures for Lists</h3>
+
+<p>There are a few other built-in procedures in Scheme that are used for lists.
+Try them out in the interpreter!</p>
+
+<prompt>
+
+<pre><code class="scheme">scm&gt; (null? nil)                ; Checks if a value is the empty list
+True
+scm&gt; (append &#x27;(1 2 3) &#x27;(4 5 6)) ; Concatenates two lists
+(1 2 3 4 5 6)
+scm&gt; (length &#x27;(1 2 3 4 5))      ; Returns the number of elements in a list
+5</code></pre>
+
+
+</prompt>
+</div>
+<br>
+
+<br>
+
+        <button id='toggle-2' class='btn btn-outline btn-lg alwaystoggle toggle'>
+        Interpreters<noscript> (enable JavaScript)</noscript>
+        </button>
+        <div class="solution toggle-2">
+
+<h2 id="interpreters">Interpreters</h2>
+
+<p>An interpreter is a program that allows you to interact
+with the computer in a certain language. It understands the
+expressions that you type in through that language, and performs
+the corresponding actions in some way, usually using an underlying
+language.</p>
+
+
+            <iframe width="560" height="315" src="https://youtube.com/embed/8BHhZWBAlug"
+                frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe><p><a href='https://youtu.be/8BHhZWBAlug'> YouTube link </a></p>
+
+<p>In Project 4, you will use Python to implement an interpreter for
+Scheme. The Python interpreter that you've been using all semester is written
+(mostly) in the C programming language. The computer itself uses hardware to
+interpret machine code (a series of ones and zeros that represent basic
+operations like adding numbers, loading information from memory, etc).</p>
+
+<p>When we talk about an interpreter, there are two languages at work:</p>
+
+<ol>
+  <li><strong>The language being interpreted/implemented.</strong> In this lab, you will
+  implement the PyCombinator language.</li>
+  <li><strong>The underlying implementation language.</strong> In this lab, you will use Python
+  to implement the PyCombinator language.</li>
+</ol>
+
+<p>Note that the underlying language need not be different from the implemented
+language. In fact, in this lab we are going to implement a smaller version of
+Python (PyCombinator) using Python! This idea is called Metacircular Evaluation.</p>
+
+<p>Many interpreters use a Read-Eval-Print Loop (REPL). This loop waits for user
+input, and then processes it in three steps:</p>
+
+<ul>
+  <li><p><strong>Read:</strong> The interpreter takes the user input (a string) and passes it
+  through a lexer and parser.</p>
+
+  <ul>
+    <li>The <em>lexer</em> turns the user input string into atomic pieces (tokens) that
+    are like "words" of the implemented language.</li>
+    <li><p>The <em>parser</em> takes the tokens and organizes them into data structures
+    that the underlying language can understand.</p>
+
+    
+            <iframe width="560" height="315" src="https://youtube.com/embed/Fimpv8yzAWY"
+                frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe><p><a href='https://youtu.be/Fimpv8yzAWY'> YouTube link </a></p></li>
+  </ul></li>
+  <li><p><strong>Eval:</strong> Mutual recursion between eval and apply evaluate the expression to
+  obtain a value.</p>
+
+  <ul>
+    <li><em>Eval</em> takes an expression and evaluates it according to the rules of the
+    language. Evaluating a call expression involves calling <code>apply</code> to apply
+    an evaluated operator to its evaluated operands.</li>
+    <li><p><em>Apply</em> takes an evaluated operator, i.e., a function, and applies it to
+    the call expression's arguments. Apply may call <code>eval</code> to do more work in
+    the body of the function, so <code>eval</code> and <code>apply</code> are <em>mutually recursive</em>.</p>
+
+    
+            <iframe width="560" height="315" src="https://youtube.com/embed/gB2dtI8MzII"
+                frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe><p><a href='https://youtu.be/gB2dtI8MzII'> YouTube link </a></p></li>
+  </ul></li>
+  <li><strong>Print:</strong> Display the result of evaluating the user input.</li>
+</ul>
+
+<p>Here's how all the pieces fit together:</p>
+
+<pre><code>         +&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d; Loop &#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;+
+         |                                                 |
+         |  +&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;+   +&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;+   +&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;+   +&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;+ |
+Input &#x2d;&#x2d;&#x2d;+&#x2d;&gt;| Lexer |&#x2d;&#x2d;&gt;| Parser |&#x2d;&#x2d;&gt;| Eval  |&#x2d;&#x2d;&gt;| Print |&#x2d;+&#x2d;&#x2d;&gt; Output
+         |  +&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;+   +&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;+   +&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;+   +&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;+ |
+         |                              ^  |               |
+         |                              |  v               |
+         ^                           +&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;+             v
+         |                           | Apply |             |
+         |    REPL                   +&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;+             |
+         +&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;&#x2d;+</code></pre>
+
+</div>
+<br>
+
+
+        <button id='toggle-3' class='btn btn-outline btn-lg alwaystoggle toggle'>
+        Getting Started Videos<noscript> (enable JavaScript)</noscript>
+        </button>
+        <div class="solution toggle-3">
+
+
+<h2 id="getting-started-videos">Getting Started Videos</h2>
+
+
+<p>These videos may provide some helpful direction for tackling the coding
+problems on this assignment.</p>
+
+<blockquote><p>To see these videos, you should be logged into your berkeley.edu email.</p></blockquote>
+
+
+            <iframe width="560" height="315" src="https://youtube.com/embed/videoseries?list=PLx38hZJ5RLZdHPDr1nnim7ni-9wdj7Xcf"
+                frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe><p><a href='https://youtu.be/playlist?list=PLx38hZJ5RLZdHPDr1nnim7ni-9wdj7Xcf'> YouTube link </a></p>
+</div>
+
+
+<h1 id="required-questions">Required Questions</h1>
+
+
+
+<h2 id="scheme-lists-2">Scheme Lists</h2>
+
+
+
+<h3 id="q1-substitute">Q1: Substitute</h3>
+
+
+<p>Write a procedure <code>substitute</code> that takes three arguments: a list <code>s</code>, an <code>old</code>
+word, and a <code>new</code> word. It returns a list with the elements of <code>s</code>, but with
+every occurrence of <code>old</code> replaced by <code>new</code>, even within sub-lists.</p>
+
+<p><em>Hint</em>: The built-in <code>pair?</code> predicate returns True if its argument is a <code>cons</code>
+pair.</p>
+
+<p><em>Hint</em>: The <code>=</code> operator will only let you compare numbers, but using <code>equal?</code>
+or <code>eqv?</code> will let you compare symbols as well as numbers. For more information,
+check out the <a href="../../articles/scheme-builtins/index.html#boolean-operations">Scheme Built-in Procedure Reference</a>.</p>
+
+<solution>
+
+<pre><code class="scheme">(define (substitute s old new)
+<div class="sol-highlight">  (cond ((null? s) nil)
+        ((pair? (car s)) (cons (substitute (car s) old new)
+                               (substitute (cdr s) old new)))
+        ((equal? (car s) old) (cons new
+                                    (substitute (cdr s) old new)))
+        (else (cons (car s) (substitute (cdr s) old new))))</div>)</code></pre>
+
+
+<p>Use Ok to test your code:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q substitute<button id="copy-code-python3ok-qsubstitute" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-qsubstitute").onclick = () => copyCode('python3 ok -q substitute', "copy-code-python3ok-qsubstitute");
+        </script>
+        <br/>
+
+<div class="sol-highlight">
+
+<p>Remember that we want to use <code>equal?</code> to compare symbols since <code>=</code> will only
+work for numbers!</p>
+
+<p>If the input list is empty, there's nothing to substitute. That's a pretty
+straightforward base case. Otherwise, our list has at least one item.</p>
+
+<p>We can break the rest of this problem into roughly two big cases:</p>
+
+<p><strong>Nested list here</strong></p>
+
+<p>This means that <code>(car s)</code> is a pair. In this case, we have
+to dig deeper and recurse on <code>(car s)</code> since there could be symbols to replace
+in there. We must recurse on <code>(cdr s)</code> as well to handle the rest of the list.</p>
+
+<p><strong>No nested list here</strong></p>
+
+<p>This is the case if <code>(car s)</code> is <em>not</em> a pair. Of course, there could still be
+nesting later on in the list, but we'll rely on our recursive call to handle
+that.</p>
+
+<p>If <code>(car s)</code> matches <code>old</code>, we'll make sure to use <code>new</code> in its place.
+Otherwise, we'll use <code>(car s)</code> without replacing it. In both cases, we must
+recurse on the rest of the list.</p>
+
+<p>Video walkthrough: <p><a href='https://youtu.be/LAr-_twxXao'> YouTube link </a></p></p>
+
+</div>
+
+</solution>
+
+
+<h2 id="calculator">Calculator</h2>
+
+
+<p>An interpreter is a program that understands other programs. Today, we will explore how to build an interpreter for Calculator, a simple language that uses a subset of Scheme syntax.</p>
+
+<p>The Calculator language includes only the four basic arithmetic operations: <code>+</code>, <code>&#x2d;</code>, <code>*</code>, and <code>/</code>. These operations can be nested and can take any numbers of arguments. A few examples of calculator expressions and their corresponding values are shown below.</p>
+
+<pre><code class="scheme"> calc&gt; (+ 2 2)
+ 4
+
+ calc&gt; (&#x2d; 5)
+ &#x2d;5
+
+ calc&gt; (* (+ 1 2) (+ 2 3))
+ 15</code></pre>
+
+
+
+<p>The reader component of an interpreter parses input strings and represents them as data structures in the implementing language. In this case, we need to represent Calculator expressions as Python objects. To represent numbers, we can just use Python numbers. To represent the names of the arithmetic procedures, we can use Python strings (e.g. <code>&#x27;+&#x27;</code>).</p>
+
+<p>To represent Scheme lists in Python, we will use the <code>Pair</code> class. A <code>Pair</code> instance holds exactly two elements. Accordingly, the <code>Pair</code> constructor takes in two arguments, and to make a list we must nest calls to the constructor and pass in <code>nil</code> as the second element of the last pair. Note that in the Python code, <code>nil</code> is bound to a special user-defined object that represents an empty list, whereas <code>nil</code> in Scheme is actually an empty list.</p>
+
+<p>For example, once our interpreter reads the Scheme expression <code>(+ 2 3)</code>, we will tokenize each operator and operand to return the equivalent <code>Pair</code> representation, <code>Pair(&#x27;+&#x27;, Pair(2, Pair(3, nil)))</code>.</p>
+
+<p>Each <code>Pair</code> instance has two instance attributes: <code>first</code> and <code>rest</code>, which are bound to the first and second elements of the pair respectively.</p>
+
+<pre><code>&gt;&gt;&gt; p = Pair(&#x27;+&#x27;, Pair(2, Pair(3, nil)))
+&gt;&gt;&gt; p.first
+&#x27;+&#x27;
+&gt;&gt;&gt; p.rest
+Pair(2, Pair(3, nil))
+&gt;&gt;&gt; p.rest.first
+2</code></pre>
+
+
+<p><code>Pair</code> is very similar to <code>Link</code>, the class we developed for representing linked lists -- they have the same attribute names <code>first</code> and <code>rest</code> and are represented very similarly.
+<!--
+In addition to <code>Pair</code> objects, we include a <code>nil</code> object
+to represent the empty list. <code>Pair</code> instances have methods:
+
+<ol>
+  <li><code>__len__</code>, which returns the length of the list.</li>
+  <li><code>__getitem__</code> which allows indexing into the pair.</li>
+  <li><code>map</code>, which applies a function <code>fn</code> to all of the elements in the list.
+  <code>nil</code> also has those methods, for consistency.
+  -->
+  Here's an implementation of what we described:</li>
+</ol>
+
+<pre><code>class Pair:
+    &quot;&quot;&quot;Represents the built&#x2d;in pair data structure in Scheme.&quot;&quot;&quot;
+    def __init__(self, first, rest):
+        self.first = first
+        if not scheme_valid_cdrp(rest):
+            raise SchemeError(&quot;cdr can only be a pair, nil, or a promise but was {}&quot;.format(rest))
+        self.rest = rest
+
+    def map(self, fn):
+        &quot;&quot;&quot;Maps fn to every element in a list, returning a new
+        Pair.
+
+        &gt;&gt;&gt; Pair(1, Pair(2, Pair(3, nil))).map(lambda x: x * x)
+        Pair(1, Pair(4, Pair(9, nil)))
+        &quot;&quot;&quot;
+        assert isinstance(self.rest, Pair) or self.rest is nil, \
+            &quot;rest element in pair must be another pair or nil&quot;
+        return Pair(fn(self.first), self.rest.map(fn))
+
+    def __repr__(self):
+        return &#x27;Pair({}, {})&#x27;.format(self.first, self.rest)</code></pre>
+
+
+
+<pre><code>class nil:
+    &quot;&quot;&quot;Represents the special empty pair nil in Scheme.&quot;&quot;&quot;
+    def map(self, fn):
+        return nil
+    def __getitem__(self, i):
+         raise IndexError(&#x27;Index out of range&#x27;)
+    def __repr__(self):
+        return &#x27;nil&#x27;
+
+nil = nil() # this hides the nil class *forever*</code></pre>
+
+
+
+<page-break></p>
+
+
+<h3 id="calculator-evaluation">Calculator Evaluation</h3>
+
+
+<p>For Question 3 (New Procedure) and Question 5 (Saving Values), you'll need to update the <code>calc_eval</code> function as listed below. This function performs the evaluations for each token with our <code>Pair</code>s. For instance, we've included the evaluations for numbers and booleans for you (they'll automatically be returned as is since they're atomic Scheme expressions). For Question 3, you'll be tasked to determine what the <code>operator</code> and <code>operands</code> for a funtion call in Scheme as well as actually applying the function in the <code>calc_apply</code> line. For Question 5, you'll be tasked to determing how to look up variables that we've previously stored.</p>
+
+<solution>
+
+<pre><code>def calc_eval(exp):
+    &quot;&quot;&quot;
+    &gt;&gt;&gt; calc_eval(Pair(&quot;define&quot;, Pair(&quot;a&quot;, Pair(1, nil))))
+    &#x27;a&#x27;
+    &gt;&gt;&gt; calc_eval(&quot;a&quot;)
+    1
+    &gt;&gt;&gt; calc_eval(Pair(&quot;+&quot;, Pair(1, Pair(2, nil))))
+    3
+    &quot;&quot;&quot;
+    if isinstance(exp, Pair):
+<div class="sol-highlight">        operator = exp.first</div><div class="sol-highlight">        operands = exp.rest</div>        if operator == &#x27;and&#x27;: # and expressions
+            return eval_and(operands)
+        elif operator == &#x27;define&#x27;: # define expressions
+            return eval_define(operands)
+        else: # Call expressions
+<div class="sol-highlight">            return calc_apply(calc_eval(operator), operands.map(calc_eval))</div>    elif exp in OPERATORS:   # Looking up procedures
+        return OPERATORS[exp]
+    elif isinstance(exp, int) or isinstance(exp, bool):   # Numbers and booleans
+        return exp
+<div class="sol-highlight">    elif exp in bindings:   # Looking up variables</div><div class="sol-highlight">        return bindings[exp]</div></code></pre>
+
+</solution>
+
+
+<h3 id="q2-using-pair">Q2: Using Pair</h3>
+
+
+<p>Answer the following questions about a <code>Pair</code> instance
+representing the Calculator expression <code>(+ (&#x2d; 2 4) 6 8)</code>.</p>
+
+<p>Use Ok to test your understanding:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q using_pair -u<button id="copy-code-python3ok-qusing_pair-u" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-qusing_pair-u").onclick = () => copyCode('python3 ok -q using_pair -u', "copy-code-python3ok-qusing_pair-u");
+        </script>
+        <br/>
+
+
+<h3 id="q3-new-procedure">Q3: New Procedure</h3>
+
+
+<p>Suppose we want to add the <code>//</code> operation to our Calculator interpreter. Recall from Python that <code>//</code> is the floor division operation, so we are looking to add a built-in procedure <code>//</code> in our interpreter such that <code>(// dividend divisor)</code> returns dividend // divisor. Similarly we handle multiple inputs as illustrated in the following example <code>(// dividend divisor1 divisor2 divisor3)</code> evaluates to <code>(((dividend // divisor1) // divisor2) // divisor3)</code>. For this problem you can assume you are always given at least 1 divisor.</p>
+
+<blockquote><p><em>Hint:</em> You will need to modify both the <code>calc_eval</code> and <code>floor_div</code> methods for this question!</p></blockquote>
+
+<pre><code class="scheme">calc&gt; (// 1 1)
+1
+calc&gt; (// 5 2)
+2
+calc&gt; (// 28 (+ 1 1) 1)
+14</code></pre>
+
+
+
+<blockquote><p><em>Hint:</em> Make sure that every element in a <code>Pair</code> (from operator to operands) will be <code>calc_eval</code>-uated once, so that we can correctly apply the relevant Python operator to operands! You may find the <code>map</code> method of the <code>Pair</code> class useful for this.</p></blockquote>
+
+<solution>
+
+<pre><code>def floor_div(expr):
+    &quot;&quot;&quot;
+    &gt;&gt;&gt; floor_div(Pair(100, Pair(10, nil)))
+    10
+    &gt;&gt;&gt; floor_div(Pair(5, Pair(3, nil)))
+    1
+    &gt;&gt;&gt; floor_div(Pair(1, Pair(1, nil)))
+    1
+    &gt;&gt;&gt; floor_div(Pair(5, Pair(2, nil)))
+    2
+    &gt;&gt;&gt; floor_div(Pair(23, Pair(2, Pair(5, nil))))
+    2
+    &gt;&gt;&gt; calc_eval(Pair(&quot;//&quot;, Pair(4, Pair(2, nil))))
+    2
+    &gt;&gt;&gt; calc_eval(Pair(&quot;//&quot;, Pair(100, Pair(2, Pair(2, Pair(2, Pair(2, Pair(2, nil))))))))
+    3
+    &quot;&quot;&quot;
+<div class="sol-highlight">    dividend = expr.first
+    expr = expr.rest
+    while expr != nil:
+        divisor = expr.first
+        dividend //= divisor
+        expr = expr.rest
+    return dividend</div></code></pre>
+
+</solution>
+
+<p>Use Ok to test your code:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q floor_div<button id="copy-code-python3ok-qfloor_div" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-qfloor_div").onclick = () => copyCode('python3 ok -q floor_div', "copy-code-python3ok-qfloor_div");
+        </script>
+        <br/>
+
+
+<h3 id="q4-new-form">Q4: New Form</h3>
+
+
+<p>Suppose we want to add handling for <code>and</code> expressions to our
+Calculator interpreter as well as introduce the Scheme boolean expressions
+<code>#t</code> and <code>#f</code>. These  should work the same way they do in Scheme.
+(The examples below assumes conditional operators (e.g. <code>&lt;</code>, <code>&gt;</code>, <code>=</code>, etc) have already been implemented, 
+but you do not have to worry about them for this question.)</p>
+
+<pre><code class="scheme">calc&gt; (and (= 1 1) 3)
+3
+calc&gt; (and (+ 1 0) (&lt; 1 0) (/ 1 0))
+#f
+calc&gt; (and #f (+ 1 0))
+#f
+calc&gt; (and 0 1 (+ 5 1)) ; 0 is truthy in Scheme!
+6</code></pre>
+
+
+
+<p>In a typical call expression, we first evaluate the operator, then evaluate the operands, and finally apply the operator to the evaluated operands (just like you did for <code>floor_div</code> in the previous question).
+However, since <code>and</code> is a special form that short circuits on the first false-y operand, we cannot handle these expressions the same way we handle regular call expressions.  We need to add special handling for combinations that don't evaluate all the operands. 
+Complete the implementation below to handle <code>and</code> expressions.</p>
+
+<blockquote><p><em>Hint:</em> Even though our calculator is interpreting Scheme expressions (with <code>Pair</code>s), we're performing evaluations in Python, which means we'll want to compare our <code>calc_eval</code>ed expressions to the Python <code>False</code>, not the Scheme <code>#f</code>!</p></blockquote>
+
+<solution>
+
+<pre><code>def eval_and(operands):
+    &quot;&quot;&quot;
+    &gt;&gt;&gt; calc_eval(Pair(&quot;and&quot;, Pair(1, nil)))
+    1
+    &gt;&gt;&gt; calc_eval(Pair(&quot;and&quot;, Pair(False, Pair(&quot;1&quot;, nil))))
+    False
+    &gt;&gt;&gt; calc_eval(Pair(&quot;and&quot;, Pair(1, Pair(Pair(&quot;//&quot;, Pair(5, Pair(2, nil))), nil))))
+    2
+    &gt;&gt;&gt; calc_eval(Pair(&quot;and&quot;, Pair(Pair(&#x27;+&#x27;, Pair(1, Pair(1, nil))), Pair(3, nil))))
+    3
+    &gt;&gt;&gt; calc_eval(Pair(&quot;and&quot;, Pair(Pair(&#x27;&#x2d;&#x27;, Pair(1, Pair(0, nil))), Pair(Pair(&#x27;/&#x27;, Pair(5, Pair(2, nil))), nil))))
+    2.5
+    &gt;&gt;&gt; calc_eval(Pair(&quot;and&quot;, Pair(0, Pair(1, nil))))
+    1
+    &gt;&gt;&gt; calc_eval(Pair(&quot;and&quot;, nil))
+    True
+    &quot;&quot;&quot;
+<div class="sol-highlight">    curr, val = operands, True
+    while curr is not nil:
+        val = calc_eval(curr.first)
+        if val is False:
+            return False
+        curr = curr.rest
+    return val</div></code></pre>
+
+</solution>
+
+<p>Use Ok to test your code:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q eval_and<button id="copy-code-python3ok-qeval_and" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-qeval_and").onclick = () => copyCode('python3 ok -q eval_and', "copy-code-python3ok-qeval_and");
+        </script>
+        <br/>
+
+
+<h3 id="q5-saving-values">Q5: Saving Values</h3>
+
+
+<p>In the last few questions we went through a lot of effort to add operations so we can do most arithmetic operations easily. However it's a real shame we can't store these values. So for this question let's implement a <code>define</code> special form that saves values to variable names. This should work like variable assignment in Scheme; this means that you should expect inputs of the form<code>(define &lt;variable_name&gt; &lt;value&gt;)</code> and these inputs should return the symbol corresponding to the variable name.</p>
+
+<pre><code class="scheme">calc&gt; (define a 1)
+a
+calc&gt; a
+1</code></pre>
+
+
+
+<p>This is a more involved change. Here are the 4 steps involved:</p>
+
+<ol>
+  <li>Add a <code>bindings</code> dictionary that will store the names and correspondings values of variables as key-value pairs of the dictionary.</li>
+  <li>Identify when the define form is given to <code>calc_eval</code>.</li>
+  <li>Allow variables to be looked up in <code>calc_eval</code>.</li>
+  <li>Write the function <code>eval_define</code> which should actually handle adding names and values to the bindings dictionary.</li>
+</ol>
+
+<p>We've done step 1 for you. Now you'll do the remaining steps.</p>
+
+<solution>
+
+<pre><code>bindings = {}
+
+def eval_define(expr):
+    &quot;&quot;&quot;
+    &gt;&gt;&gt; eval_define(Pair(&quot;a&quot;, Pair(1, nil)))
+    &#x27;a&#x27;
+    &gt;&gt;&gt; eval_define(Pair(&quot;b&quot;, Pair(3, nil)))
+    &#x27;b&#x27;
+    &gt;&gt;&gt; eval_define(Pair(&quot;c&quot;, Pair(&quot;a&quot;, nil)))
+    &#x27;c&#x27;
+    &gt;&gt;&gt; calc_eval(&quot;c&quot;)
+    1
+    &gt;&gt;&gt; calc_eval(Pair(&quot;define&quot;, Pair(&quot;d&quot;, Pair(&quot;//&quot;, nil))))
+    &#x27;d&#x27;
+    &gt;&gt;&gt; calc_eval(Pair(&quot;d&quot;, Pair(4, Pair(2, nil))))
+    2
+    &quot;&quot;&quot;
+<div class="sol-highlight">    name, value = expr.first, calc_eval(expr.rest.first)
+    bindings[name] = value
+    return name</div></code></pre>
+
+</solution>
+
+<p>Use Ok to test your code:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q eval_define<button id="copy-code-python3ok-qeval_define" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-qeval_define").onclick = () => copyCode('python3 ok -q eval_define', "copy-code-python3ok-qeval_define");
+        </script>
+        <br/>
+
+<!-- Include rest of calculator stuff here!! -->
+
+
+<h2 id="submit">Submit</h2>
+
+<p>Make sure to submit this assignment by uploading any files you've edited <strong>to the appropriate Gradescope assignment.</strong> For a refresher on how to do this, refer to <a href="../lab00.1.html#submit-with-gradescope">Lab 00</a>.</p>
+
+<p>Please submit both the <code>lab12.py</code> and <code>lab12.scm</code> files to Gradescope!</p>
+
+
+<h1 id="optional-questions">Optional Questions</h1>
+
+
+<blockquote><p>These questions are optional, but you must complete them in order
+to be checked off before the end of the lab period. They are also
+useful practice!</p></blockquote>
+
+
+<h3 id="q6-count">Q6: Count</h3>
+
+
+<p>Implement <code>count</code>, which takes in an element <code>x</code> and a list <code>s</code> and returns
+the number of times that <code>x</code> is contained in <code>s</code>.</p>
+
+<pre><code class="scheme">scm&gt; (count 1 &#x27;(1 2 3 4))
+1
+scm&gt; (count &#x27;a &#x27;(a b a b a))
+3</code></pre>
+
+
+
+<solution>
+
+<pre><code class="scheme">(define (count x s)
+<div class="sol-highlight">  (if (null? s) 0
+      (+ (if (eqv? x (car s)) 1 0)
+         (count x (cdr s))))</div>)</code></pre>
+
+
+</solution>
+
+<p>Use Ok to test your code:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q count<button id="copy-code-python3ok-qcount" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-qcount").onclick = () => copyCode('python3 ok -q count', "copy-code-python3ok-qcount");
+        </script>
+        <br/>
+
+
+<h3 id="q7-unique">Q7: Unique</h3>
+
+
+<p>Implement <code>unique</code>, which takes in a list <code>s</code> and returns a new list containing
+the same elements as <code>s</code> with duplicates removed.</p>
+
+<pre><code class="scheme">scm&gt; (unique &#x27;(1 2 1 3 2 3 1))
+(1 2 3)
+scm&gt; (unique &#x27;(a b c a a b b c))
+(a b c)</code></pre>
+
+
+
+<blockquote><p>Hint: you may find it useful to use the built-in <code>filter</code> procedure.
+See the <a href="../../articles/scheme-builtins/index.html">built-in procedure reference</a> for
+more information.</p></blockquote>
+
+<solution>
+
+<pre><code class="scheme">(define (unique s)
+<div class="sol-highlight">  (if (null? s) nil
+      (cons (car s)
+            (unique (filter (lambda (x) (not (eqv? (car s) x))) (cdr s)))))</div>)</code></pre>
+
+
+</solution>
+
+<p>Use Ok to test your code:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q unique<button id="copy-code-python3ok-qunique" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-qunique").onclick = () => copyCode('python3 ok -q unique', "copy-code-python3ok-qunique");
+        </script>
+        <br/> 
+
+
+<h3 id="q8-tally">Q8: Tally</h3>
+
+
+<p>Implement <code>tally</code>, which takes a list of <code>names</code> and returns a
+list of 2-element lists, one for each unique name in <code>names</code>. Each 2-element list should
+contain a name and the number of times that the name appeared in <code>names</code>. Each
+name should appear only once in the output, and the names should be ordered by
+when they first appear in <code>names</code>.</p>
+
+<pre><code class="scheme">scm&gt; (tally &#x27;())
+()
+scm&gt; (tally &#x27;(kevin irene ashley irene irene ashley brandon irene irene brandon))
+((kevin 1) (irene 5) (ashley 2) (brandon 2))</code></pre>
+
+
+
+<solution>
+
+<pre><code class="scheme">(define (tally names)
+<div class="sol-highlight">  (map (lambda (name) (list name (count name names))) (unique names))</div>)</code></pre>
+
+
+</solution>
+
+<blockquote><p><em>Hint</em>: You might want to use <code>count</code> and <code>unique</code>  procedures in your
+solution. You may also want to use <code>map</code>.</p>
+
+<p>See the <a href="../../articles/scheme-builtins/index.html">built-in procedure reference</a> for
+more information.</p></blockquote>
+
+<p>Use Ok to test your code:</p><pre style="margin-bottom:0;"><code class="nohighlight">python3 ok -q tally<button id="copy-code-python3ok-qtally" class="inline-copy-button"><div class="copy-tooltip"><span>Copy</span></div>✂️</a></code></pre>
+        <script>
+        document.getElementById("copy-code-python3ok-qtally").onclick = () => copyCode('python3 ok -q tally', "copy-code-python3ok-qtally");
+        </script>
+        <br/>
+
+  </div>
+
+  <div class='col-md-3 sticky'>
+    <nav class='hidden-print hidden-sm hidden-xs sidebar'>
+      <ul>
+  <li><a href="index.html#topics">Topics</a></li>
+  <ul>
+    <li><a href="index.html#scheme-lists">Scheme Lists</a></li>
+    <ul>
+      <li><a href="index.html#lists">Lists</a></li>
+      <li><a href="index.html#list-procedure"><code>list</code> Procedure</a></li>
+      <li><a href="index.html#quote-form">Quote Form</a></li>
+      <li><a href="index.html#built-in-procedures-for-lists">Built-In Procedures for Lists</a></li>
+    </ul>
+    <li><a href="index.html#interpreters">Interpreters</a></li>
+    <li><a href="index.html#getting-started-videos">Getting Started Videos</a></li>
+  </ul>
+  <li><a href="index.html#required-questions">Required Questions</a></li>
+  <ul>
+    <li><a href="index.html#scheme-lists-2">Scheme Lists</a></li>
+    <ul>
+      <li><a href="index.html#q1-substitute">Q1: Substitute</a></li>
+    </ul>
+    <li><a href="index.html#calculator">Calculator</a></li>
+    <ul>
+      <li><a href="index.html#calculator-evaluation">Calculator Evaluation</a></li>
+      <li><a href="index.html#q2-using-pair">Q2: Using Pair</a></li>
+      <li><a href="index.html#q3-new-procedure">Q3: New Procedure</a></li>
+      <li><a href="index.html#q4-new-form">Q4: New Form</a></li>
+      <li><a href="index.html#q5-saving-values">Q5: Saving Values</a></li>
+    </ul>
+    <li><a href="index.html#submit">Submit</a></li>
+  </ul>
+  <li><a href="index.html#optional-questions">Optional Questions</a></li>
+  <ul>
+    <li><a href="index.html#q6-count">Q6: Count</a></li>
+    <li><a href="index.html#q7-unique">Q7: Unique</a></li>
+    <li><a href="index.html#q8-tally">Q8: Tally</a></li>
+  </ul>
+</ul>
+    </nav>
+  </div>
+</div>
+
+    </main>
+
+    <footer class="container">
+      <div class="row text-center">
+        <div class="col col-sm-4">
+          <h3><a href="../../index.html">CS 61A</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../weekly.html">Weekly Schedule</a></li>
+            <li><a href="../../office-hours.html">Office Hours</a></li>
+            <li><a href="../../staff.html">Staff</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../../resources.1.html">Resources</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../articles/studying.html">Studying Guide</a></li>
+            <li><a href="../../articles/debugging.html">Debugging Guide</a></li>
+            <li><a href="../../articles/composition.html">Composition Guide</a></li>
+            <li><a href="../../articles/pair-programming.html">Pair Programming</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../../articles/about.html">Policies</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../articles/about.html#assignments">Assignments</a></li>
+            <li><a href="../../articles/about.html#exams">Exams</a></li>
+            <li><a href="../../articles/about.html#grading">Grading</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/loader.min.js"></script>
+  <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/editor/editor.main.min.css">
+  <script>
+      require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs' }});
+      window.MonacoEnvironment = { getWorkerUrl: () => URL.createObjectURL(new Blob([`
+      self.MonacoEnvironment = {
+          baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min'
+      };
+      importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/base/worker/workerMain.min.js');
+  `], { type: 'text/javascript' }))
+  };
+  </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.15.5/js/jsplumb.min.js"></script>
+    <script src="../../assets/js/network_storage.js"></script>
+    <script src="../../assets/js/storable.js"></script>
+    <script src="../../assets/js/editor.js"></script>
+    <script src="../../assets/js/copy-button.js"></script>
+    <script src="../../assets/js/env-diagram.js"></script>
+    
+<script src="../../assets/js/sketchy.js"></script>
+<script>
+  $('.sidebar ul').addClass('nav nav-stacked noselect');
+  $('body').scrollspy({
+    target: '.sidebar',
+    offset: 40
+  });
+
+  function goToId(id) {
+    var target = $(id);
+    target.parent().show();
+    $('html,body').animate({
+      scrollTop: target.offset().top,
+    }, 100);
+    $("body").scrollspy('refresh');
+  }
+
+  if (location.hash) {
+    setTimeout(function() {
+      if (location.hash) {
+        goToId(location.hash);
+      }
+    }, 1);
+  }
+
+  $("a").click(function(event) {
+    var urlBeforeHashRegEx = new RegExp("^"+window.location.href.split("#")[0]);
+    if (/^#/.test(this.hash) && urlBeforeHashRegEx.test(this.href)) {
+      event.preventDefault();
+      goToId(this.hash);
+      document.location.hash = this.hash;
+    }
+  });
+</script>
+
+  </body>
+</html>

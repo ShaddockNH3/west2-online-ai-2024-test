@@ -1,0 +1,731 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="description" content ="CS 61A: Structure and Interpretation of Computer Programs" />
+    <meta name="keywords" content ="CS 61A, Computer Science, CS, 61A, Programming, John DeNero, Berkeley, EECS" />
+    <meta name="author" content ="John DeNero, Hany Farid" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="../../assets/js/hl.js"></script>
+    <script src="../../assets/js/toggledarkmode.js"></script>
+    <script>
+        // we aren't registering builtins since
+        //      (1) they don't render differently in the current CSS from other names
+        //      (2) it's a mess to list all of them. You can extract from the site but that takes effort
+        // if (1) ceases to be true, (2) might be worth the effort. For now, we're leaving as is
+        hljsRegister({
+            'keyword': "define if cond and or let begin lambda mu quote delay cons-stream set! quasiquote unquote unquote-splicing define-macro"
+        });
+        hljs.initHighlightingOnLoad();
+    </script>
+    <script src="../../assets/js/dark-mode.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata|Roboto:300,400,500|Work+Sans:400,700">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/mono-blue.css">
+    <link rel="icon" href="../../assets/images/favicon.ico">
+
+    
+
+<link rel="stylesheet" type="text/css" href="../../assets/css/disc.css">
+
+
+    <title>
+Discussion 7 | CS 61A Spring 2023
+</title>
+  </head>
+
+  <body id="index" class="home">
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container noselect">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-section">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../../index.html">
+            <img style="max-width:60px; margin-top: -20px;" class="logo" src="../../assets/images/logo.png"/>
+          </a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbar-collapse-section">
+          <ul class="nav navbar-nav navbar-right">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Calendar
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../../weekly.html">Weekly Schedule</a></li>
+                <li><a href="../../office-hours.html">Office Hours</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Links
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://sections.cs61a.org">Sections Tool</a></li>
+                <li><a href="https://oh.cs61a.org">Office Hours Queue</a></li>
+                <li><a href="https://go.cs61a.org/regrade-request">Request a Regrade</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Staff
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../../instructor.html">Instructors</a></li>
+                <li><a href="../../TAs.html">TAs</a></li>
+                <li><a href="../../tutors.html">Tutors</a></li>
+                <li><a href="../../academic-interns.html">Academic Interns</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Resources
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://go.cs61a.org/extensions">Request an Extension</a></li>
+                <li><a href="https://go.cs61a.org/accommodation-appts">Book an Accommodations Appointment</a></li>
+                <li><a href="../../resources.1.html">Topical Resources + Past Exams</a></li>
+                <li><a href="https://tutor.cs61a.org/">PythonTutor</a></li>
+                <li><a href="https://code.cs61a.org/">Code</a></li>
+                <li><a href="https://edstem.org/us/courses/34756/discussion/" target="_blank">Ed</a></li>
+                <li><a href="../../articles/campus-res/index.html">Department/Campus Resources</a></li>
+              </ul>
+            </li>
+            <li><a href="../../articles/about.html">Syllabus</a></li>
+            <li><a href="../../contact.1.html">Contact</a></li>
+            <li>
+              <label class="switch">
+                <input type="checkbox" id="toggle-mode-cb">
+                <span class="slider round"></span>
+              </label>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main id="content" class="container">
+      
+<div class='row'>
+  <div class='col-md-9'>
+    <header>
+      <h1>
+        
+Discussion 7: Object-Oriented Programming
+
+        
+        
+        <ul class="inline-block list-inline">
+          <li><a href="disc07.pdf" class="label label-outline">disc07.pdf</a></li>
+        </ul>
+        
+        
+      </h1>
+    </header>
+    
+
+<div class="alert storable-login-status"></div>
+
+This is an online worksheet that you can work on during discussions.
+Your work is not graded and you do not need to submit anything.
+
+
+    
+
+
+
+<h1 id="oop">OOP</h1>
+
+
+<p><strong>Object-oriented programming</strong> (OOP) is a programming paradigm that
+allows us to treat data as objects, like we do in real life.</p>
+
+<p>For example, consider the <strong>class</strong> <code>Student</code>.
+Each of you as individuals is an <strong>instance</strong> of this class.</p>
+
+<p>Details that all CS 61A students have, such as <code>name</code>,
+are called <strong>instance variables</strong>.
+Every student has these variables, but their values differ from student to student.
+A variable that is shared among all instances of <code>Student</code>
+is known as a <strong>class variable</strong>.
+For example, the <code>extension_days</code> attribute is a class variable
+as it is a property of all students.</p>
+
+<p>All students are able to do homework, attend lecture, and go to office hours.
+When functions belong to a specific object, they are called <strong>methods</strong>.
+In this case, these actions would be methods of <code>Student</code> objects.</p>
+
+<p>Here is a recap of what we discussed above:</p>
+
+<ul>
+  <li><strong>class</strong>: a template for creating objects</li>
+  <li><strong>instance</strong>: a single object created from a class</li>
+  <li><strong>instance variable</strong>: a data attribute of an object, specific to an instance</li>
+  <li><strong>class variable</strong>: a data attribute of an object, shared by all instances of a class</li>
+  <li><strong>method</strong>: a bound function that may be called on all instances of a class</li>
+</ul>
+
+<p>Instance variables, class variables, and methods
+are all considered <strong>attributes</strong> of an object.</p>
+
+
+
+<div class="page-break"></div>
+
+
+<h3 id="q1-wwpd-student-oop">Q1: WWPD: Student OOP</h3>
+
+<p>Below we have defined the classes <code>Professor</code> and <code>Student</code>, implementing some of what was described above.
+Remember that Python passes the <code>self</code> argument implicitly to methods when calling the method directly on an object.</p>
+
+</p>
+
+<pre><code>class Student:
+
+    extension_days = 3 # this is a class variable
+
+    def __init__(self, name, staff):
+        self.name = name # this is an instance variable
+        self.understanding = 0
+        staff.add_student(self)
+        print(&quot;Added&quot;, self.name)
+
+    def visit_office_hours(self, staff):
+        staff.assist(self)
+        print(&quot;Thanks, &quot; + staff.name)
+
+class Professor:
+
+    def __init__(self, name):
+        self.name = name
+        self.students = {}
+
+    def add_student(self, student):
+        self.students[student.name] = student
+
+    def assist(self, student):
+        student.understanding += 1
+
+    def grant_more_extension_days(self, student, days):
+        student.extension_days = days</code></pre>
+
+
+
+<p>What will the following lines output?</p>
+
+<pre><code>&gt;&gt;&gt; callahan = Professor(&quot;Callahan&quot;)
+&gt;&gt;&gt; elle = Student(&quot;Elle&quot;, callahan)</code></pre>
+
+
+
+            <label class="sr-only" for="oop-wwpd-1-input">Your Answer:</label>
+            <input class="form-control storable" id="oop-wwpd-1-input" type="text">
+            <div class="storable-status"></div>
+        
+
+
+<pre><code>&gt;&gt;&gt; elle.visit_office_hours(callahan)</code></pre>
+
+
+
+            <label class="sr-only" for="oop-wwpd-2-input">Your Answer:</label>
+            <input class="form-control storable" id="oop-wwpd-2-input" type="text">
+            <div class="storable-status"></div>
+        
+
+
+<pre><code>&gt;&gt;&gt; elle.visit_office_hours(Professor(&quot;Paulette&quot;))</code></pre>
+
+
+
+            <label class="sr-only" for="oop-wwpd-3-input">Your Answer:</label>
+            <input class="form-control storable" id="oop-wwpd-3-input" type="text">
+            <div class="storable-status"></div>
+        
+
+
+<pre><code>&gt;&gt;&gt; elle.understanding</code></pre>
+
+
+
+            <label class="sr-only" for="oop-wwpd-4-input">Your Answer:</label>
+            <input class="form-control storable" id="oop-wwpd-4-input" type="text">
+            <div class="storable-status"></div>
+        
+
+
+<pre><code>&gt;&gt;&gt; [name for name in callahan.students]</code></pre>
+
+
+
+            <label class="sr-only" for="oop-wwpd-5-input">Your Answer:</label>
+            <input class="form-control storable" id="oop-wwpd-5-input" type="text">
+            <div class="storable-status"></div>
+        
+
+
+<pre><code>&gt;&gt;&gt; x = Student(&quot;Vivian&quot;, Professor(&quot;Stromwell&quot;)).name</code></pre>
+
+
+
+            <label class="sr-only" for="oop-wwpd-6-input">Your Answer:</label>
+            <input class="form-control storable" id="oop-wwpd-6-input" type="text">
+            <div class="storable-status"></div>
+        
+
+
+<pre><code>&gt;&gt;&gt; x</code></pre>
+
+
+
+            <label class="sr-only" for="oop-wwpd-7-input">Your Answer:</label>
+            <input class="form-control storable" id="oop-wwpd-7-input" type="text">
+            <div class="storable-status"></div>
+        
+
+
+<pre><code>&gt;&gt;&gt; [name for name in callahan.students]</code></pre>
+
+
+
+            <label class="sr-only" for="oop-wwpd-8-input">Your Answer:</label>
+            <input class="form-control storable" id="oop-wwpd-8-input" type="text">
+            <div class="storable-status"></div>
+        
+
+
+<pre><code>&gt;&gt;&gt; elle.extension_days</code></pre>
+
+
+
+            <label class="sr-only" for="oop-wwpd-2-input">Your Answer:</label>
+            <input class="form-control storable" id="oop-wwpd-2-input" type="text">
+            <div class="storable-status"></div>
+        
+
+
+<pre><code>&gt;&gt;&gt; callahan.grant_more_extension_days(elle, 7)
+&gt;&gt;&gt; elle.extension_days</code></pre>
+
+
+
+            <label class="sr-only" for="oop-wwpd-2-input">Your Answer:</label>
+            <input class="form-control storable" id="oop-wwpd-2-input" type="text">
+            <div class="storable-status"></div>
+        
+
+
+<pre><code>&gt;&gt;&gt; Student.extension_days</code></pre>
+
+
+
+            <label class="sr-only" for="oop-wwpd-2-input">Your Answer:</label>
+            <input class="form-control storable" id="oop-wwpd-2-input" type="text">
+            <div class="storable-status"></div>
+        
+
+
+<div class="page-break"></div>
+
+
+<h3 id="q2-email">Q2: Email</h3>
+
+
+<p>We would like to write three different classes (<code>Server</code>, <code>Client</code>,
+and <code>Email</code>) to simulate a system for sending and receiving emails. A <code>Server</code>
+has a dictionary mapping client names to <code>Client</code> objects, and can both send
+<code>Email</code>s to <code>Client</code>s in the <code>Server</code> and register new <code>Client</code>s. A <code>Client</code>
+can both compose emails (which first creates a new <code>Email</code> object and then
+sends it to the recipient client through the server) and receive an email 
+(which places an email into the client's inbox).</p>
+
+<p>Emails will only be sent/received within the same server, so clients will always
+use the server they're registered in to send emails to other clients that are
+registered in the same rerver.</p>
+
+<p><strong>An example flow:</strong>
+A <code>Client</code> object (Client 1) composes an <code>Email</code> object with message <code>&quot;hello&quot;</code> with recipient Client 2, 
+which the <code>Server</code> routes to Client 2's inbox.</p>
+
+<p><img class="img-responsive center-block" src="assets/email.png" alt="Email example" width="" height=""></p>
+
+<p>To solve this problem, we'll split the section into two halves (students on the left and students on the right):</p>
+
+<ul>
+  <li>Everyone will implement the <code>Email</code> class together</li>
+  <li>The first half (left) will implement the <code>Server</code> class</li>
+  <li>The other half (right) will implement the <code>Client</code> class</li>
+</ul>
+
+<p>Fill in the definitions below to finish
+the implementation!</p>
+
+
+
+
+            <div class="monaco-storable" id="email-input" style="height:342px;"></div>
+            <a href="javascript:void" id="modal-link-email-input">Run in 61A Code</a>
+            <div class="modal fade" id="modal-email-input" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content" style="padding-bottom: -5px">
+                    <iframe
+                        id="code-iframe-email-input"
+                        width="100%"
+                        height="700px"
+                        style="border: none; display:block;"
+                    ></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="storable-status"></div>
+            <script>
+                $(() => activateEditor('class Email:\n    &quot;&quot;&quot;\n    Every email object has 3 instance attributes: the\n    message, the sender name, and the recipient name.\n    &gt;&gt;&gt; email = Email(&#x27;hello&#x27;, &#x27;Alice&#x27;, &#x27;Bob&#x27;)\n    &gt;&gt;&gt; email.msg\n    &#x27;hello&#x27;\n    &gt;&gt;&gt; email.sender_name\n    &#x27;Alice&#x27;\n    &gt;&gt;&gt; email.recipient_name\n    &#x27;Bob&#x27;\n    &quot;&quot;&quot;\n    def __init__(self, msg, sender_name, recipient_name):\n        "*** YOUR CODE HERE ***"\n\n', "python", "email-input"));
+            </script>
+        
+
+<div class="page-break"></div>
+
+
+            <div class="monaco-storable" id="server-input" style="height:468px;"></div>
+            <a href="javascript:void" id="modal-link-server-input">Run in 61A Code</a>
+            <div class="modal fade" id="modal-server-input" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content" style="padding-bottom: -5px">
+                    <iframe
+                        id="code-iframe-server-input"
+                        width="100%"
+                        height="700px"
+                        style="border: none; display:block;"
+                    ></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="storable-status"></div>
+            <script>
+                $(() => activateEditor('class Server:\n    &quot;&quot;&quot;\n    Each Server has one instance attribute: clients (which\n    is a dictionary that associates client names with\n    client objects).\n    &quot;&quot;&quot;\n    def __init__(self):\n        self.clients = {}\n\n    def send(self, email):\n        &quot;&quot;&quot;\n        Take an email and put it in the inbox of the client\n        it is addressed to.\n        &quot;&quot;&quot;\n        "*** YOUR CODE HERE ***"\n\n    def register_client(self, client, client_name):\n        &quot;&quot;&quot;\n        Takes a client object and client_name and adds them\n        to the clients instance attribute.\n        &quot;&quot;&quot;\n        "*** YOUR CODE HERE ***"\n\n', "python", "server-input"));
+            </script>
+        
+
+<div class="page-break"></div>
+
+
+            <div class="monaco-storable" id="client-input" style="height:648px;"></div>
+            <a href="javascript:void" id="modal-link-client-input">Run in 61A Code</a>
+            <div class="modal fade" id="modal-client-input" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content" style="padding-bottom: -5px">
+                    <iframe
+                        id="code-iframe-client-input"
+                        width="100%"
+                        height="700px"
+                        style="border: none; display:block;"
+                    ></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="storable-status"></div>
+            <script>
+                $(() => activateEditor('class Client:\n    &quot;&quot;&quot;\n    Every Client has three instance attributes: name (which is\n    used for addressing emails to the client), server\n    (which is used to send emails out to other clients), and\n    inbox (a list of all emails the client has received).\n\n    &gt;&gt;&gt; s = Server()\n    &gt;&gt;&gt; a = Client(s, &#x27;Alice&#x27;)\n    &gt;&gt;&gt; b = Client(s, &#x27;Bob&#x27;)\n    &gt;&gt;&gt; a.compose(&#x27;Hello, World!&#x27;, &#x27;Bob&#x27;)\n    &gt;&gt;&gt; b.inbox[0].msg\n    &#x27;Hello, World!&#x27;\n    &gt;&gt;&gt; a.compose(&#x27;CS 61A Rocks!&#x27;, &#x27;Bob&#x27;)\n    &gt;&gt;&gt; len(b.inbox)\n    2\n    &gt;&gt;&gt; b.inbox[1].msg\n    &#x27;CS 61A Rocks!&#x27;\n    &quot;&quot;&quot;\n    def __init__(self, server, name):\n        self.inbox = []\n        "*** YOUR CODE HERE ***"\n\n    def compose(self, msg, recipient_name):\n        &quot;&quot;&quot;Send an email with the given message msg to the given recipient client.&quot;&quot;&quot;\n        "*** YOUR CODE HERE ***"\n\n    def receive(self, email):\n        &quot;&quot;&quot;Take an email and add it to the inbox of this client.&quot;&quot;&quot;\n        "*** YOUR CODE HERE ***"\n\n', "python", "client-input"));
+            </script>
+        
+
+<div class="page-break"></div>
+
+
+<h3 id="q3-keyboard">Q3: Keyboard</h3>
+
+
+<p>We'd like to create a <code>Keyboard</code> class that takes in an arbitrary
+number of <code>Button</code>s and stores these <code>Button</code>s in a dictionary. The
+keys in the dictionary will be <code>int</code>s that represent the position on the
+<code>Keyboard</code>, and the values will be the respective <code>Button</code>. Fill out
+the methods in the <code>Keyboard</code> class according to each description,
+using the doctests as a reference for the behavior of a <code>Keyboard</code>.</p>
+
+<blockquote><p><strong>Hint:</strong> You can iterate over *args as if it were a list.</p></blockquote>
+
+
+            <div class="monaco-storable" id="keyboard-input" style="height:918px;"></div>
+            <a href="javascript:void" id="modal-link-keyboard-input">Run in 61A Code</a>
+            <div class="modal fade" id="modal-keyboard-input" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content" style="padding-bottom: -5px">
+                    <iframe
+                        id="code-iframe-keyboard-input"
+                        width="100%"
+                        height="700px"
+                        style="border: none; display:block;"
+                    ></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="storable-status"></div>
+            <script>
+                $(() => activateEditor('class Button:\n    def __init__(self, pos, key):\n        self.pos = pos\n        self.key = key\n        self.times_pressed = 0\n\nclass Keyboard:\n    &quot;&quot;&quot;A Keyboard stores an arbitrary number of Buttons in a dictionary. \n    Each dictionary key is a Button&#x27;s position, and each dictionary\n    value is the corresponding Button.\n    &gt;&gt;&gt; b1, b2 = Button(5, &quot;H&quot;), Button(7, &quot;I&quot;)\n    &gt;&gt;&gt; k = Keyboard(b1, b2)\n    &gt;&gt;&gt; k.buttons[5].key\n    &#x27;H&#x27;\n    &gt;&gt;&gt; k.press(7)\n    &#x27;I&#x27;\n    &gt;&gt;&gt; k.press(0) # No button at this position\n    &#x27;&#x27;\n    &gt;&gt;&gt; k.typing([5, 7])\n    &#x27;HI&#x27;\n    &gt;&gt;&gt; k.typing([7, 5])\n    &#x27;IH&#x27;\n    &gt;&gt;&gt; b1.times_pressed\n    2\n    &gt;&gt;&gt; b2.times_pressed\n    3\n    &quot;&quot;&quot;\n    def __init__(self, *args):\n        ________________\n        for _________ in ________________:\n            ________________\n\n    def press(self, pos):\n        &quot;&quot;&quot;Takes in a position of the button pressed, and\n        returns that button&#x27;s output.&quot;&quot;&quot;\n        if ____________________:\n            ________________\n            ________________\n            ________________\n        ________________\n\n    def typing(self, typing_input):\n        &quot;&quot;&quot;Takes in a list of positions of buttons pressed, and\n        returns the total output.&quot;&quot;&quot;\n        ________________\n        for ________ in ____________________:\n            ________________\n        ________________\n\n', "python", "keyboard-input"));
+            </script>
+        
+
+<div class="page-break"></div>
+
+
+<h3 id="q4-relay">Q4: Relay</h3>
+
+
+<p>In a Math Olympiad style relay, team members solve questions while sitting in a line. Each team member's answer is calculated based on the answer from the team member sitting in front of them.</p>
+
+<p>For example, suppose we have three team members, <code>adder</code>, <code>adder2</code>, and <code>multiplier</code>, with <code>adder</code> sitting at the very front, <code>adder2</code> in the middle, and <code>multiplier</code> at the end. When we call the <code>relay_calculate</code> method from <code>multiplier</code>, we first apply the <code>adder</code> operation to the input <code>x</code>. Then, the answer from <code>adder</code> is passed into the <code>adder2</code> operation. Finally, the answer from <code>adder2</code> is passed into the <code>multiplier</code> operation. The answer from <code>multiplier</code> is our final answer.</p>
+
+<p><img class="img-responsive center-block" src="assets/relay_ex.png" alt="Relay example" width="" height=""></p>
+
+<p>Additionally, each team member has a <code>relay_history</code> method, which uses the fact that each team member has an instance variable <code>history</code>. <code>relay_history</code> returns a list of the answers given by each team member, and this is updated each time we call <code>relay_calculate</code>.</p>
+
+<p>Here are some examples of how the <code>TeamMember</code> class should behave:</p>
+
+<pre><code>&gt;&gt;&gt; adder = TeamMember(lambda x: x + 1) # team member at front 
+&gt;&gt;&gt; adder2 = TeamMember(lambda x: x + 2, adder) # team member 2
+&gt;&gt;&gt; multiplier = TeamMember(lambda x: x * 5, adder2) # team member 3
+&gt;&gt;&gt; adder.relay_history() # relay history starts off as empty
+[]
+&gt;&gt;&gt; adder.relay_calculate(5) # 5 + 1
+6
+&gt;&gt;&gt; adder2.relay_calculate(5) # (5 + 1) + 2
+8
+&gt;&gt;&gt; multiplier.relay_calculate(5) # (((5 + 1) + 2) * 5)
+40
+&gt;&gt;&gt; multiplier.relay_history() # history of answers from the most recent relay multiplier participated in
+[6, 8, 40]
+&gt;&gt;&gt; adder.relay_history()
+[6]
+&gt;&gt;&gt; multiplier.relay_calculate(4) # (((4 + 1) + 2) * 5)
+35
+&gt;&gt;&gt; multiplier.relay_history()
+[5, 7, 35]
+&gt;&gt;&gt; adder.relay_history() # adder participated most recently in multiplier.relay_calculate(4), where it gave the answer 5
+[5]
+&gt;&gt;&gt; adder.relay_calculate(1)
+2
+&gt;&gt;&gt; adder.relay_history() # adder participated most recently in adder.relay_calculate(1), where it gave the answer 2
+[2]
+&gt;&gt;&gt; multiplier.relay_history() # but the most relay multiplier participated in is still multiplier.relay_calculate(4)
+[5, 7, 35]</code></pre>
+
+
+
+<p>Fill in the definitions below to complete the implementation of the TeamMember class!</p>
+
+
+            <div class="monaco-storable" id="relay-input" style="height:666px;"></div>
+            <a href="javascript:void" id="modal-link-relay-input">Run in 61A Code</a>
+            <div class="modal fade" id="modal-relay-input" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content" style="padding-bottom: -5px">
+                    <iframe
+                        id="code-iframe-relay-input"
+                        width="100%"
+                        height="700px"
+                        style="border: none; display:block;"
+                    ></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="storable-status"></div>
+            <script>
+                $(() => activateEditor('class TeamMember:\n    def __init__(self, operation, prev_member=None):\n        &quot;&quot;&quot;\n        A TeamMember object is instantiated by taking in an `operation`\n        and a TeamMember object `prev_member`, which is the team member\n        who &quot;sits in front of&quot; this current team member. A TeamMember also\n        tracks a `history` list, which contains the answers given by\n        each individual team member.\n        &quot;&quot;&quot;\n        self.history = []\n        "*** YOUR CODE HERE ***"\n    def relay_calculate(self, x):\n        &quot;&quot;&quot;\n        The relay_calculate method takes in a number `x` and performs a\n        relay by passing in `x` to the first team member&#x27;s `operation`.\n        Then, that answer is passed to the next member&#x27;s operation, etc. until\n        we get to the current TeamMember, in which case we return the\n        final answer, `result`. \n        &quot;&quot;&quot;\n        if ________________:\n            "*** YOUR CODE HERE ***"\n        else:\n            "*** YOUR CODE HERE ***"\n        return result\n    def relay_history(self):\n        &quot;&quot;&quot;\n        Returns a list of the answers given by each team member in the\n        most recent relay the current TeamMember has participated in.\n        &quot;&quot;&quot;\n        "*** YOUR CODE HERE ***"\n\n', "python", "relay-input"));
+            </script>
+        
+
+
+<h1 id="class-methods">Class Methods</h1>
+
+
+<p>Now we'll try out another feature of Python classes: class methods.
+A method can be turned into a class method by adding the
+<a href="https://docs.python.org/3/library/functions.html#classmethod">classmethod</a>
+decorator.
+Then, instead of receiving the instance as the first argument (<code>self</code>),
+the method will receive the class itself (<code>cls</code>).</p>
+
+<p>Class methods are commonly used to create "factory methods":
+methods whose job is to construct and return a new instance of the class.</p>
+
+<p>For example, we can add a <code>robo_factory</code> class method to our <code>Dog</code> class
+that makes robo-dogs:</p>
+
+<pre><code>class Dog:
+    def __init__(self, name, owner):
+        self.name = name
+        self.owner = owner
+    @classmethod
+    def robo_factory(cls, owner):
+        return cls(&quot;RoboDog&quot;, owner)
+
+    # With other previously defined methods not written out</code></pre>
+
+
+
+<p>Then a call to <code>Dog.robo_factory(&#x27;Sally&#x27;)</code> would return a new <code>Dog</code> instance
+with the name "RoboDog" and owner "Sally".</p>
+
+<p>Note that with the call above, we don't have to explicitly pass in the <code>Dog</code> class as the
+<code>cls</code> argument, since Python implicitly does that for us. We only have to pass in a value for
+<code>owner</code>. When the body of the <code>Dog.robo_factory</code> is run, the line <code>cls(&quot;RoboDog&quot;, owner)</code> is equivalent to
+<code>Dog(&quot;RoboDog&quot;, owner)</code> (since <code>cls</code> is bound to the <code>Dog</code> class), which creates the new <code>Dog</code> instance.</p>
+
+<div class="page-break"></div>
+
+
+<h3 id="q5-own-a-cat">Q5: Own A Cat</h3>
+
+
+<p>Now implement the <code>cat_creator</code> method below,
+which takes in a string <code>owner</code> and creates a <code>Cat</code> named "<strong>[owner]</strong>'s Cat", where <strong>[owner]</strong> is replaced with the name in the  <code>owner</code> string.</p>
+
+<blockquote><p><strong>Hint:</strong> To place an apostrophe within a string, the entire string must be surrounded in double-quotes (i.e. <code>&quot;DeNero&#x27;s Dog&quot;</code>)</p></blockquote>
+
+
+            <div class="monaco-storable" id="ownercat-input" style="height:648px;"></div>
+            <a href="javascript:void" id="modal-link-ownercat-input">Run in 61A Code</a>
+            <div class="modal fade" id="modal-ownercat-input" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content" style="padding-bottom: -5px">
+                    <iframe
+                        id="code-iframe-ownercat-input"
+                        width="100%"
+                        height="700px"
+                        style="border: none; display:block;"
+                    ></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="storable-status"></div>
+            <script>
+                $(() => activateEditor('class Cat:\n    def __init__(self, name, owner, lives=9):\n        self.is_alive = True\n        self.name = name\n        self.owner = owner\n        self.lives = lives\n\n    def talk(self):\n        return self.name + &#x27; says meow!&#x27;\n\n    @classmethod\n    def cat_creator(cls, owner):\n        &quot;&quot;&quot;\n        Returns a new instance of a Cat.\n\n        This instance&#x27;s name is &quot;[owner]&#x27;s Cat&quot;, with \n        [owner] being the name of its owner.\n\n        &gt;&gt;&gt; cat1 = Cat.cat_creator(&quot;Bryce&quot;)\n        &gt;&gt;&gt; isinstance(cat1, Cat)\n        True\n        &gt;&gt;&gt; cat1.owner\n        &#x27;Bryce&#x27;\n        &gt;&gt;&gt; cat1.name\n        &quot;Bryce&#x27;s Cat&quot;\n        &gt;&gt;&gt; cat2 = Cat.cat_creator(&quot;Tyler&quot;)\n        &gt;&gt;&gt; cat2.owner\n        &#x27;Tyler&#x27;\n        &gt;&gt;&gt; cat2.name\n        &quot;Tyler&#x27;s Cat&quot;\n        &quot;&quot;&quot;\n        name = ________\n        return cls(________, ________)\n\n', "python", "ownercat-input"));
+            </script>
+        
+
+<div class="page-break"></div>
+
+  </div>
+
+  <div class='col-md-3 sticky'>
+    <nav class='hidden-print hidden-sm hidden-xs sidebar'>
+      <ul>
+  <li><a href="index.html#oop">OOP</a></li>
+  <ul>
+    <li><a href="index.html#q1-wwpd-student-oop">Q1: WWPD: Student OOP</a></li>
+    <li><a href="index.html#q2-email">Q2: Email</a></li>
+    <li><a href="index.html#q3-keyboard">Q3: Keyboard</a></li>
+    <li><a href="index.html#q4-relay">Q4: Relay</a></li>
+  </ul>
+  <li><a href="index.html#class-methods">Class Methods</a></li>
+  <ul>
+    <li><a href="index.html#q5-own-a-cat">Q5: Own A Cat</a></li>
+  </ul>
+</ul>
+    </nav>
+  </div>
+</div>
+
+    </main>
+
+    <footer class="container">
+      <div class="row text-center">
+        <div class="col col-sm-4">
+          <h3><a href="../../index.html">CS 61A</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../weekly.html">Weekly Schedule</a></li>
+            <li><a href="../../office-hours.html">Office Hours</a></li>
+            <li><a href="../../staff.html">Staff</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../../resources.1.html">Resources</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../articles/studying.html">Studying Guide</a></li>
+            <li><a href="../../articles/debugging.html">Debugging Guide</a></li>
+            <li><a href="../../articles/composition.html">Composition Guide</a></li>
+            <li><a href="../../articles/pair-programming.html">Pair Programming</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../../articles/about.html">Policies</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../articles/about.html#assignments">Assignments</a></li>
+            <li><a href="../../articles/about.html#exams">Exams</a></li>
+            <li><a href="../../articles/about.html#grading">Grading</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/loader.min.js"></script>
+  <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/editor/editor.main.min.css">
+  <script>
+      require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs' }});
+      window.MonacoEnvironment = { getWorkerUrl: () => URL.createObjectURL(new Blob([`
+      self.MonacoEnvironment = {
+          baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min'
+      };
+      importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/base/worker/workerMain.min.js');
+  `], { type: 'text/javascript' }))
+  };
+  </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.15.5/js/jsplumb.min.js"></script>
+    <script src="../../assets/js/network_storage.js"></script>
+    <script src="../../assets/js/storable.js"></script>
+    <script src="../../assets/js/editor.js"></script>
+    <script src="../../assets/js/copy-button.js"></script>
+    <script src="../../assets/js/env-diagram.js"></script>
+    
+<script src="../../assets/js/sketchy.js"></script>
+<script>
+  $('.sidebar ul').addClass('nav nav-stacked noselect');
+  $('body').scrollspy({
+    target: '.sidebar',
+    offset: 40
+  });
+
+  function goToId(id) {
+    var target = $(id);
+    target.parent().show();
+    $('html,body').animate({
+      scrollTop: target.offset().top,
+    }, 100);
+    $("body").scrollspy('refresh');
+  }
+
+  if (location.hash) {
+    setTimeout(function() {
+      if (location.hash) {
+        goToId(location.hash);
+      }
+    }, 1);
+  }
+
+  $("a").click(function(event) {
+    var urlBeforeHashRegEx = new RegExp("^"+window.location.href.split("#")[0]);
+    if (/^#/.test(this.hash) && urlBeforeHashRegEx.test(this.href)) {
+      event.preventDefault();
+      goToId(this.hash);
+      document.location.hash = this.hash;
+    }
+  });
+</script>
+
+  </body>
+</html>

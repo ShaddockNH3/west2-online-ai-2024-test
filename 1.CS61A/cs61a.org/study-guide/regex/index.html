@@ -1,0 +1,546 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="description" content ="CS 61A: Structure and Interpretation of Computer Programs" />
+    <meta name="keywords" content ="CS 61A, Computer Science, CS, 61A, Programming, John DeNero, Berkeley, EECS" />
+    <meta name="author" content ="John DeNero, Hany Farid" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="../../assets/js/hl.js"></script>
+    <script src="../../assets/js/toggledarkmode.js"></script>
+    <script>
+        // we aren't registering builtins since
+        //      (1) they don't render differently in the current CSS from other names
+        //      (2) it's a mess to list all of them. You can extract from the site but that takes effort
+        // if (1) ceases to be true, (2) might be worth the effort. For now, we're leaving as is
+        hljsRegister({
+            'keyword': "define if cond and or let begin lambda mu quote delay cons-stream set! quasiquote unquote unquote-splicing define-macro"
+        });
+        hljs.initHighlightingOnLoad();
+    </script>
+    <script src="../../assets/js/dark-mode.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata|Roboto:300,400,500|Work+Sans:400,700">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/mono-blue.css">
+    <link rel="icon" href="../../assets/images/favicon.ico">
+
+    
+
+    <title>
+Study Guide: Regular Expressions | CS 61A Spring 2023
+</title>
+  </head>
+
+  <body id="index" class="home">
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container noselect">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-section">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../../index.html">
+            <img style="max-width:60px; margin-top: -20px;" class="logo" src="../../assets/images/logo.png"/>
+          </a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbar-collapse-section">
+          <ul class="nav navbar-nav navbar-right">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Calendar
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../../weekly.html">Weekly Schedule</a></li>
+                <li><a href="../../office-hours.html">Office Hours</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Links
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://sections.cs61a.org">Sections Tool</a></li>
+                <li><a href="https://oh.cs61a.org">Office Hours Queue</a></li>
+                <li><a href="https://go.cs61a.org/regrade-request">Request a Regrade</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Staff
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../../instructor.html">Instructors</a></li>
+                <li><a href="../../TAs.html">TAs</a></li>
+                <li><a href="../../tutors.html">Tutors</a></li>
+                <li><a href="../../academic-interns.html">Academic Interns</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Resources
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://go.cs61a.org/extensions">Request an Extension</a></li>
+                <li><a href="https://go.cs61a.org/accommodation-appts">Book an Accommodations Appointment</a></li>
+                <li><a href="../../resources.1.html">Topical Resources + Past Exams</a></li>
+                <li><a href="https://tutor.cs61a.org/">PythonTutor</a></li>
+                <li><a href="https://code.cs61a.org/">Code</a></li>
+                <li><a href="https://edstem.org/us/courses/34756/discussion/" target="_blank">Ed</a></li>
+                <li><a href="../../articles/campus-res/index.html">Department/Campus Resources</a></li>
+              </ul>
+            </li>
+            <li><a href="../../articles/about.html">Syllabus</a></li>
+            <li><a href="../../contact.1.html">Contact</a></li>
+            <li>
+              <label class="switch">
+                <input type="checkbox" id="toggle-mode-cb">
+                <span class="slider round"></span>
+              </label>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main id="content" class="container">
+      
+<div class='row'>
+  <div class='col-md-9'>
+    <header>
+      <h1>
+        
+Study Guide: Regular Expressions
+
+        
+        
+        
+      </h1>
+    </header>
+    
+<div class="alert storable-login-status"></div>
+
+<h2>Instructions</h2>
+
+<p>This is a study guide with links to past
+lectures, assignments, and handouts, as well as
+additional practice problems to assist you in learning the concepts.</p>
+
+
+  <p><strong>Assignments</strong></p>
+  <blockquote><p>Important: For solutions to these assignments once they have been released, find the links in the front page calendar.</p></blockquote>
+
+<ul>
+  <li><a href="../../lab/lab13.1.html">Lab 13</a></li>
+  <li><a href="../../hw/hw09.1.html">Hw 9</a></li>
+</ul>
+
+
+
+
+
+  <p><strong>Lectures</strong></p>
+  <ul>
+  <li><a href="https://cs61a.org/assets/slides/31-Regular_Expressions_full.pdf">Regular Expressions</a></li>
+</ul>
+
+
+
+
+
+    
+<h1 id="guides">Guides</h1>
+
+
+
+<h2 id="what-are-regular-expressions">What are Regular Expressions?</h2>
+
+
+<p>Consider the following scenarios:</p>
+
+<blockquote><ol>
+  <li>You've just written a 500 page book on how to dominate the game of Hog. Your book assumes that all players use six-sided dice. However, in 2035, the newest version of Hog is updated to use 25-sided dice. You now need to find all instances where you mention six-sided dice in your article and update them to refer to 25-sided dice.</li>
+  <li>You are in charge of a registry of phone numbers for the SchemeCorp company. You're planning a company social for all employees in the city of Berkeley. To make your guest list, you want to find the phone numbers of all employees living in the Berkeley area codes of 415 or 314.</li>
+  <li>You're the communications expert on an interplanetary voyage, and you've received a message from another starship captain with the locations of a large number of potentially habitable planets, represented as strings. You must determine which of these planets lie in your star system.</li>
+</ol></blockquote>
+
+<p>What do all of these scenarios have in common? They all involve searching for <strong>patterns</strong> within a larger piece of text. These can include extracting strings that <em>begin with</em> a certain set of characters, <em>contain</em> a certain set of characters, or follow a certain <em>format</em>.</p>
+
+<p><strong>Regular expressions</strong> are a powerful tool for solving these kinds of problems. With regular expression operators, we can write expressions to describe a <strong>set of strings</strong> that match a specified pattern.</p>
+
+<p>For example, the following code defines a function that matches all words that start with the letter "h" (capitalized or lowercase) and end with the lowercase letter "y".</p>
+
+<pre><code>import re
+def hy_finder(text):
+    &quot;&quot;&quot;
+    &gt;&gt;&gt; hy_finder(&quot;Hey! Hurray, I hope you have a lovely day full of harmony.&quot;)
+    [&#x27;Hey&#x27;, &#x27;Hurray&#x27;, &#x27;harmony&#x27;]
+    &quot;&quot;&quot;
+
+    return re.findall(r&quot;\b[Hh][a&#x2d;z]*y\b&quot;, text)</code></pre>
+
+
+
+<p>Let's examine the above regular expression piece by piece.</p>
+
+<ol>
+  <li>First, we use <code>r&quot;&quot;</code>, which denotes a <strong>raw string</strong> in Python. Raw strings handle the backslash character <code>\</code> differently than regular string literals. For example, the <code>\b</code> in this regular expression is treated as a sequence of two characters. If we were to use a string literal without the additional <code>r</code>, <code>\b</code> would be treated as a single character representing an ASCII bell code.</li>
+  <li>We then begin and end our regular expression with <code>\b</code>. This ensures that word boundaries exist before the "h" and after the "y" in the string we want to match.</li>
+  <li>We use <code>[Hh]</code> to represent that we want our word to start with either a capital or lowercase "h" character.</li>
+  <li>We want our word to contain 0 or more (denoted by the <code>*</code> character) lowercase letters between the "h" and "y". We use <code>[a&#x2d;z]</code> to refer to this set.</li>
+  <li>Finally, we use the character <code>y</code> to denote that our string should end with the lowercase letter "y".</li>
+</ol>
+
+
+<h2 id="regular-expression-operators">Regular Expression Operators</h2>
+
+
+<p>Regular expressions are most often constructed using combinations of <strong>operators</strong>. The following special characters represent operators in regular expressions: <code>\</code>, <code>(</code>, <code>)</code>, <code>[</code>, <code>]</code>, <code>{</code>, <code>}</code>, <code>+</code>, <code>*</code>, <code>?</code>, <code>|</code>, <code>$</code>, <code>^</code>, and <code>.</code>.</p>
+
+<p>We can still build regular expressions without using any of these special characters. However, these expressions would only be able to handle <em>exact matches</em>. For example, the expression <code>potato</code> would match all occurences of the characters p, o, t, a, t, and o, <em>in that order</em>, within a string.</p>
+
+<p>Leveraging these operators enables us to build much more interesting expressions that can match a wide range of patterns. We'd recommend using interactive tools like <a href="https://regexr.com/">regexr.com</a> or <a href="https://regex101.com/">regex101.com</a> to practice using these.</p>
+
+<p>Let's take a look at some common operators.</p>
+
+
+
+
+        <div class="table-responsive">
+          <table class="table table-bordered">
+          
+  <tr>
+    <th>Pattern</th>
+    <th>Description</th>
+    <th>Example</th>
+    <th>Example Matches</th>
+    <th>Example Non-matches</th>
+  </tr>
+  <tr>
+    <td><code>[]</code></td>
+    <td>Denotes a <em>character class</em>. Matches characters in a set (including ranges of characters like <code>0&#x2d;9</code>). Use <code>[^]</code> to match characters outside a set.</td>
+    <td><code>[top]</code></td>
+    <td>t, o, p</td>
+    <td>s, march, 3</td>
+  </tr>
+  <tr>
+    <td><code>.</code></td>
+    <td>Matches <em>any character</em> other than the newline character.</td>
+    <td><code>1.</code></td>
+    <td>1a, 1?, 11</td>
+    <td>1, 1\n</td>
+  </tr>
+  <tr>
+    <td><code>\d</code></td>
+    <td>Matches any <em>digit character</em>. Equivalent to <code>[0&#x2d;9]</code>. <code>\D</code> is the <em>complement</em> and refers to all non-digit characters.</td>
+    <td><code>\d\d</code></td>
+    <td>12, 42, 60</td>
+    <td>4, 890</td>
+  </tr>
+  <tr>
+    <td><code>\w</code></td>
+    <td>Matches any <em>word character</em>. Equivalent to <code>[A&#x2d;Za&#x2d;z0&#x2d;9_]</code>. <code>\W</code> is the complement.</td>
+    <td><code>\d\w</code></td>
+    <td>1a, 9_, 4Z</td>
+    <td>14, a5</td>
+  </tr>
+  <tr>
+    <td><code>\s</code></td>
+    <td>Matches any <em>whitespace character</em>: spaces, tabs, or line breaks. <code>\S</code> is the complement.</td>
+    <td><code>\d\s\w</code></td>
+    <td>1 s, 9 <em>, 4 </em> Z</td>
+    <td>1s, 1   s</td>
+  </tr>
+  <tr>
+    <td><code>*</code></td>
+    <td>Matches <em>0 or more</em> of the previous pattern.</td>
+    <td><code>a*</code></td>
+    <td>, a, aa, aaaaa</td>
+    <td>schmorp, mlep</td>
+  </tr>
+  <tr>
+    <td><code>+</code></td>
+    <td>Matches <em>1 or more</em> of the previous pattern.</td>
+    <td><code>lo+l</code></td>
+    <td>lol, lool, loool</td>
+    <td>ll, lal</td>
+  </tr>
+  <tr>
+    <td><code>?</code></td>
+    <td>Matches <em>0 or 1</em> of the previous pattern.</td>
+    <td><code>lo?l</code></td>
+    <td>lol, ll</td>
+    <td>lool, lulz</td>
+  </tr>
+  <tr>
+    <td><code>&#124;</code></td>
+    <td>Usage: <code> Char1 &#124; Char2 </code>. Matches <em>either Char1 or Char2</em>.</td>
+    <td><code>a&#124;b</code></td>
+    <td>a, b</td>
+    <td>c, d</td>
+  </tr>
+  <tr>
+    <td><code>()</code></td>
+    <td>Creates a <em>group</em>. Matches occurences of all characters within a group.</td>
+    <td><code>(&lt;3)+</code></td>
+    <td><3, <3<3, <3<3<3</td>
+    <td><<, 33</td>
+  </tr>
+  <tr>
+    <td><code>{}</code></td>
+    <td>Used like <code>{Min, Max}</code>. Matches a <em>quantity</em> between Min and Max of the previous pattern.</td>
+    <td><code>a{2,4}</code></td>
+    <td>aa, aaa, aaaa</td>
+    <td>a, aaaaa</td>
+  </tr>
+  <tr>
+    <td><code>^</code></td>
+    <td>Matches the <em>beginning</em> of a string.</td>
+    <td><code>^aw+</code></td>
+    <td>aw, aww, awww</td>
+    <td>wa, waaa</td>
+  </tr>
+  <tr>
+    <td><code>$</code></td>
+    <td>Matches the <em>end</em> of a string.</td>
+    <td><code>\w+y$</code></td>
+    <td>hey, bay, stay</td>
+    <td>yes, aye</td>
+  </tr>
+  <tr>
+    <td><code>\b</code></td>
+    <td>Matches a <em>word boundary</em>, the beginning or end of a word.</td>
+    <td><code>\w+e\b</code></td>
+    <td>bridge, smoothie</td>
+    <td>next, everlasting</td>
+  </tr>
+
+          </table>
+        </div>
+        
+
+
+
+
+<h2 id="regular-expressions-in-python">Regular Expressions in Python</h2>
+
+
+<p>In Python, we use the <code>re</code> module (see the Python <a href="https://docs.python.org/3/library/re.html">documentation</a> for more information) to write regular expressions. The following are some useful function in the <code>re</code> module:</p>
+
+<ul>
+  <li><code>re.search(pattern, string)</code> - returns a match object representing the first occurrence of <code>pattern</code> within <code>string</code></li>
+  <li><code>re.sub(pattern, repl, string)</code> - substitutes all matches of <code>pattern</code> within <code>string</code> with <code>repl</code></li>
+  <li><code>re.fullmatch(pattern, string)</code> - returns a match object, requiring that <code>pattern</code> matches the entirety of <code>string</code></li>
+  <li><code>re.match(pattern, string)</code> - returns a match object, requiring that <code>string</code> starts with a substring that matches <code>pattern</code></li>
+  <li><code>re.findall(pattern, string)</code> - returns a list of strings representing all matches of <code>pattern</code> within <code>string</code>, from left to right</li>
+</ul>
+
+
+<h1 id="practice-problems">Practice Problems</h1>
+
+
+
+<h2 id="easy">Easy</h2>
+
+
+<!--include topics/regex/easy/memeified.md-->
+
+<h2 id="medium">Medium</h2>
+
+<!--include topics/regex/medium/greetings.md-->
+
+<h3 id="q1-party-planner">Q1: Party Planner</h3>
+
+
+<p>You are the CEO of SchemeCorp, a company you founded after learning Scheme in CS61A. You want to plan a social for everyone who works at your company, but only your colleagues who live in Berkeley can help plan the party. You want to add all employees located in Berkeley (based on their phone number) to a party-planning group chat. Given a string representing a list of employee phone numbers for SchemeCorp, write a regular expression that matches all valid phone numbers of employees in the 314 or 510 Berkeley area codes.</p>
+
+<p>In addition, a few of your colleagues are visiting from Los Angeles (area code 310) and Montreal (area code 514) and would like to help. Your regular expression should match their phone numbers as well.</p>
+
+<p>Valid phone numbers can be formatted in two ways. Some employees entered their phone numbers with parentheses around the area code (for example, (786)-375-6454), while some omitted the area code (for example, 786-375-6454). A few employees also entered their phone numbers incorrectly, with either greater than or fewer than 10 digits. These phone numbers are not valid and should not be included in the group chat.</p>
+
+
+
+<pre><code class="python">import re
+def party_planner(text):
+    &quot;&quot;&quot;
+    Returns all strings representing valid phone numbers with 314, 510, 310, or 514 area codes.
+    The area code may or may not be surrounded by parentheses. Valid phone numbers
+    have 10 digits and follow this format: XXX&#x2d;XXX&#x2d;XXXX, where each X represents a digit.
+
+    &gt;&gt;&gt; party_planner(&quot;(408)&#x2d;996&#x2d;3325, (510)&#x2d;658&#x2d;7400, (314)&#x2d;3333&#x2d;22222&quot;)
+    [&#x27;(510)&#x2d;658&#x2d;7400&#x27;]
+    &gt;&gt;&gt; party_planner(&quot;314&#x2d;826&#x2d;0705, (510)&#x2d;314&#x2d;3143, 408&#x2d;267&#x2d;7765&quot;)
+    [&#x27;314&#x2d;826&#x2d;0705&#x27;, &#x27;(510)&#x2d;314&#x2d;3143&#x27;]
+    &gt;&gt;&gt; party_planner(&quot;5103143143&quot;)
+    []
+    &gt;&gt;&gt; party_planner(&quot;514&#x2d;300&#x2d;2002, 310&#x2d;265&#x2d;4242&quot;) # invite your friends in LA and Montreal
+    [&#x27;514&#x2d;300&#x2d;2002&#x27;, &#x27;310&#x2d;265&#x2d;4242&#x27;]
+    &quot;&quot;&quot;
+<div class="alt solution-1">    return re.findall(__________, text)
+</div><div class="solution solution-1">&#x20;&#x20;&#x20;&#x20;&#x72;&#x65;&#x74;&#x75;&#x72;&#x6e;&#x20;&#x72;&#x65;&#x2e;&#x66;&#x69;&#x6e;&#x64;&#x61;&#x6c;&#x6c;&#x28;&#x72;&#x22;&#x5c;&#x28;&#x3f;&#x5b;&#x35;&#x33;&#x5d;&#x31;&#x5b;&#x30;&#x34;&#x5d;&#x5c;&#x29;&#x3f;&#x2d;&#x5c;&#x64;&#x7b;&#x33;&#x7d;&#x2d;&#x5c;&#x64;&#x7b;&#x34;&#x7d;&#x22;&#x2c;&#x20;&#x74;&#x65;&#x78;&#x74;&#x29;</div></code></pre>
+
+
+
+        <button id='solution-1' class='btn btn-outline btn-lg solutiontoggle solution'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+<p>After creating your group chat, you find out that your friends in Montreal and Los Angeles can no longer attend the party-planning meeting. How would you modify your regular expression to no longer match the 514 and 310 area codes?</p>
+
+<div class="solution solution-2">
+One way to do this is to use the <code>|</code> operator to match either a phone number with a 510 area code or a phone number with a 314 area code. The final regular expression looks like this:
+
+<p><code>\(?510\)?&#x2d;\d{3}&#x2d;\d{4}|\(?314\)?&#x2d;\d{3}&#x2d;\d{4}</code>
+</div>
+        <button id='solution-2' class='btn btn-outline btn-lg solutiontoggle solution'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        </p>
+
+
+
+
+
+  </div>
+
+  <div class='col-md-3 sticky'>
+    <nav class='hidden-print hidden-sm hidden-xs sidebar'>
+      <ul>
+  <li><a href="index.html#guides">Guides</a></li>
+  <ul>
+    <li><a href="index.html#what-are-regular-expressions">What are Regular Expressions?</a></li>
+    <li><a href="index.html#regular-expression-operators">Regular Expression Operators</a></li>
+    <li><a href="index.html#regular-expressions-in-python">Regular Expressions in Python</a></li>
+  </ul>
+  <li><a href="index.html#practice-problems">Practice Problems</a></li>
+  <ul>
+    <li><a href="index.html#easy">Easy</a></li>
+    <li><a href="index.html#medium">Medium</a></li>
+    <ul>
+      <li><a href="index.html#q1-party-planner">Q1: Party Planner</a></li>
+    </ul>
+  </ul>
+</ul>
+    </nav>
+  </div>
+</div>
+
+    </main>
+
+    <footer class="container">
+      <div class="row text-center">
+        <div class="col col-sm-4">
+          <h3><a href="../../index.html">CS 61A</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../weekly.html">Weekly Schedule</a></li>
+            <li><a href="../../office-hours.html">Office Hours</a></li>
+            <li><a href="../../staff.html">Staff</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../../resources.1.html">Resources</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../articles/studying.html">Studying Guide</a></li>
+            <li><a href="../../articles/debugging.html">Debugging Guide</a></li>
+            <li><a href="../../articles/composition.html">Composition Guide</a></li>
+            <li><a href="../../articles/pair-programming.html">Pair Programming</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../../articles/about.html">Policies</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../articles/about.html#assignments">Assignments</a></li>
+            <li><a href="../../articles/about.html#exams">Exams</a></li>
+            <li><a href="../../articles/about.html#grading">Grading</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/loader.min.js"></script>
+  <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/editor/editor.main.min.css">
+  <script>
+      require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs' }});
+      window.MonacoEnvironment = { getWorkerUrl: () => URL.createObjectURL(new Blob([`
+      self.MonacoEnvironment = {
+          baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min'
+      };
+      importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/base/worker/workerMain.min.js');
+  `], { type: 'text/javascript' }))
+  };
+  </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.15.5/js/jsplumb.min.js"></script>
+    <script src="../../assets/js/network_storage.js"></script>
+    <script src="../../assets/js/storable.js"></script>
+    <script src="../../assets/js/editor.js"></script>
+    <script src="../../assets/js/copy-button.js"></script>
+    <script src="../../assets/js/env-diagram.js"></script>
+    
+<script src="../../assets/js/sketchy.js"></script>
+<script>
+  $('.sidebar ul').addClass('nav nav-stacked noselect');
+  $('body').scrollspy({
+    target: '.sidebar',
+    offset: 40
+  });
+
+  function goToId(id) {
+    var target = $(id);
+    target.parent().show();
+    $('html,body').animate({
+      scrollTop: target.offset().top,
+    }, 100);
+    $("body").scrollspy('refresh');
+  }
+
+  if (location.hash) {
+    setTimeout(function() {
+      if (location.hash) {
+        goToId(location.hash);
+      }
+    }, 1);
+  }
+
+  $("a").click(function(event) {
+    var urlBeforeHashRegEx = new RegExp("^"+window.location.href.split("#")[0]);
+    if (/^#/.test(this.hash) && urlBeforeHashRegEx.test(this.href)) {
+      event.preventDefault();
+      goToId(this.hash);
+      document.location.hash = this.hash;
+    }
+  });
+</script>
+
+<script type="text/javascript" src="../../assets/js/config.js"></script>
+<script>
+$(function() {
+    $('.solutiontoggle').css('display', 'inline-block');
+      $('.solutiontoggle').click(function() {
+        var solution_id = $(this).attr('id');
+        $('div.' + solution_id).slideToggle(600);
+    });
+    $('.alwaystoggle').css('display', 'inline-block');
+    $('.alwaystoggle').click(function() {
+      var solution_id = $(this).attr('id');
+      $('div.' + solution_id).slideToggle(600);
+    });
+});
+</script>
+
+  </body>
+</html>

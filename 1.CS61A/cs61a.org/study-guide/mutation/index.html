@@ -1,0 +1,781 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="description" content ="CS 61A: Structure and Interpretation of Computer Programs" />
+    <meta name="keywords" content ="CS 61A, Computer Science, CS, 61A, Programming, John DeNero, Berkeley, EECS" />
+    <meta name="author" content ="John DeNero, Hany Farid" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="../../assets/js/hl.js"></script>
+    <script src="../../assets/js/toggledarkmode.js"></script>
+    <script>
+        // we aren't registering builtins since
+        //      (1) they don't render differently in the current CSS from other names
+        //      (2) it's a mess to list all of them. You can extract from the site but that takes effort
+        // if (1) ceases to be true, (2) might be worth the effort. For now, we're leaving as is
+        hljsRegister({
+            'keyword': "define if cond and or let begin lambda mu quote delay cons-stream set! quasiquote unquote unquote-splicing define-macro"
+        });
+        hljs.initHighlightingOnLoad();
+    </script>
+    <script src="../../assets/js/dark-mode.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata|Roboto:300,400,500|Work+Sans:400,700">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/mono-blue.css">
+    <link rel="icon" href="../../assets/images/favicon.ico">
+
+    
+
+    <title>
+Study Guide: Mutation | CS 61A Spring 2023
+</title>
+  </head>
+
+  <body id="index" class="home">
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container noselect">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-section">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../../index.html">
+            <img style="max-width:60px; margin-top: -20px;" class="logo" src="../../assets/images/logo.png"/>
+          </a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbar-collapse-section">
+          <ul class="nav navbar-nav navbar-right">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Calendar
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../../weekly.html">Weekly Schedule</a></li>
+                <li><a href="../../office-hours.html">Office Hours</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Links
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://sections.cs61a.org">Sections Tool</a></li>
+                <li><a href="https://oh.cs61a.org">Office Hours Queue</a></li>
+                <li><a href="https://go.cs61a.org/regrade-request">Request a Regrade</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Staff
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="../../instructor.html">Instructors</a></li>
+                <li><a href="../../TAs.html">TAs</a></li>
+                <li><a href="../../tutors.html">Tutors</a></li>
+                <li><a href="../../academic-interns.html">Academic Interns</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="index.html#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Resources
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a href="https://go.cs61a.org/extensions">Request an Extension</a></li>
+                <li><a href="https://go.cs61a.org/accommodation-appts">Book an Accommodations Appointment</a></li>
+                <li><a href="../../resources.1.html">Topical Resources + Past Exams</a></li>
+                <li><a href="https://tutor.cs61a.org/">PythonTutor</a></li>
+                <li><a href="https://code.cs61a.org/">Code</a></li>
+                <li><a href="https://edstem.org/us/courses/34756/discussion/" target="_blank">Ed</a></li>
+                <li><a href="../../articles/campus-res/index.html">Department/Campus Resources</a></li>
+              </ul>
+            </li>
+            <li><a href="../../articles/about.html">Syllabus</a></li>
+            <li><a href="../../contact.1.html">Contact</a></li>
+            <li>
+              <label class="switch">
+                <input type="checkbox" id="toggle-mode-cb">
+                <span class="slider round"></span>
+              </label>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main id="content" class="container">
+      
+<div class='row'>
+  <div class='col-md-9'>
+    <header>
+      <h1>
+        
+Study Guide: Mutation
+
+        
+        
+        
+      </h1>
+    </header>
+    
+<div class="alert storable-login-status"></div>
+
+<h2>Instructions</h2>
+
+<p>This is a study guide with links to past
+lectures, assignments, and handouts, as well as
+additional practice problems to assist you in learning the concepts.</p>
+
+
+  <p><strong>Assignments</strong></p>
+  <blockquote><p>Important: For solutions to these assignments once they have been released, see <a href="../../index.html">the main website</a></p></blockquote>
+
+<ul>
+  <li><a href="../../lab/lab06.1.html">Lab 6</a></li>
+  <li><a href="../../hw/hw04.1.html">HW 4</a></li>
+</ul>
+
+
+
+  <p><strong>Handouts</strong></p>
+  <ul>
+  <li><a href="https://cs61a.org/disc/disc05.pdf">Discussion 5</a></li>
+</ul>
+
+
+
+  <p><strong>Lectures</strong></p>
+  <ul>
+  <li><a href="https://fa20.cs61a.org/assets/slides/15-Mutable_Values_full.pdf">Mutable Values</a></li>
+  <li><a href="https://fa20.cs61a.org/assets/slides/16-Mutable_Functions_full.pdf">Mutable Functions</a></li>
+</ul>
+
+
+
+  <p><strong>Readings</strong></p>
+  <ul>
+  <li><a href="http://composingprograms.com/pages/24-mutable-data.html">Section 2.4</a></li>
+</ul>
+
+
+
+    
+<h1 id="guides">Guides</h1>
+
+
+
+<h2 id="mutable-values">Mutable Values</h2>
+
+
+<p><strong>Mutation</strong> is the act of changing a value's attributes. Previously, we've
+seen <strong>immutable values</strong> like numbers and strings. Every time we work with
+numbers and strings, Python creates an entirely new number or string to
+represent the result.</p>
+
+<pre><code>n = 0
+def no_effect(n):
+    n += 1
+no_effect(n)</code></pre>
+
+<p>Invoking <code>no_effect(n)</code> doesn't affect the value of <code>n</code> in the global frame.</p>
+
+<p>In constrast, <strong>mutable values</strong> can change existing attributes. Changes to
+mutable values are globally-visible: any name which references that value will
+see the same changes. The list <code>l</code> can be mutated which will be seen in the
+global frame.</p>
+
+<pre><code>l = [0]
+def effective(l):
+    l.append(1)
+effective(l)</code></pre>
+
+<p>Mutation is dangerous! It's not necessarily clear just from the function call
+<code>effective(l)</code> that our own <code>l</code> will be changed. When designing systems, we
+often prefer to write in a more <em>functional</em> style that makes it clear when the
+value of a name might change.</p>
+
+<pre><code>l = [0]
+def add_one(l):
+    return l + [1]
+l = add_one(l)</code></pre>
+
+<p>The re-assignment to <code>l</code> makes it clear that the value of <code>l</code> might change,
+whereas, in the previous example, we would need to be a lot more careful with
+remembering whether or not <code>effective</code> mutates the values we pass to it.</p>
+
+<p>What further complicates the situation is that <strong>not all operations are
+mutative</strong>! Some operations on lists, like <code>append</code>, will mutate the original
+list. But many other operations, like the <code>+</code> operator, will create a new list.</p>
+
+
+<h3 id="lists">Lists</h3>
+
+
+<p>Lists are a type of mutable sequence. Because lists are also compound values,
+we represent them in environment diagrams with a pointer just like we do with
+function values.</p>
+
+<pre><code>&gt;&gt;&gt; a = [1, 2, 3]
+&gt;&gt;&gt; b = a
+&gt;&gt;&gt; b.append(4)
+&gt;&gt;&gt; a
+[1, 2, 3, 4]
+&gt;&gt;&gt; b
+[1, 2, 3, 4]</code></pre>
+
+<p>In this example, both <code>a</code> and <code>b</code> refer to the same underlying list so changes
+to the list are visible to both names.</p>
+
+
+<h4 id="identity">Identity</h4>
+
+
+<p>Two separate lists that have the same contents are equal but not necessarily
+identical. It could be the case that we happen to have two copies of a list
+with the exact same elements.</p>
+
+<pre><code>&gt;&gt;&gt; a = [1, 2, 3, 4]
+&gt;&gt;&gt; b = [1, 2, 3]
+&gt;&gt;&gt; b.append(4)
+&gt;&gt;&gt; b
+[1, 2, 3, 4]
+&gt;&gt;&gt; a == b
+True
+&gt;&gt;&gt; a is b
+False</code></pre>
+
+
+<h4 id="operations">Operations</h4>
+
+
+<p>The following is a list of common expressions which mutate the original <code>lst</code>.
+While nowhere near complete, it covers the majority of the cases you should be
+familiar with. Come up with examples in <a href="index.html">Python Tutor</a> to learn how each
+expression affects the list.</p>
+
+<ul>
+  <li><p>Index and slice replacement</p>
+
+  <ul>
+    <li><code>lst[i] = elem</code></li>
+    <li><code>lst[i:j] = seq</code></li>
+  </ul></li>
+  <li><p>Element insertion</p>
+
+  <ul>
+    <li><code>lst.append(elem)</code></li>
+    <li><code>lst.insert(i, elem)</code></li>
+  </ul></li>
+  <li><p>Sequence insertion</p>
+
+  <ul>
+    <li><code>lst.extend(seq)</code></li>
+    <li><code>lst += lst</code> but <strong>not</strong> <code>lst = lst + lst</code></li>
+  </ul></li>
+  <li><p>Element removal</p>
+
+  <ul>
+    <li><code>lst.pop()</code> and <code>lst.pop(i)</code></li>
+    <li><code>lst.remove(elem)</code></li>
+  </ul></li>
+</ul>
+
+<p>And a few expressions which create new lists.</p>
+
+<ul>
+  <li><code>lst + lst</code></li>
+  <li><code>lst * n</code></li>
+  <li><code>lst[i:j]</code></li>
+  <li><code>list(lst)</code></li>
+</ul>
+
+
+<h2 id="mutable-functions">Mutable Functions</h2>
+
+
+<p>The <code>nonlocal</code> keyword tells Python to modify the binding in the nearest
+non-global parent frame rather than the current local frame. More formally, our
+environment diagram rules change slightly.</p>
+
+
+<h3 id="assignment-statements">Assignment Statements</h3>
+
+
+<ol>
+  <li>Evaluate the expression to the right of the assignment operator <code>=</code>.</li>
+  <li>If <code>nonlocal</code>, find the nearest parent frame which contains the name but not
+  including the global frame. If not <code>nonlocal</code>, use the current local frame.
+  (Note that it is a syntax error if the <code>nonlocal</code> keyword is used and the
+  name doesn't exist in a non-global parent frame.)</li>
+  <li>Bind the variable name to the value of the expression in the frame. Be sure
+  you override the variable name if it had a previous binding.</li>
+</ol>
+
+
+<h3 id="local-state">Local State</h3>
+
+
+<p>While <code>nonlocal</code> only slightly modifies Python's execution rules, it has a big
+effect on how we reason about programs. Before <code>nonlocal</code> and mutable values,
+we've only written <strong>pure functions</strong>, or functions that, when called, have no
+effects other than returning a value. The most useful consequence of writing
+pure functions is that they are <strong>referentially transparency</strong>. In other words,
+they can be entirely replaced by the value that they return, without any change
+in the behavior of the program.</p>
+
+<pre><code>def add(x, y):
+    return x + y
+
+add(1, add(2, 3)) == add(1, 5) == 6</code></pre>
+
+<p>Referential transparency is important because of how we've approached concepts
+in this course. We can trust that a recursive call will return the right result
+because of how we can imagine replacing the recursive call with its return
+value.</p>
+
+<p>With <code>nonlocal</code>, we can no longer rely upon this behavior. The same call to a
+function at different times in a program can produce different results.</p>
+
+<pre><code>def cumulative_adder(x):
+    def add(y):
+        nonlocal x
+        x += y
+        return x
+    return add
+
+add = cumulative_adder(1)
+add(1)
+add(1)
+add(1)</code></pre>
+
+<p>We can now start to view functions as objects that can change over time, which
+allows for greater control, but makes our programs harder to understand.</p>
+
+
+<h1 id="isomorphic-quiz-questions">Isomorphic Quiz Questions</h1>
+
+
+
+<h3 id="q1-nonlocal-environment-diagram">Q1: Nonlocal Environment Diagram</h3>
+
+
+<p>Draw the environment diagram that results from running the following code.</p>
+
+<pre><code>def moon(f):
+    sun = 0
+    moon = [sun]
+    def run(x):
+        nonlocal sun, moon
+        def sun(sun):
+            return [sun]
+        y = f(x)
+        moon.append(sun(y))
+        return moon[0] and moon[1]
+    return run
+
+moon(lambda x: moon)(1)</code></pre>
+
+<p>After you've done it on your own, generate an environment diagram in <a href="http://tutor.cs61a.org">python tutor</a> to check your answer.</p>
+
+
+<h3 id="q2-digits">Q2: Digits</h3>
+
+
+<p>Draw the environment diagram that results from executing the following code.</p>
+
+<pre><code>def three(x):
+    three = [x]*3
+    nine = [three]*3
+    def what(x):
+        nonlocal what, three, nine
+        three[x] += 1
+        three = [[x]]*3
+        nine[x] = three[x]
+        def what(b):
+            if b:
+                return sum(nine[0])
+            return sum(nine[2])
+        return x + what(nine[x] is three[x&#x2d;1])
+    return what
+
+three(2)(2)</code></pre>
+
+
+<h1 id="practice-problems">Practice Problems</h1>
+
+
+
+<h2 id="easy">Easy</h2>
+
+
+
+<h3 id="q3-funny-adder">Q3: Funny Adder</h3>
+
+
+<p>Predict what Python will display when the following
+lines are typed into the interpreter:</p>
+
+<pre><code>&gt;&gt;&gt; def make_funny_adder(n):
+...     def adder(x):
+...         if x == &#x27;new&#x27;:
+...             nonlocal n
+...             n = n + 1
+...         else:
+...             return x + n
+...     return adder
+&gt;&gt;&gt; h = make_funny_adder(3)
+&gt;&gt;&gt; h(5)
+<div class="alt prompt-1">______</div><div class="solution prompt-1">&#x38;</div>
+&gt;&gt;&gt; j = make_funny_adder(7)
+&gt;&gt;&gt; j(5)
+<div class="alt prompt-1">______</div><div class="solution prompt-1">&#x31;&#x32;</div>
+&gt;&gt;&gt; h(&#x27;new&#x27;)
+&gt;&gt;&gt; h(5)
+<div class="alt prompt-1">______</div><div class="solution prompt-1">&#x39;</div></code></pre>
+        <button id='prompt-1' class='btn btn-outline btn-lg solutiontoggle prompt'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+
+<h3 id="q4-list-accumulator">Q4: List Accumulator</h3>
+
+
+<p>Although we can't change variables outside of our frame without a <code>nonlocal</code>
+statement, we <em>can</em> update values stored in mutatable objects in parent frames.
+Define a function <code>make_accumulator</code> that returns an <code>accumulator</code> function,
+which takes one numerical argument and returns the sum of all arguments ever
+passed to <code>accumulator</code>. Use a <code>list</code> and not a <code>nonlocal</code> statement:</p>
+
+
+
+<pre><code>def make_accumulator():
+    &quot;&quot;&quot;Return an accumulator function that takes a single numeric argument and
+    accumulates that argument into total, then returns total.
+
+    &gt;&gt;&gt; acc = make_accumulator()
+    &gt;&gt;&gt; acc(15)
+    15
+    &gt;&gt;&gt; acc(10)
+    25
+    &gt;&gt;&gt; acc2 = make_accumulator()
+    &gt;&gt;&gt; acc2(7)
+    7
+    &gt;&gt;&gt; acc3 = acc2
+    &gt;&gt;&gt; acc3(6)
+    13
+    &gt;&gt;&gt; acc2(5)
+    18
+    &gt;&gt;&gt; acc(4)
+    29
+    &quot;&quot;&quot;
+<div class="alt solution-1">    "*** YOUR CODE HERE ***"
+</div><div class="solution solution-1">&#x20;&#x20;&#x20;&#x20;&#x74;&#x6f;&#x74;&#x61;&#x6c;&#x20;&#x3d;&#x20;&#x5b;&#x30;&#x5d;&#xa;&#x20;&#x20;&#x20;&#x20;&#x64;&#x65;&#x66;&#x20;&#x61;&#x63;&#x63;&#x75;&#x6d;&#x75;&#x6c;&#x61;&#x74;&#x6f;&#x72;&#x28;&#x61;&#x6d;&#x6f;&#x75;&#x6e;&#x74;&#x29;&#x3a;&#xa;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x74;&#x6f;&#x74;&#x61;&#x6c;&#x5b;&#x30;&#x5d;&#x20;&#x2b;&#x3d;&#x20;&#x61;&#x6d;&#x6f;&#x75;&#x6e;&#x74;&#xa;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x72;&#x65;&#x74;&#x75;&#x72;&#x6e;&#x20;&#x74;&#x6f;&#x74;&#x61;&#x6c;&#x5b;&#x30;&#x5d;&#xa;&#x20;&#x20;&#x20;&#x20;&#x72;&#x65;&#x74;&#x75;&#x72;&#x6e;&#x20;&#x61;&#x63;&#x63;&#x75;&#x6d;&#x75;&#x6c;&#x61;&#x74;&#x6f;&#x72;</div></code></pre>
+
+
+        <button id='solution-1' class='btn btn-outline btn-lg solutiontoggle solution'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+
+<h3 id="q5-nonlocal-accumulator">Q5: Nonlocal Accumulator</h3>
+
+
+<p>Now, define a function <code>make_accumulator_nonlocal</code> that returns an
+<code>accumulator</code> function, which takes one numerical argument and returns
+the sum of all arguments ever passed to <code>accumulator</code>. Use a <code>nonlocal</code>
+statement.</p>
+
+
+
+<pre><code>def make_accumulator_nonlocal():
+    &quot;&quot;&quot;Return an accumulator function that takes a single numeric argument and
+    accumulates that argument into total, then returns total.
+
+    &gt;&gt;&gt; acc = make_accumulator_nonlocal()
+    &gt;&gt;&gt; acc(15)
+    15
+    &gt;&gt;&gt; acc(10)
+    25
+    &gt;&gt;&gt; acc2 = make_accumulator_nonlocal()
+    &gt;&gt;&gt; acc2(7)
+    7
+    &gt;&gt;&gt; acc3 = acc2
+    &gt;&gt;&gt; acc3(6)
+    13
+    &gt;&gt;&gt; acc2(5)
+    18
+    &gt;&gt;&gt; acc(4)
+    29
+    &quot;&quot;&quot;
+<div class="alt solution-2">    "*** YOUR CODE HERE ***"
+</div><div class="solution solution-2">&#x20;&#x20;&#x20;&#x20;&#x74;&#x6f;&#x74;&#x61;&#x6c;&#x20;&#x3d;&#x20;&#x30;&#xa;&#x20;&#x20;&#x20;&#x20;&#x64;&#x65;&#x66;&#x20;&#x61;&#x63;&#x63;&#x75;&#x6d;&#x75;&#x6c;&#x61;&#x74;&#x6f;&#x72;&#x28;&#x61;&#x6d;&#x6f;&#x75;&#x6e;&#x74;&#x29;&#x3a;&#xa;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x6e;&#x6f;&#x6e;&#x6c;&#x6f;&#x63;&#x61;&#x6c;&#x20;&#x74;&#x6f;&#x74;&#x61;&#x6c;&#xa;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x74;&#x6f;&#x74;&#x61;&#x6c;&#x20;&#x2b;&#x3d;&#x20;&#x61;&#x6d;&#x6f;&#x75;&#x6e;&#x74;&#xa;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x72;&#x65;&#x74;&#x75;&#x72;&#x6e;&#x20;&#x74;&#x6f;&#x74;&#x61;&#x6c;&#xa;&#x20;&#x20;&#x20;&#x20;&#x72;&#x65;&#x74;&#x75;&#x72;&#x6e;&#x20;&#x61;&#x63;&#x63;&#x75;&#x6d;&#x75;&#x6c;&#x61;&#x74;&#x6f;&#x72;</div></code></pre>
+
+
+        <button id='solution-2' class='btn btn-outline btn-lg solutiontoggle solution'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+
+<h2 id="medium">Medium</h2>
+
+
+
+<h3 id="q6-dice">Q6: Dice</h3>
+
+
+<p>Recall <code>make_test_dice</code> from the Hog project.  <code>make_test_dice</code> takes
+in a sequence of numbers and returns a zero-argument function. This
+zero-argument function will cycle through the list, returning one
+element from the list every time. Implement <code>make_test_dice</code>.</p>
+
+
+
+<pre><code>def make_test_dice(seq):
+    &quot;&quot;&quot;Makes deterministic dice.
+
+    &gt;&gt;&gt; dice = make_test_dice([2, 6, 1])
+    &gt;&gt;&gt; dice()
+    2
+    &gt;&gt;&gt; dice()
+    6
+    &gt;&gt;&gt; dice()
+    1
+    &gt;&gt;&gt; dice()
+    2
+    &gt;&gt;&gt; other = make_test_dice([1])
+    &gt;&gt;&gt; other()
+    1
+    &gt;&gt;&gt; dice()
+    6
+    &quot;&quot;&quot;
+<div class="alt solution-3">    "*** YOUR CODE HERE ***"
+</div><div class="solution solution-3">&#x20;&#x20;&#x20;&#x20;&#x63;&#x6f;&#x75;&#x6e;&#x74;&#x20;&#x3d;&#x20;&#x30;&#xa;&#x20;&#x20;&#x20;&#x20;&#x64;&#x65;&#x66;&#x20;&#x64;&#x69;&#x63;&#x65;&#x28;&#x29;&#x3a;&#xa;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x6e;&#x6f;&#x6e;&#x6c;&#x6f;&#x63;&#x61;&#x6c;&#x20;&#x63;&#x6f;&#x75;&#x6e;&#x74;&#xa;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x72;&#x65;&#x73;&#x75;&#x6c;&#x74;&#x20;&#x3d;&#x20;&#x73;&#x65;&#x71;&#x5b;&#x63;&#x6f;&#x75;&#x6e;&#x74;&#x5d;&#xa;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x63;&#x6f;&#x75;&#x6e;&#x74;&#x20;&#x3d;&#x20;&#x28;&#x63;&#x6f;&#x75;&#x6e;&#x74;&#x20;&#x2b;&#x20;&#x31;&#x29;&#x20;&#x25;&#x20;&#x6c;&#x65;&#x6e;&#x28;&#x73;&#x65;&#x71;&#x29;&#xa;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x72;&#x65;&#x74;&#x75;&#x72;&#x6e;&#x20;&#x72;&#x65;&#x73;&#x75;&#x6c;&#x74;&#xa;&#x20;&#x20;&#x20;&#x20;&#x72;&#x65;&#x74;&#x75;&#x72;&#x6e;&#x20;&#x64;&#x69;&#x63;&#x65;</div></code></pre>
+
+
+        <button id='solution-3' class='btn btn-outline btn-lg solutiontoggle solution'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+
+<h3 id="q7-mutants">Q7: Mutants</h3>
+
+
+<p>Draw environment diagrams to determine what Python would display.</p>
+
+<pre><code>&gt;&gt;&gt; wolf = [1, 2, 3]
+&gt;&gt;&gt; def dog(lst):
+...     def animal(ele):
+...         ele = [ele] + lst
+...         return [ele] + [beast[0]]
+...     beast = [2, 3, animal]
+...     return beast
+&gt;&gt;&gt; x = dog(wolf)[2](4)
+&gt;&gt;&gt; x
+<div class="alt prompt-2">______</div><div class="solution prompt-2">&#x5b;&#x5b;&#x34;&#x2c;&#x20;&#x31;&#x2c;&#x20;&#x32;&#x2c;&#x20;&#x33;&#x5d;&#x2c;&#x20;&#x32;&#x5d;</div></code></pre>
+        <button id='prompt-2' class='btn btn-outline btn-lg solutiontoggle prompt'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+<pre><code>&gt;&gt;&gt; x = 18
+&gt;&gt;&gt; def it(i):
+...     i = x
+...     def shifty(getting):
+...         nonlocal i
+...         i = getting + x
+...         def shiftier(y):
+...             nonlocal getting
+...             gettting = y*i
+...             return i
+...         return shiftier
+...     return shifty
+&gt;&gt;&gt; shift = it(&#x27;is&#x27;)(x)(4)
+&gt;&gt;&gt; shift
+<div class="alt prompt-3">______</div><div class="solution prompt-3">&#x33;&#x36;</div></code></pre>
+        <button id='prompt-3' class='btn btn-outline btn-lg solutiontoggle prompt'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+<pre><code>&gt;&gt;&gt; def piper(chapman):
+...     chapman.append(&#x27;state&#x27;)
+...     def alex(vause):
+...         nonlocal chapman
+...         chapman[1] = vause[1]
+...         return chapman
+...     return alex
+&gt;&gt;&gt; orange = piper([&#x27;litchfield&#x27;, &#x27;new york&#x27;])([&#x27;federal&#x27;, &#x27;prison&#x27;])
+&gt;&gt;&gt; orange
+<div class="alt prompt-4">______</div><div class="solution prompt-4">&#x5b;&#x27;&#x6c;&#x69;&#x74;&#x63;&#x68;&#x66;&#x69;&#x65;&#x6c;&#x64;&#x27;&#x2c;&#x20;&#x27;&#x70;&#x72;&#x69;&#x73;&#x6f;&#x6e;&#x27;&#x2c;&#x20;&#x27;&#x73;&#x74;&#x61;&#x74;&#x65;&#x27;&#x5d;</div></code></pre>
+        <button id='prompt-4' class='btn btn-outline btn-lg solutiontoggle prompt'>
+        Toggle Solution<noscript> (enable JavaScript)</noscript>
+        </button>
+        
+
+  </div>
+
+  <div class='col-md-3 sticky'>
+    <nav class='hidden-print hidden-sm hidden-xs sidebar'>
+      <ul>
+  <li><a href="index.html#guides">Guides</a></li>
+  <ul>
+    <li><a href="index.html#mutable-values">Mutable Values</a></li>
+    <ul>
+      <li><a href="index.html#lists">Lists</a></li>
+      <ul>
+        <li><a href="index.html#identity">Identity</a></li>
+        <li><a href="index.html#operations">Operations</a></li>
+      </ul>
+    </ul>
+    <li><a href="index.html#mutable-functions">Mutable Functions</a></li>
+    <ul>
+      <li><a href="index.html#assignment-statements">Assignment Statements</a></li>
+      <li><a href="index.html#local-state">Local State</a></li>
+    </ul>
+  </ul>
+  <li><a href="index.html#isomorphic-quiz-questions">Isomorphic Quiz Questions</a></li>
+  <ul>
+    <li><a href="index.html#q1-nonlocal-environment-diagram">Q1: Nonlocal Environment Diagram</a></li>
+    <li><a href="index.html#q2-digits">Q2: Digits</a></li>
+  </ul>
+  <li><a href="index.html#practice-problems">Practice Problems</a></li>
+  <ul>
+    <li><a href="index.html#easy">Easy</a></li>
+    <ul>
+      <li><a href="index.html#q3-funny-adder">Q3: Funny Adder</a></li>
+      <li><a href="index.html#q4-list-accumulator">Q4: List Accumulator</a></li>
+      <li><a href="index.html#q5-nonlocal-accumulator">Q5: Nonlocal Accumulator</a></li>
+    </ul>
+    <li><a href="index.html#medium">Medium</a></li>
+    <ul>
+      <li><a href="index.html#q6-dice">Q6: Dice</a></li>
+      <li><a href="index.html#q7-mutants">Q7: Mutants</a></li>
+    </ul>
+  </ul>
+</ul>
+    </nav>
+  </div>
+</div>
+
+    </main>
+
+    <footer class="container">
+      <div class="row text-center">
+        <div class="col col-sm-4">
+          <h3><a href="../../index.html">CS 61A</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../weekly.html">Weekly Schedule</a></li>
+            <li><a href="../../office-hours.html">Office Hours</a></li>
+            <li><a href="../../staff.html">Staff</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../../resources.1.html">Resources</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../articles/studying.html">Studying Guide</a></li>
+            <li><a href="../../articles/debugging.html">Debugging Guide</a></li>
+            <li><a href="../../articles/composition.html">Composition Guide</a></li>
+            <li><a href="../../articles/pair-programming.html">Pair Programming</a></li>
+          </ul>
+        </div>
+        <div class="col col-sm-4">
+          <h3><a href="../../articles/about.html">Policies</a></h3>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="../../articles/about.html#assignments">Assignments</a></li>
+            <li><a href="../../articles/about.html#exams">Exams</a></li>
+            <li><a href="../../articles/about.html#grading">Grading</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/loader.min.js"></script>
+  <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/editor/editor.main.min.css">
+  <script>
+      require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs' }});
+      window.MonacoEnvironment = { getWorkerUrl: () => URL.createObjectURL(new Blob([`
+      self.MonacoEnvironment = {
+          baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min'
+      };
+      importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/base/worker/workerMain.min.js');
+  `], { type: 'text/javascript' }))
+  };
+  </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.15.5/js/jsplumb.min.js"></script>
+    <script src="../../assets/js/network_storage.js"></script>
+    <script src="../../assets/js/storable.js"></script>
+    <script src="../../assets/js/editor.js"></script>
+    <script src="../../assets/js/copy-button.js"></script>
+    <script src="../../assets/js/env-diagram.js"></script>
+    
+<script src="../../assets/js/sketchy.js"></script>
+<script>
+  $('.sidebar ul').addClass('nav nav-stacked noselect');
+  $('body').scrollspy({
+    target: '.sidebar',
+    offset: 40
+  });
+
+  function goToId(id) {
+    var target = $(id);
+    target.parent().show();
+    $('html,body').animate({
+      scrollTop: target.offset().top,
+    }, 100);
+    $("body").scrollspy('refresh');
+  }
+
+  if (location.hash) {
+    setTimeout(function() {
+      if (location.hash) {
+        goToId(location.hash);
+      }
+    }, 1);
+  }
+
+  $("a").click(function(event) {
+    var urlBeforeHashRegEx = new RegExp("^"+window.location.href.split("#")[0]);
+    if (/^#/.test(this.hash) && urlBeforeHashRegEx.test(this.href)) {
+      event.preventDefault();
+      goToId(this.hash);
+      document.location.hash = this.hash;
+    }
+  });
+</script>
+
+<script type="text/javascript" src="../../assets/js/config.js"></script>
+<script>
+$(function() {
+    $('.solutiontoggle').css('display', 'inline-block');
+      $('.solutiontoggle').click(function() {
+        var solution_id = $(this).attr('id');
+        $('div.' + solution_id).slideToggle(600);
+    });
+    $('.alwaystoggle').css('display', 'inline-block');
+    $('.alwaystoggle').click(function() {
+      var solution_id = $(this).attr('id');
+      $('div.' + solution_id).slideToggle(600);
+    });
+});
+</script>
+
+  </body>
+</html>
